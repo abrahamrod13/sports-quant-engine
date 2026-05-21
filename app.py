@@ -335,8 +335,29 @@ with col_v1:
         st.success("Done!")
 with col_v2:
     if st.button("RESULTS", use_container_width=True):
-        from betting_results import show_results
-        show_results()
+        import pandas as pd
+        import os
+        log_file = 'data/betting_log.csv'
+        if os.path.exists(log_file):
+            df = pd.read_csv(log_file)
+            completed = df[df['result'] != 'PENDING']
+            if len(completed) > 0:
+                wins = len(completed[completed['result'] == 'WIN'])
+                total = len(completed)
+                profit = completed['profit_loss'].sum()
+                
+                st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                st.markdown("#### BETTING RESULTS")
+                col_r1, col_r2, col_r3, col_r4 = st.columns(4)
+                with col_r1: st.metric("Total Bets", total)
+                with col_r2: st.metric("Wins", wins)
+                with col_r3: st.metric("Win Rate", f"{wins/total*100:.1f}%" if total > 0 else "N/A")
+                with col_r4: st.metric("Profit", f"${profit:+.2f}")
+                st.markdown('</div>', unsafe_allow_html=True)
+            else:
+                st.info("No validated results yet.")
+        else:
+            st.info("No betting log found.")
 
 st.markdown("""
 <div class="footer">

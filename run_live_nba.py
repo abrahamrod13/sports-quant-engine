@@ -1,5 +1,5 @@
 """
-NBA ANALISIS HOY - COMPACT MODE
+NBA ANALISIS HOY - PIPE FORMAT
 """
 from nba_core import NBACore
 from nba_data_fetcher import get_today_nba_games, get_fanduel_nba_odds
@@ -10,11 +10,7 @@ from nba_advanced_stats import get_team_advanced_stats, get_net_rating
 import pandas as pd
 from datetime import datetime
 
-print("=" * 100)
-print("NBA QUANT ENGINE V3 - COMPACT MODE")
-print("=" * 100)
-print(f"{'GAME':<35} {'PICK':<25} {'ODDS':>8} {'PROB':>7} {'EDGE':>8} {'CONF':>5} {'ML':>5} {'SPREAD':>8} {'O/U':>5}")
-print("-" * 100)
+print("NBA|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|SPREAD|HOME_RECORD|AWAY_RECORD|PLAYOFF")
 
 core = NBACore()
 exploiter = NBAMarketExploiter()
@@ -26,7 +22,6 @@ if len(nba_games) > 0:
     fanduel = get_fanduel_nba_odds()
     if len(fanduel) > 0:
         nba_games = nba_games.merge(fanduel, on='match', how='left', suffixes=('', '_fd'))
-    
     nba_games = nba_games[nba_games['status'].isin(['Scheduled', 'Pre-Game'])]
     
     for _, row in nba_games.iterrows():
@@ -63,8 +58,7 @@ if len(nba_games) > 0:
         }
         
         home_ml = row.get('home_ml_close', row.get('home_odds', -110))
-        if home_ml == 0:
-            home_ml = -110
+        if home_ml == 0: home_ml = -110
         
         result = core.evaluate_nba_game(home_data, away_data, home_ml)
         
@@ -76,49 +70,31 @@ if len(nba_games) > 0:
                 result['probability'] = max(0.15, result['probability'] - series['adjustment'])
             result['edge'] = result['probability'] - result['market_prob']
         
-        # Pick
         if result['edge'] > 0:
             pick = home_team if result['probability'] >= 0.5 else away_team
-            if pick == home_team:
-                odds_str = str(home_ml)
-            else:
-                odds_str = str(row.get('away_ml_close', row.get('away_odds', 110)))
+            if pick == home_team: odds_str = str(home_ml)
+            else: odds_str = str(row.get('away_ml_close', row.get('away_odds', 110)))
         else:
             pick = "NO PICK"
             odds_str = "-"
         
-        # Status
-        if result['approved']:
-            ml_status = "[OK]"
-        elif result['edge'] > 0.02:
-            ml_status = "[SUS]"
-        else:
-            ml_status = "[X]"
+        if result['approved']: ml_status = "[OK]"
+        elif result['edge'] > 0.02: ml_status = "[SUS]"
+        else: ml_status = "[X]"
         
-        # Spread
-        spread_open = row.get('spread_open', 0)
         spread_close = row.get('spread_close', 0)
-        if spread_close != 0:
-            spread_status = f"{spread_close:+.1f}"
-        else:
-            spread_status = "-"
+        spread_str = f"{spread_close:+.1f}" if spread_close != 0 else "-"
         
-        # Over/Under NBA (simplificado)
-        ou_status = "[?]"
+        print(f"NBA|{home_team}|{away_team}|{pick}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{spread_str}|{row.get('home_record','41-41')}|{row.get('away_record','41-41')}|{is_playoff}")
         
-        game_name = f"{home_team} vs {away_team}"[:33]
-        pick_name = pick[:23] if pick != "NO PICK" else pick
-        
-        print(f"{game_name:<35} {pick_name:<25} {odds_str:>8} {result['probability']:>6.1%} {result['edge']:>+7.1%} {result['confidence_level']:>5} {ml_status:>5} {spread_status:>8} {ou_status:>5}")
+        # DATA LINE
+        home_adv = get_team_advanced_stats(home_team)
+        away_adv = get_team_advanced_stats(away_team)
+        print(f"DATA_NBA|{home_team}|{away_team}|{home_adv.get('off_rating','?') if home_adv else '?'}|{away_adv.get('off_rating','?') if away_adv else '?'}|{home_net}|{away_net}|{row.get('notes','')}|{', '.join([i['player'] for i in home_injuries_raw if i['status']=='OUT']) if home_injuries_raw else 'None'}|{', '.join([i['player'] for i in away_injuries_raw if i['status']=='OUT']) if away_injuries_raw else 'None'}")
         
         if result['approved']:
             result['pick'] = pick
             result['sport'] = 'NBA'
-            result['match'] = row['match']
-            result['home_team'] = home_team
-            result['away_team'] = away_team
             all_setups.append(result)
 
-print("-" * 100)
-print(f"\n[GO] {len(all_setups)} SETUPS | [SUS] = Suspect | [X] = No edge")
-print("=" * 100)
+print(f"SUMMARY|{len(all_setups)}")

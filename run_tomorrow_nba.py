@@ -1,5 +1,5 @@
 """
-NBA PREDICCIONES MANANA
+NBA PREDICCIONES MANANA - COMPACT MODE
 """
 from nba_core import NBACore
 from nba_data_fetcher import get_tomorrow_nba_games, get_fanduel_nba_odds
@@ -12,12 +12,11 @@ from datetime import datetime, timedelta
 
 tomorrow = datetime.now() + timedelta(days=1)
 
-print("=" * 60)
-print("NBA QUANT ENGINE V3 - PREDICCIONES MANANA")
-print("=" * 60)
-print(f"Date: {tomorrow.strftime('%Y-%m-%d')}")
-print(f"Filters: Prob>=0.53 | Vol<=0.65 | Edge>=0.03")
-print("=" * 60)
+print("=" * 100)
+print("NBA QUANT ENGINE V3 - COMPACT MODE (TOMORROW)")
+print("=" * 100)
+print(f"{'GAME':<35} {'PICK':<25} {'ODDS':>8} {'PROB':>7} {'EDGE':>8} {'CONF':>5} {'ML':>5} {'SPREAD':>8} {'O/U':>5}")
+print("-" * 100)
 
 core = NBACore()
 exploiter = NBAMarketExploiter()
@@ -32,8 +31,6 @@ if len(nba_games) > 0:
     
     nba_games = nba_games[nba_games['status'].isin(['Scheduled', 'Pre-Game'])]
     
-    print(f"   {len(nba_games)} games\n")
-    
     for _, row in nba_games.iterrows():
         home_team = row['home_team']
         away_team = row['away_team']
@@ -41,9 +38,6 @@ if len(nba_games) > 0:
         
         home_injuries_raw = get_out_players(home_team)
         away_injuries_raw = get_out_players(away_team)
-        
-        home_adv = get_team_advanced_stats(home_team)
-        away_adv = get_team_advanced_stats(away_team)
         
         home_net = get_net_rating(home_team, row.get('home_record', '41-41'))
         away_net = get_net_rating(away_team, row.get('away_record', '41-41'))
@@ -84,55 +78,36 @@ if len(nba_games) > 0:
                 result['probability'] = max(0.15, result['probability'] - series['adjustment'])
             result['edge'] = result['probability'] - result['market_prob']
         
-        v7 = exploiter.full_analysis(row.to_dict(), result, home_team, away_team)
+        if result['edge'] > 0:
+            pick = home_team if result['probability'] >= 0.5 else away_team
+            if pick == home_team:
+                odds_str = str(home_ml)
+            else:
+                odds_str = str(row.get('away_ml_close', row.get('away_odds', 110)))
+        else:
+            pick = "NO PICK"
+            odds_str = "-"
         
-        print(f"   {home_team} vs {away_team}")
-        print(f"      Home: {home_team}: {row.get('home_record', 'N/A')} | Away: {away_team}: {row.get('away_record', 'N/A')}")
-        
-        if row.get('notes'):
-            print(f"      [Playoff] {row['notes']}")
-        
-        if home_adv:
-            print(f"      [Stats] {home_team}: ORtg {home_adv['off_rating']} | eFG% {home_adv['efg']:.1%} | Net {home_net:+.1f}")
-        if away_adv:
-            print(f"      [Stats] {away_team}: ORtg {away_adv['off_rating']} | eFG% {away_adv['efg']:.1%} | Net {away_net:+.1f}")
-        
-        if series['has_momentum']:
-            print(f"      [Series] {series['signal']}: {series['description']}")
-            if series['blowout']:
-                print(f"      [!!] BLOWOUT detected")
-        
-        if home_injuries_raw:
-            out_home = [i for i in home_injuries_raw if i['status'] == 'OUT']
-            if out_home:
-                print(f"      [Injury] {home_team} OUT: {', '.join([i['player'] for i in out_home])}")
-        
-        if away_injuries_raw:
-            out_away = [i for i in away_injuries_raw if i['status'] == 'OUT']
-            if out_away:
-                print(f"      [Injury] {away_team} OUT: {', '.join([i['player'] for i in out_away])}")
-        
-        fav = row.get('favorite', '')
-        dog = row.get('underdog', '')
-        if fav:
-            print(f"      [Odds] FanDuel: {fav} ({row.get('favorite_odds', '')}) FAV | {dog} ({row.get('underdog_odds', '')}) DOG")
+        if result['approved']:
+            ml_status = "[OK]"
+        elif result['edge'] > 0.02:
+            ml_status = "[SUS]"
+        else:
+            ml_status = "[X]"
         
         spread_open = row.get('spread_open', 0)
         spread_close = row.get('spread_close', 0)
-        if spread_open and spread_close:
-            print(f"      [Spread] {spread_open} -> {spread_close}")
-        
-        mv = v7['market_vs']
-        print(f"      [Market] Market: {mv['market_prob']:.1%} | Model: {mv['model_prob']:.1%} | Gap: {mv['discrepancy']:+.1%}")
-        
-        print(f"      Prob: {result['probability']} | Edge: {result['edge']} | Vol: {result['volatility']}")
-        
-        if result['edge'] > 0:
-            pick = home_team if result['probability'] >= 0.5 else away_team
+        if spread_close != 0:
+            spread_status = f"{spread_close:+.1f}"
         else:
-            pick = 'NO PICK'
+            spread_status = "-"
         
-        print(f"      Pick: {pick} | V7: {v7['exploitation_level']}")
+        ou_status = "[?]"
+        
+        game_name = f"{home_team} vs {away_team}"[:33]
+        pick_name = pick[:23] if pick != "NO PICK" else pick
+        
+        print(f"{game_name:<35} {pick_name:<25} {odds_str:>8} {result['probability']:>6.1%} {result['edge']:>+7.1%} {result['confidence_level']:>5} {ml_status:>5} {spread_status:>8} {ou_status:>5}")
         
         if result['approved']:
             result['pick'] = pick
@@ -141,24 +116,8 @@ if len(nba_games) > 0:
             result['home_team'] = home_team
             result['away_team'] = away_team
             all_setups.append(result)
-            print(f"      [OK] SETUP APROBADO")
-        else:
-            print(f"      [X] No pasa filtros")
-        print()
 
-print("=" * 60)
-print(f"PREDICCIONES NBA MANANA ({tomorrow.strftime('%d/%m/%Y')})")
-print("=" * 60)
-
-if len(all_setups) == 0:
-    print("\n[STOP] 0 SETUPS A+ manana")
-else:
-    all_setups.sort(key=lambda x: x.get('edge', 0), reverse=True)
-    print(f"\n[GO] {len(all_setups)} SETUPS NBA:\n")
-    for i, s in enumerate(all_setups[:5], 1):
-        print(f"  {i}. {s['home_team']} vs {s['away_team']}")
-        print(f"     GANA: {s['pick']} | Prob: {s['probability']} | Edge: {s['edge']} | {s['confidence_level']}")
-        print()
-
-print("=" * 60)
-print("NBA Engine completado |", datetime.now().strftime('%H:%M'))
+print("-" * 100)
+print(f"\n[GO] {len(all_setups)} SETUPS | [SUS] = Suspect | [X] = No edge")
+print(f"Date: {tomorrow.strftime('%Y-%m-%d')}")
+print("=" * 100)

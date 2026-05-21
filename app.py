@@ -58,15 +58,6 @@ st.markdown("""
         border: 1px solid #333;
         text-align: center;
     }
-    .metric-card h3 {
-        color: #e94560;
-        margin: 0;
-    }
-    .metric-card p {
-        color: white;
-        font-size: 1.5rem;
-        font-weight: bold;
-    }
     .section-title {
         color: #e94560;
         border-bottom: 2px solid #e94560;
@@ -85,6 +76,13 @@ st.markdown("""
         padding: 1.5rem;
         border-radius: 10px;
         margin: 1rem 0;
+    }
+    .comparison-box {
+        background: #1a1a2e;
+        padding: 1rem;
+        border-radius: 10px;
+        margin: 1rem 0;
+        border: 1px solid #333;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -190,20 +188,19 @@ from mlb_data_fetcher import get_today_mlb_games
 games_df = get_today_mlb_games()
 
 if len(games_df) > 0:
-    # Filtrar solo juegos con pitchers
     valid_games = games_df[games_df['home_pitcher_name'].notna() & (games_df['home_pitcher_name'] != 'TBD')]
     
     if len(valid_games) > 0:
         game_options = {}
         for idx, row in valid_games.iterrows():
             label = f"[{idx}] {row['home_team']} vs {row['away_team']} | {row.get('home_pitcher_name', '')} vs {row.get('away_pitcher_name', '')}"
-            game_options[label] = idx  # Guardar el índice real
+            game_options[label] = idx
         
         col_mc1, col_mc2, col_mc3 = st.columns([2, 1, 1])
         
         with col_mc1:
             selected_label = st.selectbox("Select game:", list(game_options.keys()), key="mc_game")
-            selected_idx = game_options[selected_label]  # Obtener índice real
+            selected_idx = game_options[selected_label]
         with col_mc2:
             n_sims = st.number_input("Simulations:", min_value=1000, max_value=50000, value=10000, step=1000, key="mc_sims")
         with col_mc3:
@@ -213,7 +210,7 @@ if len(games_df) > 0:
         
         if run_mc:
             with st.spinner(f"Running {n_sims:,} Monte Carlo simulations..."):
-                row = games_df.loc[selected_idx]
+                row = valid_games.loc[selected_idx]
                 
                 from mlb_data_fetcher import get_pitcher_stats, get_bullpen_data, get_team_momentum
                 from mlb_engine import MLBEngine
@@ -249,10 +246,38 @@ if len(games_df) > 0:
                 
                 results = mc.simulate_game(game_data, n_sims)
                 
-                # MOSTRAR RESULTADOS EN STREAMLIT
+                # Calcular modelo para comparación
+                model_result = mlb_engine.evaluate_mlb_game(game_data, 2.0)
+                model_prob = model_result.get('probability', 0.5)
+                mc_prob = results['home_win_pct']
+                diff = mc_prob - model_prob
+                
+                if abs(diff) > 0.12:
+                    diff_color = "#e94560"
+                    diff_label = "LARGE DISCREPANCY - Model may be overfitting"
+                elif abs(diff) > 0.07:
+                    diff_color = "#f0a500"
+                    diff_label = "MODERATE DISCREPANCY - Adjust confidence"
+                elif abs(diff) > 0.03:
+                    diff_color = "#4caf50"
+                    diff_label = "SLIGHT DISCREPANCY - Within range"
+                else:
+                    diff_color = "#00ff88"
+                    diff_label = "ALIGNED - Model validated"
+                
+                # MOSTRAR RESULTADOS
                 st.success(f"Monte Carlo Complete - {n_sims:,} simulations")
                 
                 st.markdown(f"### {results['home_team']} vs {results['away_team']}")
+                
+                # COMPARACIÓN MODELO VS MONTE CARLO
+                st.markdown(f"""
+                <div class="comparison-box">
+                    <b>MODEL vs MONTE CARLO:</b><br>
+                    Model Probability: {model_prob:.1%} | Monte Carlo: {mc_prob:.1%} | 
+                    <span style="color:{diff_color}">Diff: {diff:+.1%} ({diff_label})</span>
+                </div>
+                """, unsafe_allow_html=True)
                 
                 col_r1, col_r2 = st.columns(2)
                 

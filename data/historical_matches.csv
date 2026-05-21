@@ -1,0 +1,803 @@
+date,sport,league,home_team,away_team,home_score,away_score,winner,result,home_form,away_form,home_xg,away_xg,odds,home_win_pct,away_win_pct,season_progress,is_playoff
+2026-05-27,soccer,Premier League,Chelsea,Man City,0,3,Man City,away,0.689,0.508,1.39,1.75,2.0,,,,
+2026-05-27,soccer,Premier League,Liverpool,Arsenal,0,1,Arsenal,away,0.649,0.42,2.43,1.63,2.0,,,,
+2026-05-27,soccer,Europa League,Brighton,Fenerbahce,0,2,Fenerbahce,away,0.444,0.627,0.99,0.85,2.0,,,,
+2026-05-26,soccer,Europa League,Rangers,Marseille,1,0,Rangers,home,0.594,0.421,1.34,0.63,2.0,,,,
+2026-05-25,soccer,Champions League,Porto,Benfica,0,0,draw,draw,0.628,0.392,1.33,0.68,2.0,,,,
+2026-05-25,soccer,Serie A,Fiorentina,Inter,1,1,draw,draw,0.718,0.601,1.4,1.86,2.0,,,,
+2026-05-25,soccer,Serie A,Roma,Napoli,0,1,Napoli,away,0.687,0.402,1.61,0.95,2.0,,,,
+2026-05-25,soccer,Europa League,West Ham,Sporting,1,1,Sporting,away,0.496,0.441,2.01,1.48,2.0,,,,
+2026-05-24,soccer,Premier League,Newcastle,Tottenham,2,1,Newcastle,home,0.507,0.65,2.44,1.14,2.0,,,,
+2026-05-24,soccer,Serie A,Roma,Inter,2,0,Roma,home,0.464,0.619,2.47,1.87,2.0,,,,
+2026-05-24,soccer,Serie A,Inter,Roma,0,0,draw,draw,0.687,0.397,2.24,1.41,2.0,,,,
+2026-05-23,soccer,Europa League,Sporting,Marseille,3,3,draw,draw,0.432,0.668,1.15,1.25,2.0,,,,
+2026-05-23,soccer,Serie A,Juventus,Atalanta,1,0,Juventus,home,0.55,0.43,2.18,0.62,2.0,,,,
+2026-05-23,soccer,Serie A,Inter,Juventus,2,0,Inter,home,0.529,0.487,0.99,1.77,2.0,,,,
+2026-05-22,soccer,Champions League,Porto,Benfica,2,2,draw,draw,0.475,0.461,1.61,1.3,2.0,,,,
+2026-05-21,soccer,Champions League,PSG,Salzburg,1,1,draw,draw,0.43,0.598,2.35,1.95,2.0,,,,
+2026-05-21,soccer,Serie A,AC Milan,Fiorentina,2,2,draw,draw,0.445,0.429,1.12,1.78,2.0,,,,
+2026-05-19,soccer,Premier League,Tottenham,Chelsea,1,0,Tottenham,home,0.606,0.642,1.36,1.83,2.0,,,,
+2026-05-18,soccer,Europa League,Roma,Rangers,0,1,Rangers,away,0.586,0.615,1.72,1.54,2.0,,,,
+2026-05-18,soccer,La Liga,Real Sociedad,Atletico,3,0,Real Sociedad,home,0.486,0.355,0.88,0.64,2.0,,,,
+2026-05-17,soccer,Champions League,PSG,Shakhtar,1,0,PSG,home,0.515,0.365,1.67,1.15,2.0,,,,
+2026-05-17,soccer,La Liga,Real Madrid,Valencia,2,0,Real Madrid,home,0.702,0.492,2.3,1.9,2.0,,,,
+2026-05-17,soccer,Champions League,Salzburg,Porto,3,0,Salzburg,home,0.525,0.671,2.04,1.5,2.0,,,,
+2026-05-16,soccer,Champions League,Porto,Benfica,2,0,Porto,home,0.612,0.353,2.45,1.3,2.0,,,,
+2026-05-16,soccer,Europa League,Brighton,Marseille,1,0,Brighton,home,0.697,0.449,2.14,0.87,2.0,,,,
+2026-05-15,soccer,Europa League,West Ham,Fenerbahce,2,2,draw,draw,0.711,0.495,0.84,1.75,2.0,,,,
+2026-05-15,soccer,Europa League,Leverkusen,Rangers,3,1,Leverkusen,home,0.649,0.645,1.62,1.34,2.0,,,,
+2026-05-15,soccer,Champions League,Bayern,Porto,1,1,draw,draw,0.55,0.398,1.69,1.32,2.0,,,,
+2026-05-14,soccer,Europa League,West Ham,Roma,1,0,West Ham,home,0.469,0.555,1.61,1.06,2.0,,,,
+2026-05-14,soccer,La Liga,Real Madrid,Atletico,1,1,draw,draw,0.523,0.648,2.39,0.86,2.0,,,,
+2026-05-12,soccer,La Liga,Atletico,Real Sociedad,2,2,draw,draw,0.669,0.662,1.16,0.73,2.0,,,,
+2026-05-12,soccer,Europa League,Brighton,Leverkusen,3,3,draw,draw,0.62,0.592,1.86,0.81,2.0,,,,
+2026-05-12,soccer,Premier League,Liverpool,Aston Villa,0,2,Aston Villa,away,0.663,0.456,0.91,1.49,2.0,,,,
+2026-05-12,soccer,La Liga,Valencia,Real Sociedad,1,1,draw,draw,0.449,0.471,2.4,0.8,2.0,,,,
+2026-05-11,soccer,Europa League,Leverkusen,Brighton,1,0,Leverkusen,home,0.54,0.391,1.04,0.83,2.0,,,,
+2026-05-11,soccer,La Liga,Barcelona,Valencia,0,2,Valencia,away,0.581,0.651,2.13,1.33,2.0,,,,
+2026-05-10,soccer,La Liga,Real Sociedad,Atletico,0,1,Atletico,away,0.666,0.43,0.81,1.37,2.0,,,,
+2026-05-10,nba,NBA,Los Angeles Lakers,Oklahoma City Thunder,108,131,Oklahoma City Thunder,away,,,,,2.0,0.647,0.765,1.0,True
+2026-05-10,soccer,Europa League,Rangers,Sporting,2,0,Rangers,home,0.444,0.629,2.35,0.92,2.0,,,,
+2026-05-09,soccer,La Liga,Barcelona,Real Madrid,0,3,Real Madrid,away,0.624,0.5,2.47,0.67,2.0,,,,
+2026-05-09,soccer,La Liga,Valencia,Villarreal,0,2,Villarreal,away,0.644,0.566,1.71,0.65,2.0,,,,
+2026-05-09,nba,NBA,Minnesota Timberwolves,San Antonio Spurs,108,115,San Antonio Spurs,away,,,,,2.0,0.589,0.739,1.0,True
+2026-05-09,soccer,Premier League,Liverpool,Chelsea,1,0,Liverpool,home,0.642,0.417,2.0,1.28,2.0,,,,
+2026-05-09,nba,NBA,Cleveland Cavaliers,Detroit Pistons,116,109,Cleveland Cavaliers,home,,,,,2.0,0.641,0.736,1.0,True
+2026-05-08,soccer,Champions League,Salzburg,Ajax,2,0,Salzburg,home,0.716,0.52,1.38,1.82,2.0,,,,
+2026-05-08,nba,NBA,Oklahoma City Thunder,Los Angeles Lakers,125,107,Oklahoma City Thunder,home,,,,,2.0,0.77,0.642,1.0,True
+2026-05-08,soccer,Premier League,Man City,Newcastle,2,0,Man City,home,0.529,0.532,1.83,1.87,2.0,,,,
+2026-05-08,nba,NBA,Philadelphia 76ers,New York Knicks,94,108,New York Knicks,away,,,,,2.0,0.57,0.657,1.0,True
+2026-05-08,soccer,La Liga,Betis,Real Madrid,2,0,Betis,home,0.693,0.662,1.76,1.34,2.0,,,,
+2026-05-07,nba,NBA,Detroit Pistons,Cleveland Cavaliers,107,97,Detroit Pistons,home,,,,,2.0,0.728,0.641,1.0,True
+2026-05-07,soccer,Serie A,Napoli,Fiorentina,1,0,Napoli,home,0.684,0.444,2.5,1.04,2.0,,,,
+2026-05-07,soccer,Premier League,Liverpool,Arsenal,1,0,Liverpool,home,0.564,0.566,2.15,0.65,2.0,,,,
+2026-05-07,soccer,La Liga,Real Sociedad,Real Madrid,2,0,Real Sociedad,home,0.456,0.618,0.99,1.87,2.0,,,,
+2026-05-07,nba,NBA,San Antonio Spurs,Minnesota Timberwolves,133,95,San Antonio Spurs,home,,,,,2.0,0.739,0.579,1.0,True
+2026-05-07,soccer,Europa League,Leverkusen,Rangers,1,1,draw,draw,0.47,0.611,0.99,2.0,2.0,,,,
+2026-05-06,soccer,Serie A,AC Milan,Roma,1,0,AC Milan,home,0.59,0.365,1.14,1.99,2.0,,,,
+2026-05-06,nba,NBA,New York Knicks,Philadelphia 76ers,108,102,New York Knicks,home,,,,,2.0,0.642,0.541,1.0,True
+2026-05-06,soccer,Premier League,Chelsea,Aston Villa,0,0,draw,draw,0.691,0.609,1.77,0.74,2.0,,,,
+2026-05-06,nba,NBA,Oklahoma City Thunder,Los Angeles Lakers,108,90,Oklahoma City Thunder,home,,,,,2.0,0.788,0.666,1.0,True
+2026-05-06,soccer,Serie A,AC Milan,Napoli,1,1,draw,draw,0.484,0.669,1.64,0.79,2.0,,,,
+2026-05-05,nba,NBA,New York Knicks,Philadelphia 76ers,137,98,New York Knicks,home,,,,,2.0,0.66,0.562,1.0,True
+2026-05-05,soccer,La Liga,Real Madrid,Atletico,2,0,Real Madrid,home,0.623,0.477,2.27,1.37,2.0,,,,
+2026-05-05,nba,NBA,Detroit Pistons,Cleveland Cavaliers,111,101,Detroit Pistons,home,,,,,2.0,0.735,0.639,1.0,True
+2026-05-05,nba,NBA,San Antonio Spurs,Minnesota Timberwolves,102,104,Minnesota Timberwolves,away,,,,,2.0,0.8,0.578,1.0,True
+2026-05-04,soccer,Europa League,Brighton,Fenerbahce,3,0,Brighton,home,0.409,0.468,1.15,1.34,2.0,,,,
+2026-05-04,soccer,Champions League,Bayern,Benfica,1,0,Bayern,home,0.549,0.634,2.13,0.84,2.0,,,,
+2026-05-03,nba,NBA,Cleveland Cavaliers,Toronto Raptors,114,102,Cleveland Cavaliers,home,,,,,2.0,0.638,0.574,1.0,False
+2026-05-03,nba,NBA,Detroit Pistons,Orlando Magic,116,94,Detroit Pistons,home,,,,,2.0,0.72,0.563,1.0,False
+2026-05-02,nba,NBA,Boston Celtics,Philadelphia 76ers,100,109,Philadelphia 76ers,away,,,,,2.0,0.706,0.568,1.0,False
+2026-05-02,soccer,Premier League,Liverpool,Aston Villa,0,0,draw,draw,0.535,0.445,2.45,0.93,2.0,,,,
+2026-05-02,soccer,Premier League,Aston Villa,Chelsea,1,0,Aston Villa,home,0.459,0.39,1.72,1.06,2.0,,,,
+2026-05-02,soccer,Europa League,Marseille,Rangers,2,0,Marseille,home,0.499,0.623,2.34,1.61,2.0,,,,
+2026-05-02,soccer,Premier League,Tottenham,Chelsea,1,0,Tottenham,home,0.538,0.572,1.19,1.49,2.0,,,,
+2026-05-02,nba,NBA,Houston Rockets,Los Angeles Lakers,78,98,Los Angeles Lakers,away,,,,,2.0,0.662,0.636,1.0,False
+2026-05-01,nba,NBA,Minnesota Timberwolves,Denver Nuggets,110,98,Minnesota Timberwolves,home,,,,,2.0,0.586,0.691,1.0,False
+2026-05-01,nba,NBA,Toronto Raptors,Cleveland Cavaliers,112,110,Toronto Raptors,home,,,,,2.0,0.567,0.656,1.0,False
+2026-05-01,nba,NBA,Orlando Magic,Detroit Pistons,79,93,Detroit Pistons,away,,,,,2.0,0.531,0.727,1.0,False
+2026-05-01,soccer,Champions League,Shakhtar,PSG,3,1,Shakhtar,home,0.497,0.47,2.11,1.89,2.0,,,,
+2026-05-01,nba,NBA,Philadelphia 76ers,Boston Celtics,106,93,Philadelphia 76ers,home,,,,,2.0,0.549,0.677,1.0,False
+2026-04-30,nba,NBA,Los Angeles Lakers,Houston Rockets,93,99,Houston Rockets,away,,,,,2.0,0.681,0.638,1.0,False
+2026-04-30,nba,NBA,Atlanta Hawks,New York Knicks,89,140,New York Knicks,away,,,,,2.0,0.569,0.653,1.0,False
+2026-04-29,nba,NBA,Cleveland Cavaliers,Toronto Raptors,125,120,Cleveland Cavaliers,home,,,,,2.0,0.611,0.586,1.0,False
+2026-04-29,nba,NBA,New York Knicks,Atlanta Hawks,126,97,New York Knicks,home,,,,,2.0,0.635,0.554,1.0,False
+2026-04-29,nba,NBA,Detroit Pistons,Orlando Magic,116,109,Detroit Pistons,home,,,,,2.0,0.737,0.55,1.0,False
+2026-04-29,nba,NBA,San Antonio Spurs,Portland Trail Blazers,114,95,San Antonio Spurs,home,,,,,2.0,0.754,0.512,1.0,False
+2026-04-28,nba,NBA,Boston Celtics,Philadelphia 76ers,97,113,Philadelphia 76ers,away,,,,,2.0,0.698,0.546,1.0,False
+2026-04-28,nba,NBA,Orlando Magic,Detroit Pistons,94,88,Orlando Magic,home,,,,,2.0,0.544,0.74,1.0,False
+2026-04-28,nba,NBA,Phoenix Suns,Oklahoma City Thunder,122,131,Oklahoma City Thunder,away,,,,,2.0,0.567,0.764,1.0,False
+2026-04-28,nba,NBA,Denver Nuggets,Minnesota Timberwolves,125,113,Denver Nuggets,home,,,,,2.0,0.637,0.606,1.0,False
+2026-04-27,soccer,Champions League,Bayern,Porto,1,1,Bayern,home,0.453,0.4,1.53,1.14,2.0,,,,
+2026-04-27,soccer,Europa League,Roma,Sporting,2,2,draw,draw,0.608,0.432,1.06,1.04,2.0,,,,
+2026-04-27,nba,NBA,Houston Rockets,Los Angeles Lakers,115,96,Houston Rockets,home,,,,,2.0,0.64,0.662,1.0,False
+2026-04-27,soccer,Europa League,Marseille,Sporting,1,1,draw,draw,0.518,0.376,1.81,0.63,2.0,,,,
+2026-04-27,soccer,Premier League,Aston Villa,Tottenham,0,2,Tottenham,away,0.561,0.464,0.91,1.7,2.0,,,,
+2026-04-26,nba,NBA,Toronto Raptors,Cleveland Cavaliers,93,89,Toronto Raptors,home,,,,,2.0,0.549,0.651,1.0,False
+2026-04-26,nba,NBA,Portland Trail Blazers,San Antonio Spurs,93,114,San Antonio Spurs,away,,,,,2.0,0.513,0.744,1.0,False
+2026-04-26,nba,NBA,Philadelphia 76ers,Boston Celtics,96,128,Boston Celtics,away,,,,,2.0,0.563,0.668,1.0,False
+2026-04-26,soccer,Premier League,Man City,Chelsea,1,0,Man City,home,0.691,0.377,2.38,1.27,2.0,,,,
+2026-04-26,soccer,Champions League,Shakhtar,Bayern,1,0,Shakhtar,home,0.583,0.562,2.16,0.61,2.0,,,,
+2026-04-26,nba,NBA,Minnesota Timberwolves,Denver Nuggets,112,96,Minnesota Timberwolves,home,,,,,2.0,0.586,0.646,1.0,False
+2026-04-25,nba,NBA,Portland Trail Blazers,San Antonio Spurs,108,120,San Antonio Spurs,away,,,,,2.0,0.519,0.746,1.0,False
+2026-04-25,nba,NBA,Houston Rockets,Los Angeles Lakers,108,112,Los Angeles Lakers,away,,,,,2.0,0.654,0.639,1.0,False
+2026-04-25,nba,NBA,Phoenix Suns,Oklahoma City Thunder,109,121,Oklahoma City Thunder,away,,,,,2.0,0.553,0.782,1.0,False
+2026-04-25,nba,NBA,Atlanta Hawks,New York Knicks,98,114,New York Knicks,away,,,,,2.0,0.576,0.629,1.0,False
+2026-04-25,nba,NBA,Orlando Magic,Detroit Pistons,113,105,Orlando Magic,home,,,,,2.0,0.53,0.74,1.0,False
+2026-04-24,nba,NBA,Minnesota Timberwolves,Denver Nuggets,113,96,Minnesota Timberwolves,home,,,,,2.0,0.586,0.674,1.0,False
+2026-04-24,nba,NBA,Toronto Raptors,Cleveland Cavaliers,126,104,Toronto Raptors,home,,,,,2.0,0.546,0.653,1.0,False
+2026-04-24,soccer,Serie A,Atalanta,Napoli,0,3,Napoli,away,0.647,0.352,1.21,1.79,2.0,,,,
+2026-04-24,nba,NBA,Philadelphia 76ers,Boston Celtics,100,108,Boston Celtics,away,,,,,2.0,0.565,0.677,1.0,False
+2026-04-23,nba,NBA,Oklahoma City Thunder,Phoenix Suns,120,107,Oklahoma City Thunder,home,,,,,2.0,0.773,0.553,1.0,False
+2026-04-23,soccer,La Liga,Villarreal,Barcelona,0,2,Barcelona,away,0.685,0.598,1.31,1.76,2.0,,,,
+2026-04-23,soccer,Serie A,Atalanta,Roma,0,2,Roma,away,0.451,0.488,1.53,1.2,2.0,,,,
+2026-04-23,nba,NBA,Atlanta Hawks,New York Knicks,109,108,Atlanta Hawks,home,,,,,2.0,0.547,0.663,1.0,False
+2026-04-23,soccer,Europa League,West Ham,Leverkusen,1,1,draw,draw,0.713,0.655,2.13,0.78,2.0,,,,
+2026-04-22,nba,NBA,Los Angeles Lakers,Houston Rockets,101,94,Los Angeles Lakers,home,,,,,2.0,0.656,0.642,1.0,False
+2026-04-22,nba,NBA,Detroit Pistons,Orlando Magic,98,83,Detroit Pistons,home,,,,,2.0,0.747,0.538,1.0,False
+2026-04-22,nba,NBA,San Antonio Spurs,Portland Trail Blazers,103,106,Portland Trail Blazers,away,,,,,2.0,0.757,0.506,1.0,False
+2026-04-21,nba,NBA,Denver Nuggets,Minnesota Timberwolves,114,119,Minnesota Timberwolves,away,,,,,2.0,0.685,0.579,1.0,False
+2026-04-21,nba,NBA,New York Knicks,Atlanta Hawks,106,107,Atlanta Hawks,away,,,,,2.0,0.64,0.539,1.0,False
+2026-04-21,nba,NBA,Boston Celtics,Philadelphia 76ers,97,111,Philadelphia 76ers,away,,,,,2.0,0.684,0.53,1.0,False
+2026-04-20,soccer,Premier League,Man United,Arsenal,3,3,draw,draw,0.57,0.562,1.6,1.12,2.0,,,,
+2026-04-20,soccer,Champions League,Shakhtar,Ajax,0,2,Ajax,away,0.601,0.525,2.12,0.97,2.0,,,,
+2026-04-20,soccer,Premier League,Aston Villa,Tottenham,1,1,draw,draw,0.644,0.564,1.45,0.73,2.0,,,,
+2026-04-20,soccer,La Liga,Real Sociedad,Atletico,3,1,Real Sociedad,home,0.701,0.368,1.13,1.08,2.0,,,,
+2026-04-20,soccer,Champions League,Porto,Ajax,0,1,Ajax,away,0.533,0.553,1.36,1.16,2.0,,,,
+2026-04-20,nba,NBA,Cleveland Cavaliers,Toronto Raptors,115,105,Cleveland Cavaliers,home,,,,,2.0,0.63,0.555,1.0,False
+2026-04-20,nba,NBA,San Antonio Spurs,Portland Trail Blazers,111,98,San Antonio Spurs,home,,,,,2.0,0.76,0.503,1.0,False
+2026-04-19,soccer,Serie A,Inter,Fiorentina,2,2,draw,draw,0.51,0.603,1.17,1.66,2.0,,,,
+2026-04-19,nba,NBA,Los Angeles Lakers,Houston Rockets,107,98,Los Angeles Lakers,home,,,,,2.0,0.632,0.625,1.0,False
+2026-04-19,soccer,Premier League,Newcastle,Tottenham,1,1,draw,draw,0.683,0.388,0.83,0.91,2.0,,,,
+2026-04-19,nba,NBA,Detroit Pistons,Orlando Magic,101,112,Orlando Magic,away,,,,,2.0,0.724,0.558,1.0,False
+2026-04-19,nba,NBA,Oklahoma City Thunder,Phoenix Suns,119,84,Oklahoma City Thunder,home,,,,,2.0,0.782,0.57,1.0,False
+2026-04-19,nba,NBA,Boston Celtics,Philadelphia 76ers,123,91,Boston Celtics,home,,,,,2.0,0.669,0.556,1.0,False
+2026-04-18,soccer,La Liga,Barcelona,Real Sociedad,1,1,Real Sociedad,away,0.501,0.541,2.15,1.79,2.0,,,,
+2026-04-18,soccer,Europa League,Fenerbahce,Marseille,1,1,draw,draw,0.604,0.453,0.83,1.43,2.0,,,,
+2026-04-18,nba,NBA,Cleveland Cavaliers,Toronto Raptors,126,113,Cleveland Cavaliers,home,,,,,2.0,0.617,0.567,1.0,False
+2026-04-18,soccer,Champions League,Salzburg,Shakhtar,2,2,draw,draw,0.543,0.505,1.56,1.25,2.0,,,,
+2026-04-18,nba,NBA,New York Knicks,Atlanta Hawks,113,102,New York Knicks,home,,,,,2.0,0.673,0.553,1.0,False
+2026-04-18,nba,NBA,Phoenix Suns,Golden State Warriors,111,96,Phoenix Suns,home,,,,,2.0,0.529,0.468,1.0,True
+2026-04-18,nba,NBA,Denver Nuggets,Minnesota Timberwolves,116,105,Denver Nuggets,home,,,,,2.0,0.665,0.614,1.0,False
+2026-04-17,soccer,La Liga,Real Sociedad,Valencia,1,1,Valencia,away,0.61,0.604,2.32,1.97,2.0,,,,
+2026-04-17,soccer,Serie A,Napoli,Roma,3,0,Napoli,home,0.554,0.353,1.69,0.9,2.0,,,,
+2026-04-17,nba,NBA,Orlando Magic,Charlotte Hornets,121,90,Orlando Magic,home,,,,,2.0,0.566,0.544,1.0,True
+2026-04-16,soccer,La Liga,Barcelona,Sevilla,2,2,draw,draw,0.661,0.423,2.3,1.79,2.0,,,,
+2026-04-16,nba,NBA,LA Clippers,Golden State Warriors,121,126,Golden State Warriors,away,,,,,2.0,0.51,0.448,1.0,True
+2026-04-16,soccer,Europa League,West Ham,Rangers,1,1,draw,draw,0.615,0.456,2.23,1.59,2.0,,,,
+2026-04-15,soccer,Champions League,Dortmund,Porto,3,1,Dortmund,home,0.61,0.52,1.29,0.88,2.0,,,,
+2026-04-15,soccer,La Liga,Valencia,Betis,0,2,Betis,away,0.504,0.489,1.66,1.8,2.0,,,,
+2026-04-15,nba,NBA,Phoenix Suns,Portland Trail Blazers,110,114,Portland Trail Blazers,away,,,,,2.0,0.546,0.512,1.0,True
+2026-04-15,soccer,La Liga,Sevilla,Barcelona,1,0,Sevilla,home,0.434,0.642,1.96,1.44,2.0,,,,
+2026-04-15,soccer,Premier League,Man City,Aston Villa,1,1,draw,draw,0.552,0.37,1.56,1.14,2.0,,,,
+2026-04-15,nba,NBA,Philadelphia 76ers,Orlando Magic,109,97,Philadelphia 76ers,home,,,,,2.0,0.537,0.567,1.0,True
+2026-04-15,soccer,Premier League,Man City,Arsenal,2,0,Man City,home,0.515,0.534,2.31,1.51,2.0,,,,
+2026-04-14,soccer,Premier League,Man United,Chelsea,0,1,Chelsea,away,0.596,0.642,2.34,1.61,2.0,,,,
+2026-04-14,nba,NBA,Charlotte Hornets,Miami Heat,127,126,Charlotte Hornets,home,,,,,2.0,0.517,0.511,0.99,True
+2026-04-14,soccer,Serie A,Juventus,AC Milan,2,2,draw,draw,0.576,0.666,1.65,1.71,2.0,,,,
+2026-04-13,nba,NBA,San Antonio Spurs,Denver Nuggets,118,128,Denver Nuggets,away,,,,,2.0,0.773,0.659,0.99,False
+2026-04-13,nba,NBA,LA Clippers,Golden State Warriors,115,110,LA Clippers,home,,,,,2.0,0.495,0.452,0.99,False
+2026-04-13,nba,NBA,Portland Trail Blazers,Sacramento Kings,122,110,Portland Trail Blazers,home,,,,,2.0,0.507,0.263,0.99,False
+2026-04-13,soccer,Premier League,Newcastle,Liverpool,0,3,Liverpool,away,0.649,0.38,1.84,1.51,2.0,,,,
+2026-04-13,nba,NBA,Dallas Mavericks,Chicago Bulls,149,128,Dallas Mavericks,home,,,,,2.0,0.314,0.399,0.99,False
+2026-04-13,nba,NBA,Houston Rockets,Memphis Grizzlies,132,101,Houston Rockets,home,,,,,2.0,0.637,0.298,0.99,False
+2026-04-13,nba,NBA,Oklahoma City Thunder,Phoenix Suns,103,135,Phoenix Suns,away,,,,,2.0,0.786,0.522,0.99,False
+2026-04-13,nba,NBA,Los Angeles Lakers,Utah Jazz,131,107,Los Angeles Lakers,home,,,,,2.0,0.649,0.265,0.99,False
+2026-04-13,nba,NBA,Minnesota Timberwolves,New Orleans Pelicans,132,126,Minnesota Timberwolves,home,,,,,2.0,0.585,0.317,0.99,False
+2026-04-12,nba,NBA,Philadelphia 76ers,Milwaukee Bucks,126,106,Philadelphia 76ers,home,,,,,2.0,0.523,0.397,0.98,False
+2026-04-12,nba,NBA,New York Knicks,Charlotte Hornets,96,110,Charlotte Hornets,away,,,,,2.0,0.637,0.505,0.98,False
+2026-04-12,nba,NBA,Miami Heat,Atlanta Hawks,143,117,Miami Heat,home,,,,,2.0,0.521,0.6,0.98,False
+2026-04-12,nba,NBA,Toronto Raptors,Brooklyn Nets,136,101,Toronto Raptors,home,,,,,2.0,0.536,0.269,0.98,False
+2026-04-12,nba,NBA,Boston Celtics,Orlando Magic,113,108,Boston Celtics,home,,,,,2.0,0.657,0.579,0.98,False
+2026-04-12,soccer,Serie A,Roma,Juventus,2,2,draw,draw,0.401,0.571,1.78,1.75,2.0,,,,
+2026-04-12,nba,NBA,Indiana Pacers,Detroit Pistons,121,133,Detroit Pistons,away,,,,,2.0,0.25,0.732,0.98,False
+2026-04-12,nba,NBA,Cleveland Cavaliers,Washington Wizards,130,117,Cleveland Cavaliers,home,,,,,2.0,0.609,0.25,0.98,False
+2026-04-11,nba,NBA,San Antonio Spurs,Dallas Mavericks,139,120,San Antonio Spurs,home,,,,,2.0,0.752,0.327,0.98,False
+2026-04-11,nba,NBA,Los Angeles Lakers,Phoenix Suns,101,73,Los Angeles Lakers,home,,,,,2.0,0.633,0.526,0.98,False
+2026-04-11,nba,NBA,Sacramento Kings,Golden State Warriors,124,118,Sacramento Kings,home,,,,,2.0,0.25,0.499,0.98,False
+2026-04-11,nba,NBA,Chicago Bulls,Orlando Magic,103,127,Orlando Magic,away,,,,,2.0,0.371,0.531,0.98,False
+2026-04-11,soccer,Serie A,Napoli,AC Milan,3,0,Napoli,home,0.417,0.557,2.08,1.32,2.0,,,,
+2026-04-11,nba,NBA,Portland Trail Blazers,LA Clippers,116,97,Portland Trail Blazers,home,,,,,2.0,0.512,0.521,0.98,False
+2026-04-11,nba,NBA,Denver Nuggets,Oklahoma City Thunder,127,107,Denver Nuggets,home,,,,,2.0,0.668,0.803,0.98,False
+2026-04-11,nba,NBA,Utah Jazz,Memphis Grizzlies,147,101,Utah Jazz,home,,,,,2.0,0.285,0.325,0.98,False
+2026-04-11,nba,NBA,Milwaukee Bucks,Brooklyn Nets,125,108,Milwaukee Bucks,home,,,,,2.0,0.4,0.25,0.98,False
+2026-04-11,nba,NBA,Houston Rockets,Minnesota Timberwolves,132,136,Minnesota Timberwolves,away,,,,,2.0,0.602,0.581,0.98,False
+2026-04-11,soccer,Champions League,Bayern,Salzburg,1,1,Salzburg,away,0.41,0.422,1.76,0.62,2.0,,,,
+2026-04-11,soccer,Champions League,Dortmund,PSG,3,0,Dortmund,home,0.712,0.505,2.43,1.63,2.0,,,,
+2026-04-10,nba,NBA,Washington Wizards,Miami Heat,117,140,Miami Heat,away,,,,,2.0,0.25,0.501,0.97,False
+2026-04-10,nba,NBA,Charlotte Hornets,Detroit Pistons,100,118,Detroit Pistons,away,,,,,2.0,0.533,0.687,0.97,False
+2026-04-10,nba,NBA,Atlanta Hawks,Cleveland Cavaliers,124,102,Atlanta Hawks,home,,,,,2.0,0.533,0.637,0.97,False
+2026-04-10,nba,NBA,Indiana Pacers,Philadelphia 76ers,94,105,Philadelphia 76ers,away,,,,,2.0,0.269,0.536,0.97,False
+2026-04-10,nba,NBA,Boston Celtics,New Orleans Pelicans,144,118,Boston Celtics,home,,,,,2.0,0.659,0.347,0.97,False
+2026-04-10,nba,NBA,Houston Rockets,Philadelphia 76ers,113,102,Houston Rockets,home,,,,,2.0,0.634,0.553,0.97,False
+2026-04-10,nba,NBA,New York Knicks,Toronto Raptors,112,95,New York Knicks,home,,,,,2.0,0.652,0.59,0.97,False
+2026-04-10,nba,NBA,Golden State Warriors,Los Angeles Lakers,103,119,Los Angeles Lakers,away,,,,,2.0,0.472,0.614,0.97,False
+2026-04-09,nba,NBA,Brooklyn Nets,Indiana Pacers,94,123,Indiana Pacers,away,,,,,2.0,0.25,0.25,0.97,False
+2026-04-09,nba,NBA,Phoenix Suns,Dallas Mavericks,112,107,Phoenix Suns,home,,,,,2.0,0.521,0.329,0.97,False
+2026-04-09,nba,NBA,LA Clippers,Oklahoma City Thunder,110,128,Oklahoma City Thunder,away,,,,,2.0,0.522,0.786,0.97,False
+2026-04-09,nba,NBA,San Antonio Spurs,Portland Trail Blazers,112,101,San Antonio Spurs,home,,,,,2.0,0.747,0.514,0.97,False
+2026-04-09,nba,NBA,Denver Nuggets,Memphis Grizzlies,136,119,Denver Nuggets,home,,,,,2.0,0.646,0.324,0.97,False
+2026-04-09,nba,NBA,Toronto Raptors,Miami Heat,128,114,Toronto Raptors,home,,,,,2.0,0.547,0.55,0.97,False
+2026-04-09,nba,NBA,Washington Wizards,Chicago Bulls,108,119,Chicago Bulls,away,,,,,2.0,0.25,0.381,0.97,False
+2026-04-09,nba,NBA,New York Knicks,Boston Celtics,112,106,New York Knicks,home,,,,,2.0,0.642,0.682,0.97,False
+2026-04-08,nba,NBA,Cleveland Cavaliers,Atlanta Hawks,122,116,Cleveland Cavaliers,home,,,,,2.0,0.635,0.579,0.96,False
+2026-04-08,nba,NBA,New Orleans Pelicans,Utah Jazz,156,137,New Orleans Pelicans,home,,,,,2.0,0.348,0.268,0.96,False
+2026-04-08,nba,NBA,Golden State Warriors,Sacramento Kings,110,105,Golden State Warriors,home,,,,,2.0,0.478,0.279,0.96,False
+2026-04-08,nba,NBA,Los Angeles Lakers,Oklahoma City Thunder,87,123,Oklahoma City Thunder,away,,,,,2.0,0.65,0.776,0.96,False
+2026-04-08,nba,NBA,Orlando Magic,Minnesota Timberwolves,132,120,Orlando Magic,home,,,,,2.0,0.541,0.591,0.96,False
+2026-04-08,nba,NBA,Detroit Pistons,Milwaukee Bucks,137,111,Detroit Pistons,home,,,,,2.0,0.711,0.429,0.96,False
+2026-04-08,soccer,Premier League,Chelsea,Aston Villa,0,2,Aston Villa,away,0.524,0.492,2.31,1.84,2.0,,,,
+2026-04-08,nba,NBA,LA Clippers,Dallas Mavericks,116,103,LA Clippers,home,,,,,2.0,0.537,0.324,0.96,False
+2026-04-08,nba,NBA,Phoenix Suns,Houston Rockets,105,119,Houston Rockets,away,,,,,2.0,0.557,0.627,0.96,False
+2026-04-08,soccer,Europa League,Sporting,Brighton,1,0,Sporting,home,0.491,0.494,0.86,1.45,2.0,,,,
+2026-04-08,soccer,Europa League,Marseille,Roma,1,1,Marseille,home,0.437,0.584,1.87,0.61,2.0,,,,
+2026-04-08,soccer,Premier League,Arsenal,Tottenham,2,2,draw,draw,0.442,0.416,1.54,1.88,2.0,,,,
+2026-04-08,soccer,Europa League,Leverkusen,Fenerbahce,1,1,draw,draw,0.639,0.527,1.22,1.46,2.0,,,,
+2026-04-08,nba,NBA,Boston Celtics,Charlotte Hornets,113,102,Boston Celtics,home,,,,,2.0,0.669,0.546,0.96,False
+2026-04-07,nba,NBA,Toronto Raptors,Miami Heat,121,95,Toronto Raptors,home,,,,,2.0,0.532,0.546,0.95,False
+2026-04-07,nba,NBA,Brooklyn Nets,Milwaukee Bucks,96,90,Brooklyn Nets,home,,,,,2.0,0.264,0.396,0.95,False
+2026-04-07,nba,NBA,Denver Nuggets,Portland Trail Blazers,137,132,Denver Nuggets,home,,,,,2.0,0.603,0.515,0.95,False
+2026-04-07,nba,NBA,Indiana Pacers,Minnesota Timberwolves,104,124,Minnesota Timberwolves,away,,,,,2.0,0.25,0.6,0.95,False
+2026-04-07,nba,NBA,Washington Wizards,Chicago Bulls,98,129,Chicago Bulls,away,,,,,2.0,0.25,0.361,0.95,False
+2026-04-07,nba,NBA,Memphis Grizzlies,Cleveland Cavaliers,126,142,Cleveland Cavaliers,away,,,,,2.0,0.326,0.62,0.95,False
+2026-04-07,soccer,Serie A,Roma,Atalanta,0,2,Atalanta,away,0.417,0.493,1.86,1.55,2.0,,,,
+2026-04-07,soccer,La Liga,Real Madrid,Atletico,2,0,Real Madrid,home,0.458,0.58,1.41,1.45,2.0,,,,
+2026-04-07,nba,NBA,San Antonio Spurs,Philadelphia 76ers,115,102,San Antonio Spurs,home,,,,,2.0,0.755,0.552,0.95,False
+2026-04-06,soccer,Premier League,Man City,Man United,2,2,draw,draw,0.506,0.609,1.54,1.33,2.0,,,,
+2026-04-06,nba,NBA,Orlando Magic,Detroit Pistons,123,107,Orlando Magic,home,,,,,2.0,0.545,0.719,0.95,False
+2026-04-06,nba,NBA,Atlanta Hawks,New York Knicks,105,108,New York Knicks,away,,,,,2.0,0.565,0.623,0.95,False
+2026-04-06,nba,NBA,Golden State Warriors,Houston Rockets,116,117,Houston Rockets,away,,,,,2.0,0.473,0.628,0.95,False
+2026-04-06,nba,NBA,Sacramento Kings,LA Clippers,109,138,LA Clippers,away,,,,,2.0,0.302,0.494,0.95,False
+2026-04-05,nba,NBA,Boston Celtics,Toronto Raptors,115,101,Boston Celtics,home,,,,,2.0,0.654,0.569,0.94,False
+2026-04-05,nba,NBA,Brooklyn Nets,Washington Wizards,121,115,Brooklyn Nets,home,,,,,2.0,0.25,0.25,0.94,False
+2026-04-05,nba,NBA,Chicago Bulls,Phoenix Suns,110,120,Phoenix Suns,away,,,,,2.0,0.385,0.544,0.94,False
+2026-04-05,nba,NBA,Milwaukee Bucks,Memphis Grizzlies,131,115,Milwaukee Bucks,home,,,,,2.0,0.393,0.339,0.94,False
+2026-04-05,nba,NBA,Cleveland Cavaliers,Indiana Pacers,117,108,Cleveland Cavaliers,home,,,,,2.0,0.645,0.25,0.94,False
+2026-04-05,nba,NBA,Minnesota Timberwolves,Charlotte Hornets,108,122,Charlotte Hornets,away,,,,,2.0,0.581,0.525,0.94,False
+2026-04-05,nba,NBA,New Orleans Pelicans,Orlando Magic,108,112,Orlando Magic,away,,,,,2.0,0.332,0.525,0.94,False
+2026-04-05,nba,NBA,Oklahoma City Thunder,Utah Jazz,146,111,Oklahoma City Thunder,home,,,,,2.0,0.764,0.28,0.94,False
+2026-04-05,soccer,Serie A,Atalanta,Juventus,0,2,Juventus,away,0.689,0.664,1.0,0.75,2.0,,,,
+2026-04-05,nba,NBA,Dallas Mavericks,Los Angeles Lakers,134,128,Dallas Mavericks,home,,,,,2.0,0.348,0.673,0.94,False
+2026-04-04,nba,NBA,Miami Heat,Washington Wizards,152,136,Miami Heat,home,,,,,2.0,0.558,0.261,0.94,False
+2026-04-04,nba,NBA,Houston Rockets,Utah Jazz,140,106,Houston Rockets,home,,,,,2.0,0.627,0.269,0.94,False
+2026-04-04,soccer,Champions League,Benfica,Salzburg,4,0,Benfica,home,0.663,0.404,2.45,1.78,2.0,,,,
+2026-04-04,nba,NBA,Sacramento Kings,New Orleans Pelicans,117,113,Sacramento Kings,home,,,,,2.0,0.267,0.328,0.94,False
+2026-04-04,nba,NBA,Denver Nuggets,San Antonio Spurs,136,134,Denver Nuggets,home,,,,,2.0,0.627,0.752,0.94,False
+2026-04-04,nba,NBA,Milwaukee Bucks,Boston Celtics,101,133,Boston Celtics,away,,,,,2.0,0.393,0.639,0.94,False
+2026-04-04,nba,NBA,Memphis Grizzlies,Toronto Raptors,96,128,Toronto Raptors,away,,,,,2.0,0.308,0.55,0.94,False
+2026-04-04,nba,NBA,Dallas Mavericks,Orlando Magic,127,138,Orlando Magic,away,,,,,2.0,0.343,0.549,0.94,False
+2026-04-04,nba,NBA,Philadelphia 76ers,Detroit Pistons,93,116,Detroit Pistons,away,,,,,2.0,0.552,0.719,0.94,False
+2026-04-03,nba,NBA,New York Knicks,Chicago Bulls,136,96,New York Knicks,home,,,,,2.0,0.632,0.384,0.93,False
+2026-04-03,nba,NBA,Brooklyn Nets,Atlanta Hawks,107,141,Atlanta Hawks,away,,,,,2.0,0.25,0.551,0.93,False
+2026-04-03,nba,NBA,Philadelphia 76ers,Minnesota Timberwolves,115,103,Philadelphia 76ers,home,,,,,2.0,0.563,0.601,0.93,False
+2026-04-03,nba,NBA,Charlotte Hornets,Indiana Pacers,129,108,Charlotte Hornets,home,,,,,2.0,0.53,0.276,0.93,False
+2026-04-03,soccer,La Liga,Atletico,Real Sociedad,0,3,Real Sociedad,away,0.627,0.403,2.08,1.26,2.0,,,,
+2026-04-03,soccer,Serie A,Inter,AC Milan,0,1,AC Milan,away,0.58,0.395,1.88,1.02,2.0,,,,
+2026-04-03,nba,NBA,Oklahoma City Thunder,Los Angeles Lakers,139,96,Oklahoma City Thunder,home,,,,,2.0,0.791,0.642,0.93,False
+2026-04-03,nba,NBA,Golden State Warriors,Cleveland Cavaliers,111,118,Cleveland Cavaliers,away,,,,,2.0,0.491,0.593,0.93,False
+2026-04-03,nba,NBA,Portland Trail Blazers,New Orleans Pelicans,118,106,Portland Trail Blazers,home,,,,,2.0,0.488,0.343,0.93,False
+2026-04-03,nba,NBA,LA Clippers,San Antonio Spurs,99,118,San Antonio Spurs,away,,,,,2.0,0.522,0.741,0.93,False
+2026-04-03,soccer,La Liga,Real Sociedad,Sevilla,0,1,Sevilla,away,0.448,0.498,1.62,1.33,2.0,,,,
+2026-04-03,soccer,Europa League,Rangers,Roma,0,1,Roma,away,0.693,0.467,1.0,1.59,2.0,,,,
+2026-04-02,soccer,Serie A,Lazio,Fiorentina,3,3,draw,draw,0.683,0.383,2.03,1.54,2.0,,,,
+2026-04-02,nba,NBA,Golden State Warriors,San Antonio Spurs,113,127,San Antonio Spurs,away,,,,,2.0,0.482,0.74,0.93,False
+2026-04-02,nba,NBA,Utah Jazz,Denver Nuggets,117,130,Denver Nuggets,away,,,,,2.0,0.304,0.63,0.93,False
+2026-04-02,nba,NBA,Houston Rockets,Milwaukee Bucks,119,113,Houston Rockets,home,,,,,2.0,0.61,0.418,0.93,False
+2026-04-02,nba,NBA,Chicago Bulls,Indiana Pacers,126,145,Indiana Pacers,away,,,,,2.0,0.384,0.25,0.93,False
+2026-04-02,nba,NBA,Memphis Grizzlies,New York Knicks,119,130,New York Knicks,away,,,,,2.0,0.351,0.608,0.93,False
+2026-04-02,soccer,Europa League,Brighton,Marseille,1,1,draw,draw,0.419,0.526,1.13,1.24,2.0,,,,
+2026-04-02,nba,NBA,Charlotte Hornets,Phoenix Suns,127,107,Charlotte Hornets,home,,,,,2.0,0.549,0.559,0.93,False
+2026-04-02,nba,NBA,Detroit Pistons,Minnesota Timberwolves,113,108,Detroit Pistons,home,,,,,2.0,0.69,0.611,0.93,False
+2026-04-02,nba,NBA,Toronto Raptors,Sacramento Kings,115,123,Sacramento Kings,away,,,,,2.0,0.554,0.273,0.93,False
+2026-04-01,nba,NBA,LA Clippers,Portland Trail Blazers,104,114,Portland Trail Blazers,away,,,,,2.0,0.508,0.518,0.92,False
+2026-04-01,soccer,Serie A,Juventus,Inter,0,2,Inter,away,0.509,0.507,2.21,1.92,2.0,,,,
+2026-04-01,nba,NBA,Miami Heat,Boston Celtics,129,147,Boston Celtics,away,,,,,2.0,0.543,0.67,0.92,False
+2026-04-01,nba,NBA,Orlando Magic,Atlanta Hawks,101,130,Atlanta Hawks,away,,,,,2.0,0.517,0.577,0.92,False
+2026-04-01,nba,NBA,Los Angeles Lakers,Cleveland Cavaliers,127,113,Los Angeles Lakers,home,,,,,2.0,0.667,0.636,0.92,False
+2026-04-01,soccer,La Liga,Atletico,Villarreal,0,3,Villarreal,away,0.424,0.37,2.27,1.69,2.0,,,,
+2026-04-01,nba,NBA,Milwaukee Bucks,Dallas Mavericks,123,99,Milwaukee Bucks,home,,,,,2.0,0.377,0.333,0.92,False
+2026-04-01,nba,NBA,Houston Rockets,New York Knicks,111,94,Houston Rockets,home,,,,,2.0,0.599,0.608,0.92,False
+2026-04-01,nba,NBA,Detroit Pistons,Toronto Raptors,127,116,Detroit Pistons,home,,,,,2.0,0.703,0.552,0.92,False
+2026-04-01,nba,NBA,Washington Wizards,Philadelphia 76ers,131,153,Philadelphia 76ers,away,,,,,2.0,0.266,0.525,0.92,False
+2026-03-31,nba,NBA,Memphis Grizzlies,Phoenix Suns,105,131,Phoenix Suns,away,,,,,2.0,0.342,0.571,0.92,False
+2026-03-31,nba,NBA,San Antonio Spurs,Chicago Bulls,129,114,San Antonio Spurs,home,,,,,2.0,0.734,0.411,0.92,False
+2026-03-31,nba,NBA,Dallas Mavericks,Minnesota Timberwolves,94,124,Minnesota Timberwolves,away,,,,,2.0,0.342,0.604,0.92,False
+2026-03-31,nba,NBA,Brooklyn Nets,Charlotte Hornets,86,117,Charlotte Hornets,away,,,,,2.0,0.26,0.517,0.92,False
+2026-03-31,nba,NBA,Utah Jazz,Cleveland Cavaliers,113,122,Cleveland Cavaliers,away,,,,,2.0,0.296,0.591,0.92,False
+2026-03-31,nba,NBA,Oklahoma City Thunder,Detroit Pistons,114,110,Oklahoma City Thunder,home,,,,,2.0,0.754,0.702,0.92,False
+2026-03-31,nba,NBA,Los Angeles Lakers,Washington Wizards,120,101,Los Angeles Lakers,home,,,,,2.0,0.642,0.267,0.92,False
+2026-03-31,nba,NBA,Orlando Magic,Phoenix Suns,115,111,Orlando Magic,home,,,,,2.0,0.509,0.552,0.92,False
+2026-03-30,nba,NBA,Miami Heat,Philadelphia 76ers,119,109,Miami Heat,home,,,,,2.0,0.507,0.56,0.91,False
+2026-03-30,nba,NBA,Atlanta Hawks,Boston Celtics,112,102,Atlanta Hawks,home,,,,,2.0,0.565,0.665,0.91,False
+2026-03-30,nba,NBA,Denver Nuggets,Golden State Warriors,116,93,Denver Nuggets,home,,,,,2.0,0.62,0.473,0.91,False
+2026-03-29,nba,NBA,Oklahoma City Thunder,New York Knicks,111,100,Oklahoma City Thunder,home,,,,,2.0,0.777,0.628,0.9,False
+2026-03-29,nba,NBA,New Orleans Pelicans,Houston Rockets,102,134,Houston Rockets,away,,,,,2.0,0.335,0.573,0.9,False
+2026-03-29,nba,NBA,Portland Trail Blazers,Washington Wizards,123,88,Portland Trail Blazers,home,,,,,2.0,0.488,0.265,0.9,False
+2026-03-29,nba,NBA,Toronto Raptors,Orlando Magic,139,87,Toronto Raptors,home,,,,,2.0,0.575,0.527,0.9,False
+2026-03-29,nba,NBA,Memphis Grizzlies,Chicago Bulls,125,124,Memphis Grizzlies,home,,,,,2.0,0.336,0.445,0.9,False
+2026-03-29,nba,NBA,Phoenix Suns,Utah Jazz,134,109,Phoenix Suns,home,,,,,2.0,0.547,0.293,0.9,False
+2026-03-29,nba,NBA,Charlotte Hornets,Boston Celtics,99,114,Boston Celtics,away,,,,,2.0,0.538,0.661,0.9,False
+2026-03-29,nba,NBA,Brooklyn Nets,Sacramento Kings,116,99,Brooklyn Nets,home,,,,,2.0,0.25,0.262,0.9,False
+2026-03-29,nba,NBA,Indiana Pacers,Miami Heat,135,118,Indiana Pacers,home,,,,,2.0,0.274,0.544,0.9,False
+2026-03-29,nba,NBA,Milwaukee Bucks,LA Clippers,113,127,LA Clippers,away,,,,,2.0,0.392,0.504,0.9,False
+2026-03-28,nba,NBA,Golden State Warriors,Washington Wizards,131,126,Golden State Warriors,home,,,,,2.0,0.482,0.288,0.9,False
+2026-03-28,nba,NBA,Toronto Raptors,New Orleans Pelicans,119,106,Toronto Raptors,home,,,,,2.0,0.557,0.345,0.9,False
+2026-03-28,nba,NBA,Atlanta Hawks,Sacramento Kings,123,113,Atlanta Hawks,home,,,,,2.0,0.535,0.302,0.9,False
+2026-03-28,nba,NBA,Portland Trail Blazers,Dallas Mavericks,93,100,Dallas Mavericks,away,,,,,2.0,0.489,0.3,0.9,False
+2026-03-28,nba,NBA,Minnesota Timberwolves,Detroit Pistons,87,109,Detroit Pistons,away,,,,,2.0,0.603,0.68,0.9,False
+2026-03-28,nba,NBA,Denver Nuggets,Utah Jazz,135,129,Denver Nuggets,home,,,,,2.0,0.613,0.283,0.9,False
+2026-03-28,nba,NBA,Charlotte Hornets,Philadelphia 76ers,114,118,Philadelphia 76ers,away,,,,,2.0,0.522,0.559,0.9,False
+2026-03-28,nba,NBA,Oklahoma City Thunder,Chicago Bulls,131,113,Oklahoma City Thunder,home,,,,,2.0,0.76,0.37,0.9,False
+2026-03-28,nba,NBA,Memphis Grizzlies,Houston Rockets,109,119,Houston Rockets,away,,,,,2.0,0.348,0.579,0.9,False
+2026-03-28,nba,NBA,Milwaukee Bucks,San Antonio Spurs,95,127,San Antonio Spurs,away,,,,,2.0,0.405,0.726,0.9,False
+2026-03-28,nba,NBA,Los Angeles Lakers,Brooklyn Nets,116,99,Los Angeles Lakers,home,,,,,2.0,0.634,0.263,0.9,False
+2026-03-27,soccer,Serie A,Napoli,Lazio,2,0,Napoli,home,0.561,0.615,1.49,1.11,2.0,,,,
+2026-03-27,soccer,La Liga,Sevilla,Real Sociedad,2,0,Sevilla,home,0.404,0.617,1.54,1.31,2.0,,,,
+2026-03-27,soccer,Europa League,Sporting,Fenerbahce,1,1,draw,draw,0.606,0.375,1.76,1.34,2.0,,,,
+2026-03-27,soccer,Europa League,Sporting,Roma,4,0,Sporting,home,0.585,0.503,1.21,1.3,2.0,,,,
+2026-03-27,soccer,Europa League,West Ham,Rangers,2,2,draw,draw,0.565,0.65,1.62,1.2,2.0,,,,
+2026-03-27,nba,NBA,Indiana Pacers,LA Clippers,113,114,LA Clippers,away,,,,,2.0,0.25,0.531,0.89,False
+2026-03-27,nba,NBA,Boston Celtics,Atlanta Hawks,109,102,Boston Celtics,home,,,,,2.0,0.639,0.536,0.89,False
+2026-03-27,nba,NBA,Cleveland Cavaliers,Miami Heat,149,128,Cleveland Cavaliers,home,,,,,2.0,0.585,0.555,0.89,False
+2026-03-27,soccer,Europa League,Fenerbahce,Sporting,2,0,Fenerbahce,home,0.422,0.537,1.07,1.38,2.0,,,,
+2026-03-26,nba,NBA,Charlotte Hornets,New York Knicks,114,103,Charlotte Hornets,home,,,,,2.0,0.539,0.645,0.89,False
+2026-03-26,nba,NBA,Denver Nuggets,Dallas Mavericks,142,135,Denver Nuggets,home,,,,,2.0,0.617,0.294,0.89,False
+2026-03-26,soccer,Premier League,Man City,Tottenham,2,2,draw,draw,0.689,0.462,2.47,1.43,2.0,,,,
+2026-03-26,nba,NBA,Minnesota Timberwolves,Houston Rockets,110,108,Minnesota Timberwolves,home,,,,,2.0,0.604,0.591,0.89,False
+2026-03-26,nba,NBA,Golden State Warriors,Brooklyn Nets,109,106,Golden State Warriors,home,,,,,2.0,0.481,0.278,0.89,False
+2026-03-26,nba,NBA,LA Clippers,Toronto Raptors,119,94,LA Clippers,home,,,,,2.0,0.482,0.587,0.89,False
+2026-03-26,soccer,Premier League,Man United,Newcastle,3,3,draw,draw,0.493,0.391,1.44,1.62,2.0,,,,
+2026-03-26,nba,NBA,Portland Trail Blazers,Milwaukee Bucks,130,99,Portland Trail Blazers,home,,,,,2.0,0.508,0.419,0.89,False
+2026-03-26,nba,NBA,Utah Jazz,Washington Wizards,110,133,Washington Wizards,away,,,,,2.0,0.309,0.258,0.89,False
+2026-03-26,nba,NBA,Orlando Magic,Sacramento Kings,121,117,Orlando Magic,home,,,,,2.0,0.517,0.296,0.89,False
+2026-03-26,nba,NBA,Detroit Pistons,New Orleans Pelicans,129,108,Detroit Pistons,home,,,,,2.0,0.688,0.375,0.89,False
+2026-03-26,nba,NBA,Memphis Grizzlies,San Antonio Spurs,98,123,San Antonio Spurs,away,,,,,2.0,0.339,0.721,0.89,False
+2026-03-25,nba,NBA,Phoenix Suns,Denver Nuggets,123,125,Denver Nuggets,away,,,,,2.0,0.538,0.605,0.88,False
+2026-03-25,nba,NBA,Detroit Pistons,Atlanta Hawks,129,130,Atlanta Hawks,away,,,,,2.0,0.7,0.581,0.88,False
+2026-03-25,nba,NBA,Cleveland Cavaliers,Miami Heat,103,120,Miami Heat,away,,,,,2.0,0.608,0.511,0.88,False
+2026-03-25,nba,NBA,Boston Celtics,Oklahoma City Thunder,119,109,Boston Celtics,home,,,,,2.0,0.657,0.771,0.88,False
+2026-03-25,soccer,La Liga,Betis,Villarreal,2,2,draw,draw,0.634,0.356,1.57,1.13,2.0,,,,
+2026-03-25,soccer,La Liga,Real Sociedad,Sevilla,0,2,Sevilla,away,0.408,0.568,1.78,1.14,2.0,,,,
+2026-03-25,nba,NBA,Indiana Pacers,Los Angeles Lakers,130,137,Los Angeles Lakers,away,,,,,2.0,0.265,0.634,0.88,False
+2026-03-25,nba,NBA,Philadelphia 76ers,Chicago Bulls,157,137,Philadelphia 76ers,home,,,,,2.0,0.53,0.385,0.88,False
+2026-03-25,nba,NBA,Cleveland Cavaliers,Orlando Magic,136,131,Cleveland Cavaliers,home,,,,,2.0,0.585,0.521,0.88,False
+2026-03-25,soccer,Champions League,Benfica,Salzburg,1,0,Benfica,home,0.514,0.508,1.92,1.88,2.0,,,,
+2026-03-24,nba,NBA,LA Clippers,Milwaukee Bucks,129,96,LA Clippers,home,,,,,2.0,0.513,0.411,0.88,False
+2026-03-24,soccer,Europa League,Leverkusen,Rangers,1,1,Leverkusen,home,0.671,0.453,1.32,0.63,2.0,,,,
+2026-03-24,nba,NBA,Portland Trail Blazers,Brooklyn Nets,134,99,Portland Trail Blazers,home,,,,,2.0,0.47,0.266,0.88,False
+2026-03-24,nba,NBA,Dallas Mavericks,Golden State Warriors,131,137,Golden State Warriors,away,,,,,2.0,0.338,0.455,0.88,False
+2026-03-24,nba,NBA,New York Knicks,New Orleans Pelicans,121,116,New York Knicks,home,,,,,2.0,0.634,0.379,0.88,False
+2026-03-24,soccer,Premier League,Arsenal,Newcastle,1,2,Newcastle,away,0.608,0.6,0.8,1.61,2.0,,,,
+2026-03-24,nba,NBA,Charlotte Hornets,Sacramento Kings,134,90,Charlotte Hornets,home,,,,,2.0,0.523,0.326,0.88,False
+2026-03-24,nba,NBA,Chicago Bulls,Houston Rockets,132,124,Chicago Bulls,home,,,,,2.0,0.408,0.62,0.88,False
+2026-03-24,nba,NBA,Utah Jazz,Toronto Raptors,127,143,Toronto Raptors,away,,,,,2.0,0.331,0.546,0.88,False
+2026-03-23,nba,NBA,Atlanta Hawks,Memphis Grizzlies,146,107,Atlanta Hawks,home,,,,,2.0,0.534,0.395,0.87,False
+2026-03-23,nba,NBA,Miami Heat,San Antonio Spurs,111,136,San Antonio Spurs,away,,,,,2.0,0.534,0.705,0.87,False
+2026-03-23,nba,NBA,Philadelphia 76ers,Oklahoma City Thunder,103,123,Oklahoma City Thunder,away,,,,,2.0,0.564,0.749,0.87,False
+2026-03-23,soccer,Serie A,Roma,Inter,1,0,Roma,home,0.714,0.587,2.2,0.62,2.0,,,,
+2026-03-23,nba,NBA,Phoenix Suns,Toronto Raptors,120,98,Phoenix Suns,home,,,,,2.0,0.541,0.568,0.87,False
+2026-03-23,soccer,Serie A,Lazio,Atalanta,0,1,Atalanta,away,0.606,0.384,1.0,1.35,2.0,,,,
+2026-03-23,nba,NBA,Boston Celtics,Minnesota Timberwolves,92,102,Minnesota Timberwolves,away,,,,,2.0,0.645,0.584,0.87,False
+2026-03-23,nba,NBA,Detroit Pistons,Los Angeles Lakers,113,110,Detroit Pistons,home,,,,,2.0,0.725,0.638,0.87,False
+2026-03-23,nba,NBA,Orlando Magic,Indiana Pacers,126,128,Indiana Pacers,away,,,,,2.0,0.519,0.263,0.87,False
+2026-03-22,nba,NBA,Phoenix Suns,Milwaukee Bucks,105,108,Milwaukee Bucks,away,,,,,2.0,0.557,0.408,0.86,False
+2026-03-22,nba,NBA,Dallas Mavericks,LA Clippers,131,138,LA Clippers,away,,,,,2.0,0.386,0.524,0.86,False
+2026-03-22,soccer,Serie A,Napoli,Roma,3,0,Napoli,home,0.437,0.477,2.3,1.13,2.0,,,,
+2026-03-22,nba,NBA,Denver Nuggets,Portland Trail Blazers,128,112,Denver Nuggets,home,,,,,2.0,0.587,0.475,0.86,False
+2026-03-22,nba,NBA,Sacramento Kings,Brooklyn Nets,126,122,Sacramento Kings,home,,,,,2.0,0.261,0.279,0.86,False
+2026-03-22,nba,NBA,New York Knicks,Washington Wizards,145,113,New York Knicks,home,,,,,2.0,0.62,0.284,0.86,False
+2026-03-22,nba,NBA,Utah Jazz,Philadelphia 76ers,116,126,Philadelphia 76ers,away,,,,,2.0,0.311,0.572,0.86,False
+2026-03-22,nba,NBA,San Antonio Spurs,Indiana Pacers,134,119,San Antonio Spurs,home,,,,,2.0,0.689,0.25,0.86,False
+2026-03-22,soccer,Serie A,Inter,Roma,1,1,draw,draw,0.669,0.38,1.52,0.81,2.0,,,,
+2026-03-22,soccer,Premier League,Aston Villa,Tottenham,0,1,Tottenham,away,0.58,0.67,1.83,1.68,2.0,,,,
+2026-03-22,nba,NBA,Houston Rockets,Miami Heat,123,122,Houston Rockets,home,,,,,2.0,0.59,0.545,0.86,False
+2026-03-22,nba,NBA,Atlanta Hawks,Golden State Warriors,126,110,Atlanta Hawks,home,,,,,2.0,0.558,0.503,0.86,False
+2026-03-21,nba,NBA,Denver Nuggets,Toronto Raptors,121,115,Denver Nuggets,home,,,,,2.0,0.614,0.558,0.86,False
+2026-03-21,nba,NBA,Houston Rockets,Atlanta Hawks,117,95,Houston Rockets,home,,,,,2.0,0.574,0.526,0.86,False
+2026-03-21,nba,NBA,Memphis Grizzlies,Boston Celtics,112,117,Boston Celtics,away,,,,,2.0,0.399,0.614,0.86,False
+2026-03-21,nba,NBA,Minnesota Timberwolves,Portland Trail Blazers,104,108,Portland Trail Blazers,away,,,,,2.0,0.598,0.498,0.86,False
+2026-03-21,soccer,La Liga,Sevilla,Atletico,1,1,draw,draw,0.546,0.384,1.24,1.28,2.0,,,,
+2026-03-21,soccer,Europa League,Sporting,Roma,1,0,Sporting,home,0.531,0.481,2.25,1.12,2.0,,,,
+2026-03-21,soccer,Serie A,Inter,Lazio,3,3,draw,draw,0.427,0.647,1.54,0.6,2.0,,,,
+2026-03-21,soccer,La Liga,Atletico,Sevilla,3,1,Atletico,home,0.552,0.487,1.6,1.3,2.0,,,,
+2026-03-21,soccer,Serie A,Lazio,Fiorentina,2,0,Lazio,home,0.444,0.533,2.43,0.97,2.0,,,,
+2026-03-21,nba,NBA,New Orleans Pelicans,Cleveland Cavaliers,106,111,Cleveland Cavaliers,away,,,,,2.0,0.389,0.626,0.86,False
+2026-03-21,soccer,Champions League,Salzburg,Bayern,1,0,Salzburg,home,0.569,0.444,1.12,1.15,2.0,,,,
+2026-03-21,nba,NBA,Charlotte Hornets,Memphis Grizzlies,124,101,Charlotte Hornets,home,,,,,2.0,0.496,0.344,0.86,False
+2026-03-21,nba,NBA,Washington Wizards,Oklahoma City Thunder,111,132,Oklahoma City Thunder,away,,,,,2.0,0.279,0.737,0.86,False
+2026-03-21,soccer,Europa League,Roma,Fenerbahce,2,2,draw,draw,0.701,0.62,2.36,0.94,2.0,,,,
+2026-03-21,soccer,Champions League,Ajax,Bayern,1,1,draw,draw,0.573,0.603,2.03,1.27,2.0,,,,
+2026-03-21,nba,NBA,Orlando Magic,Los Angeles Lakers,104,105,Los Angeles Lakers,away,,,,,2.0,0.53,0.594,0.86,False
+2026-03-20,nba,NBA,Chicago Bulls,Cleveland Cavaliers,110,115,Cleveland Cavaliers,away,,,,,2.0,0.449,0.582,0.85,False
+2026-03-20,soccer,Europa League,Rangers,Sporting,0,2,Sporting,away,0.54,0.658,1.19,1.6,2.0,,,,
+2026-03-20,nba,NBA,Miami Heat,Los Angeles Lakers,126,134,Los Angeles Lakers,away,,,,,2.0,0.562,0.621,0.85,False
+2026-03-20,nba,NBA,San Antonio Spurs,Phoenix Suns,101,100,San Antonio Spurs,home,,,,,2.0,0.713,0.555,0.85,False
+2026-03-20,nba,NBA,Utah Jazz,Milwaukee Bucks,128,96,Utah Jazz,home,,,,,2.0,0.333,0.437,0.85,False
+2026-03-20,nba,NBA,Detroit Pistons,Golden State Warriors,115,101,Detroit Pistons,home,,,,,2.0,0.701,0.47,0.85,False
+2026-03-20,nba,NBA,Brooklyn Nets,New York Knicks,92,93,New York Knicks,away,,,,,2.0,0.29,0.638,0.85,False
+2026-03-20,soccer,Premier League,Aston Villa,Man City,2,0,Aston Villa,home,0.646,0.493,1.63,1.06,2.0,,,,
+2026-03-20,nba,NBA,Sacramento Kings,Philadelphia 76ers,118,139,Philadelphia 76ers,away,,,,,2.0,0.319,0.532,0.85,False
+2026-03-20,nba,NBA,New Orleans Pelicans,LA Clippers,105,99,New Orleans Pelicans,home,,,,,2.0,0.346,0.501,0.85,False
+2026-03-19,soccer,Champions League,Salzburg,Benfica,1,1,Benfica,away,0.495,0.403,1.69,1.06,2.0,,,,
+2026-03-19,nba,NBA,Washington Wizards,Detroit Pistons,95,117,Detroit Pistons,away,,,,,2.0,0.271,0.686,0.85,False
+2026-03-19,nba,NBA,Charlotte Hornets,Orlando Magic,130,111,Charlotte Hornets,home,,,,,2.0,0.51,0.547,0.85,False
+2026-03-19,soccer,Premier League,Tottenham,Arsenal,1,0,Tottenham,home,0.534,0.42,1.95,1.29,2.0,,,,
+2026-03-19,soccer,Europa League,Fenerbahce,West Ham,0,0,draw,draw,0.587,0.576,1.52,1.56,2.0,,,,
+2026-03-19,nba,NBA,Dallas Mavericks,Atlanta Hawks,120,135,Atlanta Hawks,away,,,,,2.0,0.381,0.555,0.85,False
+2026-03-19,nba,NBA,Memphis Grizzlies,Denver Nuggets,125,118,Memphis Grizzlies,home,,,,,2.0,0.355,0.597,0.85,False
+2026-03-19,soccer,Premier League,Man City,Aston Villa,0,0,draw,draw,0.681,0.374,1.8,1.21,2.0,,,,
+2026-03-19,nba,NBA,Houston Rockets,Los Angeles Lakers,116,124,Los Angeles Lakers,away,,,,,2.0,0.585,0.635,0.85,False
+2026-03-19,nba,NBA,Chicago Bulls,Toronto Raptors,109,139,Toronto Raptors,away,,,,,2.0,0.444,0.573,0.85,False
+2026-03-19,nba,NBA,New Orleans Pelicans,LA Clippers,124,109,New Orleans Pelicans,home,,,,,2.0,0.37,0.458,0.85,False
+2026-03-19,nba,NBA,Minnesota Timberwolves,Utah Jazz,147,111,Minnesota Timberwolves,home,,,,,2.0,0.585,0.332,0.85,False
+2026-03-18,soccer,Serie A,Lazio,Roma,0,2,Roma,away,0.536,0.61,1.38,1.34,2.0,,,,
+2026-03-18,nba,NBA,Milwaukee Bucks,Cleveland Cavaliers,116,123,Cleveland Cavaliers,away,,,,,2.0,0.403,0.602,0.84,False
+2026-03-18,nba,NBA,Indiana Pacers,Portland Trail Blazers,119,127,Portland Trail Blazers,away,,,,,2.0,0.262,0.505,0.84,False
+2026-03-18,nba,NBA,Boston Celtics,Golden State Warriors,120,99,Boston Celtics,home,,,,,2.0,0.626,0.496,0.84,False
+2026-03-18,nba,NBA,Brooklyn Nets,Oklahoma City Thunder,92,121,Oklahoma City Thunder,away,,,,,2.0,0.292,0.741,0.84,False
+2026-03-18,nba,NBA,Sacramento Kings,San Antonio Spurs,104,132,San Antonio Spurs,away,,,,,2.0,0.295,0.697,0.84,False
+2026-03-18,nba,NBA,Denver Nuggets,Philadelphia 76ers,124,96,Denver Nuggets,home,,,,,2.0,0.578,0.573,0.84,False
+2026-03-18,nba,NBA,Minnesota Timberwolves,Phoenix Suns,116,104,Minnesota Timberwolves,home,,,,,2.0,0.598,0.545,0.84,False
+2026-03-17,soccer,Champions League,PSG,Salzburg,2,0,PSG,home,0.587,0.417,2.43,1.72,2.0,,,,
+2026-03-17,nba,NBA,Orlando Magic,Oklahoma City Thunder,108,113,Oklahoma City Thunder,away,,,,,2.0,0.559,0.748,0.84,False
+2026-03-17,nba,NBA,Charlotte Hornets,Miami Heat,136,106,Charlotte Hornets,home,,,,,2.0,0.504,0.529,0.84,False
+2026-03-17,nba,NBA,New York Knicks,Indiana Pacers,136,110,New York Knicks,home,,,,,2.0,0.62,0.284,0.84,False
+2026-03-17,nba,NBA,Houston Rockets,Los Angeles Lakers,92,100,Los Angeles Lakers,away,,,,,2.0,0.612,0.616,0.84,False
+2026-03-17,nba,NBA,Chicago Bulls,Memphis Grizzlies,132,107,Chicago Bulls,home,,,,,2.0,0.409,0.378,0.84,False
+2026-03-17,nba,NBA,Washington Wizards,Detroit Pistons,117,130,Detroit Pistons,away,,,,,2.0,0.285,0.715,0.84,False
+2026-03-17,nba,NBA,New Orleans Pelicans,Dallas Mavericks,129,111,New Orleans Pelicans,home,,,,,2.0,0.367,0.341,0.84,False
+2026-03-17,nba,NBA,LA Clippers,San Antonio Spurs,115,119,San Antonio Spurs,away,,,,,2.0,0.512,0.735,0.84,False
+2026-03-16,soccer,Champions League,Benfica,Ajax,2,2,draw,draw,0.501,0.608,1.73,1.78,2.0,,,,
+2026-03-16,nba,NBA,Atlanta Hawks,Orlando Magic,124,112,Atlanta Hawks,home,,,,,2.0,0.565,0.54,0.83,False
+2026-03-16,nba,NBA,Washington Wizards,Golden State Warriors,117,125,Golden State Warriors,away,,,,,2.0,0.315,0.483,0.83,False
+2026-03-16,nba,NBA,New York Knicks,Golden State Warriors,110,107,New York Knicks,home,,,,,2.0,0.619,0.498,0.83,False
+2026-03-16,nba,NBA,Sacramento Kings,Utah Jazz,116,111,Sacramento Kings,home,,,,,2.0,0.277,0.344,0.83,False
+2026-03-16,nba,NBA,Brooklyn Nets,Portland Trail Blazers,95,114,Portland Trail Blazers,away,,,,,2.0,0.282,0.47,0.83,False
+2026-03-16,nba,NBA,Boston Celtics,Phoenix Suns,120,112,Boston Celtics,home,,,,,2.0,0.626,0.556,0.83,False
+2026-03-16,soccer,La Liga,Atletico,Villarreal,1,0,Atletico,home,0.503,0.621,1.15,1.53,2.0,,,,
+2026-03-16,soccer,Premier League,Newcastle,Tottenham,0,1,Tottenham,away,0.646,0.358,0.92,1.38,2.0,,,,
+2026-03-15,nba,NBA,Cleveland Cavaliers,Dallas Mavericks,120,130,Dallas Mavericks,away,,,,,2.0,0.615,0.372,0.82,False
+2026-03-15,nba,NBA,Oklahoma City Thunder,Minnesota Timberwolves,116,103,Oklahoma City Thunder,home,,,,,2.0,0.738,0.599,0.82,False
+2026-03-15,soccer,Premier League,Man United,Tottenham,2,2,draw,draw,0.451,0.51,1.05,1.57,2.0,,,,
+2026-03-15,nba,NBA,Philadelphia 76ers,Portland Trail Blazers,109,103,Philadelphia 76ers,home,,,,,2.0,0.517,0.492,0.82,False
+2026-03-15,nba,NBA,Toronto Raptors,Detroit Pistons,119,108,Toronto Raptors,home,,,,,2.0,0.559,0.684,0.82,False
+2026-03-15,nba,NBA,Miami Heat,Orlando Magic,117,121,Orlando Magic,away,,,,,2.0,0.526,0.551,0.82,False
+2026-03-15,nba,NBA,Milwaukee Bucks,Indiana Pacers,134,123,Milwaukee Bucks,home,,,,,2.0,0.413,0.25,0.82,False
+2026-03-15,nba,NBA,LA Clippers,Sacramento Kings,109,118,Sacramento Kings,away,,,,,2.0,0.536,0.315,0.82,False
+2026-03-15,nba,NBA,Los Angeles Lakers,Denver Nuggets,127,125,Los Angeles Lakers,home,,,,,2.0,0.619,0.583,0.82,False
+2026-03-14,nba,NBA,Philadelphia 76ers,Brooklyn Nets,104,97,Philadelphia 76ers,home,,,,,2.0,0.544,0.312,0.82,False
+2026-03-14,soccer,Europa League,Roma,West Ham,0,3,West Ham,away,0.551,0.377,1.52,0.84,2.0,,,,
+2026-03-14,nba,NBA,Boston Celtics,Washington Wizards,111,100,Boston Celtics,home,,,,,2.0,0.609,0.286,0.82,False
+2026-03-14,nba,NBA,San Antonio Spurs,Charlotte Hornets,115,102,San Antonio Spurs,home,,,,,2.0,0.687,0.501,0.82,False
+2026-03-14,nba,NBA,Atlanta Hawks,Milwaukee Bucks,122,99,Atlanta Hawks,home,,,,,2.0,0.53,0.441,0.82,False
+2026-03-14,soccer,Champions League,PSG,Porto,2,0,PSG,home,0.673,0.555,1.53,1.41,2.0,,,,
+2026-03-14,soccer,Premier League,Liverpool,Tottenham,3,3,draw,draw,0.684,0.37,1.08,1.58,2.0,,,,
+2026-03-14,nba,NBA,LA Clippers,Chicago Bulls,119,108,LA Clippers,home,,,,,2.0,0.496,0.45,0.82,False
+2026-03-14,nba,NBA,Portland Trail Blazers,Utah Jazz,124,114,Portland Trail Blazers,home,,,,,2.0,0.473,0.349,0.82,False
+2026-03-14,nba,NBA,Golden State Warriors,Minnesota Timberwolves,117,127,Minnesota Timberwolves,away,,,,,2.0,0.496,0.559,0.82,False
+2026-03-14,nba,NBA,Houston Rockets,New Orleans Pelicans,107,105,Houston Rockets,home,,,,,2.0,0.582,0.359,0.82,False
+2026-03-13,nba,NBA,Los Angeles Lakers,Chicago Bulls,142,130,Los Angeles Lakers,home,,,,,2.0,0.611,0.419,0.81,False
+2026-03-13,nba,NBA,Toronto Raptors,Phoenix Suns,122,115,Toronto Raptors,home,,,,,2.0,0.558,0.566,0.81,False
+2026-03-13,nba,NBA,Indiana Pacers,New York Knicks,92,101,New York Knicks,away,,,,,2.0,0.28,0.607,0.81,False
+2026-03-13,soccer,Champions League,Shakhtar,Bayern,1,0,Shakhtar,home,0.536,0.35,1.42,0.83,2.0,,,,
+2026-03-13,nba,NBA,Oklahoma City Thunder,Boston Celtics,104,102,Oklahoma City Thunder,home,,,,,2.0,0.72,0.64,0.81,False
+2026-03-13,nba,NBA,Memphis Grizzlies,Dallas Mavericks,112,120,Dallas Mavericks,away,,,,,2.0,0.398,0.342,0.81,False
+2026-03-13,nba,NBA,San Antonio Spurs,Denver Nuggets,131,136,Denver Nuggets,away,,,,,2.0,0.692,0.586,0.81,False
+2026-03-13,nba,NBA,Dallas Mavericks,Cleveland Cavaliers,105,138,Cleveland Cavaliers,away,,,,,2.0,0.345,0.586,0.81,False
+2026-03-13,nba,NBA,Detroit Pistons,Memphis Grizzlies,126,110,Detroit Pistons,home,,,,,2.0,0.681,0.379,0.81,False
+2026-03-13,soccer,Europa League,Sporting,Rangers,3,0,Sporting,home,0.683,0.678,1.36,1.0,2.0,,,,
+2026-03-12,nba,NBA,Detroit Pistons,Philadelphia 76ers,131,109,Detroit Pistons,home,,,,,2.0,0.667,0.527,0.81,False
+2026-03-12,nba,NBA,Indiana Pacers,Phoenix Suns,108,123,Phoenix Suns,away,,,,,2.0,0.287,0.584,0.81,False
+2026-03-12,nba,NBA,Orlando Magic,Washington Wizards,136,131,Orlando Magic,home,,,,,2.0,0.535,0.275,0.81,False
+2026-03-12,nba,NBA,Atlanta Hawks,Brooklyn Nets,108,97,Atlanta Hawks,home,,,,,2.0,0.532,0.319,0.81,False
+2026-03-12,nba,NBA,Miami Heat,Milwaukee Bucks,112,105,Miami Heat,home,,,,,2.0,0.557,0.438,0.81,False
+2026-03-12,nba,NBA,New Orleans Pelicans,Toronto Raptors,122,111,New Orleans Pelicans,home,,,,,2.0,0.371,0.555,0.81,False
+2026-03-12,nba,NBA,LA Clippers,Minnesota Timberwolves,153,128,LA Clippers,home,,,,,2.0,0.528,0.607,0.81,False
+2026-03-12,nba,NBA,Sacramento Kings,Charlotte Hornets,109,117,Charlotte Hornets,away,,,,,2.0,0.293,0.498,0.81,False
+2026-03-12,nba,NBA,Denver Nuggets,Houston Rockets,129,93,Denver Nuggets,home,,,,,2.0,0.604,0.611,0.81,False
+2026-03-12,nba,NBA,Utah Jazz,New York Knicks,117,134,New York Knicks,away,,,,,2.0,0.335,0.589,0.81,False
+2026-03-12,soccer,Europa League,Brighton,Roma,2,0,Brighton,home,0.635,0.593,1.8,0.73,2.0,,,,
+2026-03-11,nba,NBA,Orlando Magic,Cleveland Cavaliers,128,122,Orlando Magic,home,,,,,2.0,0.549,0.619,0.8,False
+2026-03-11,nba,NBA,Sacramento Kings,Indiana Pacers,114,109,Sacramento Kings,home,,,,,2.0,0.272,0.287,0.8,False
+2026-03-11,nba,NBA,Golden State Warriors,Chicago Bulls,124,130,Chicago Bulls,away,,,,,2.0,0.485,0.425,0.8,False
+2026-03-11,nba,NBA,Los Angeles Lakers,Minnesota Timberwolves,120,106,Los Angeles Lakers,home,,,,,2.0,0.593,0.586,0.8,False
+2026-03-11,nba,NBA,San Antonio Spurs,Boston Celtics,125,116,San Antonio Spurs,home,,,,,2.0,0.685,0.636,0.8,False
+2026-03-11,nba,NBA,Milwaukee Bucks,Phoenix Suns,114,129,Phoenix Suns,away,,,,,2.0,0.434,0.572,0.8,False
+2026-03-11,nba,NBA,Houston Rockets,Toronto Raptors,113,99,Houston Rockets,home,,,,,2.0,0.596,0.558,0.8,False
+2026-03-11,nba,NBA,Portland Trail Blazers,Charlotte Hornets,101,103,Charlotte Hornets,away,,,,,2.0,0.495,0.485,0.8,False
+2026-03-11,soccer,Champions League,PSG,Salzburg,0,2,Salzburg,away,0.488,0.471,2.33,1.07,2.0,,,,
+2026-03-11,soccer,Europa League,Marseille,Sporting,2,1,Marseille,home,0.711,0.53,2.26,1.93,2.0,,,,
+2026-03-11,soccer,Premier League,Man City,Tottenham,1,0,Man City,home,0.515,0.542,1.15,1.81,2.0,,,,
+2026-03-10,nba,NBA,Brooklyn Nets,Detroit Pistons,100,138,Detroit Pistons,away,,,,,2.0,0.317,0.645,0.8,False
+2026-03-10,nba,NBA,Atlanta Hawks,Dallas Mavericks,124,112,Atlanta Hawks,home,,,,,2.0,0.524,0.36,0.8,False
+2026-03-10,nba,NBA,LA Clippers,New York Knicks,126,118,LA Clippers,home,,,,,2.0,0.503,0.629,0.8,False
+2026-03-10,nba,NBA,Miami Heat,Washington Wizards,150,129,Miami Heat,home,,,,,2.0,0.546,0.311,0.8,False
+2026-03-10,nba,NBA,Utah Jazz,Golden State Warriors,119,116,Utah Jazz,home,,,,,2.0,0.32,0.507,0.8,False
+2026-03-10,soccer,La Liga,Sevilla,Atletico,2,2,draw,draw,0.456,0.392,1.25,1.78,2.0,,,,
+2026-03-10,soccer,Champions League,Bayern,Benfica,1,0,Bayern,home,0.496,0.474,1.08,1.95,2.0,,,,
+2026-03-10,nba,NBA,Philadelphia 76ers,Memphis Grizzlies,139,129,Philadelphia 76ers,home,,,,,2.0,0.534,0.411,0.8,False
+2026-03-09,soccer,Serie A,Fiorentina,Lazio,0,3,Lazio,away,0.489,0.543,2.19,1.54,2.0,,,,
+2026-03-09,soccer,Champions League,Dortmund,Benfica,2,0,Dortmund,home,0.459,0.426,1.05,1.34,2.0,,,,
+2026-03-09,nba,NBA,Cleveland Cavaliers,Philadelphia 76ers,115,101,Cleveland Cavaliers,home,,,,,2.0,0.597,0.539,0.79,False
+2026-03-09,soccer,La Liga,Atletico,Betis,1,0,Atletico,home,0.705,0.369,2.38,1.89,2.0,,,,
+2026-03-09,nba,NBA,Phoenix Suns,Charlotte Hornets,111,99,Phoenix Suns,home,,,,,2.0,0.575,0.492,0.79,False
+2026-03-09,nba,NBA,Sacramento Kings,Chicago Bulls,126,110,Sacramento Kings,home,,,,,2.0,0.262,0.397,0.79,False
+2026-03-09,nba,NBA,Portland Trail Blazers,Indiana Pacers,131,111,Portland Trail Blazers,home,,,,,2.0,0.471,0.293,0.79,False
+2026-03-09,nba,NBA,San Antonio Spurs,Houston Rockets,145,120,San Antonio Spurs,home,,,,,2.0,0.659,0.594,0.79,False
+2026-03-09,nba,NBA,Milwaukee Bucks,Orlando Magic,91,130,Orlando Magic,away,,,,,2.0,0.434,0.548,0.79,False
+2026-03-09,soccer,La Liga,Real Sociedad,Villarreal,0,1,Villarreal,away,0.454,0.58,2.39,1.52,2.0,,,,
+2026-03-09,nba,NBA,Brooklyn Nets,Memphis Grizzlies,126,115,Brooklyn Nets,home,,,,,2.0,0.315,0.421,0.79,False
+2026-03-09,nba,NBA,Oklahoma City Thunder,Denver Nuggets,129,126,Oklahoma City Thunder,home,,,,,2.0,0.73,0.579,0.79,False
+2026-03-08,soccer,Europa League,Marseille,Rangers,2,0,Marseille,home,0.666,0.437,1.98,1.12,2.0,,,,
+2026-03-08,soccer,Serie A,Juventus,Lazio,1,0,Juventus,home,0.48,0.475,1.16,0.68,2.0,,,,
+2026-03-08,nba,NBA,New Orleans Pelicans,Washington Wizards,138,118,New Orleans Pelicans,home,,,,,2.0,0.339,0.305,0.79,False
+2026-03-08,nba,NBA,Cleveland Cavaliers,Boston Celtics,98,109,Boston Celtics,away,,,,,2.0,0.58,0.628,0.79,False
+2026-03-08,nba,NBA,Los Angeles Lakers,New York Knicks,110,97,Los Angeles Lakers,home,,,,,2.0,0.564,0.653,0.79,False
+2026-03-08,nba,NBA,Miami Heat,Detroit Pistons,121,110,Miami Heat,home,,,,,2.0,0.538,0.675,0.79,False
+2026-03-08,nba,NBA,Toronto Raptors,Dallas Mavericks,122,92,Toronto Raptors,home,,,,,2.0,0.531,0.324,0.79,False
+2026-03-08,nba,NBA,Oklahoma City Thunder,Golden State Warriors,104,97,Oklahoma City Thunder,home,,,,,2.0,0.707,0.522,0.79,False
+2026-03-08,nba,NBA,Milwaukee Bucks,Utah Jazz,113,99,Milwaukee Bucks,home,,,,,2.0,0.445,0.336,0.79,False
+2026-03-08,nba,NBA,Memphis Grizzlies,LA Clippers,120,123,LA Clippers,away,,,,,2.0,0.423,0.481,0.79,False
+2026-03-08,soccer,Europa League,Roma,Sporting,0,2,Sporting,away,0.705,0.645,1.93,1.11,2.0,,,,
+2026-03-07,nba,NBA,Minnesota Timberwolves,Orlando Magic,92,119,Orlando Magic,away,,,,,2.0,0.584,0.549,0.78,False
+2026-03-07,nba,NBA,Atlanta Hawks,Philadelphia 76ers,125,116,Atlanta Hawks,home,,,,,2.0,0.499,0.547,0.78,False
+2026-03-07,nba,NBA,San Antonio Spurs,LA Clippers,116,112,San Antonio Spurs,home,,,,,2.0,0.687,0.484,0.78,False
+2026-03-07,nba,NBA,Phoenix Suns,New Orleans Pelicans,118,116,Phoenix Suns,home,,,,,2.0,0.578,0.364,0.78,False
+2026-03-07,nba,NBA,Detroit Pistons,Brooklyn Nets,105,107,Brooklyn Nets,away,,,,,2.0,0.68,0.291,0.78,False
+2026-03-07,nba,NBA,Los Angeles Lakers,Indiana Pacers,128,117,Los Angeles Lakers,home,,,,,2.0,0.575,0.32,0.78,False
+2026-03-07,nba,NBA,Boston Celtics,Dallas Mavericks,120,100,Boston Celtics,home,,,,,2.0,0.63,0.382,0.78,False
+2026-03-07,nba,NBA,Denver Nuggets,New York Knicks,103,142,New York Knicks,away,,,,,2.0,0.606,0.629,0.78,False
+2026-03-07,nba,NBA,Houston Rockets,Portland Trail Blazers,106,99,Houston Rockets,home,,,,,2.0,0.584,0.447,0.78,False
+2026-03-07,nba,NBA,Charlotte Hornets,Miami Heat,120,128,Miami Heat,away,,,,,2.0,0.501,0.533,0.78,False
+2026-03-06,nba,NBA,Orlando Magic,Dallas Mavericks,115,114,Orlando Magic,home,,,,,2.0,0.531,0.406,0.77,False
+2026-03-06,nba,NBA,Washington Wizards,Utah Jazz,112,122,Utah Jazz,away,,,,,2.0,0.296,0.343,0.77,False
+2026-03-06,nba,NBA,Miami Heat,Brooklyn Nets,126,110,Miami Heat,home,,,,,2.0,0.515,0.309,0.77,False
+2026-03-06,soccer,Champions League,Dortmund,PSG,1,1,draw,draw,0.477,0.369,1.32,1.09,2.0,,,,
+2026-03-06,nba,NBA,Houston Rockets,Golden State Warriors,113,115,Golden State Warriors,away,,,,,2.0,0.606,0.535,0.77,False
+2026-03-06,nba,NBA,San Antonio Spurs,Detroit Pistons,121,106,San Antonio Spurs,home,,,,,2.0,0.701,0.667,0.77,False
+2026-03-06,nba,NBA,Phoenix Suns,Chicago Bulls,103,105,Chicago Bulls,away,,,,,2.0,0.532,0.422,0.77,False
+2026-03-06,nba,NBA,Denver Nuggets,Los Angeles Lakers,120,113,Denver Nuggets,home,,,,,2.0,0.603,0.598,0.77,False
+2026-03-06,nba,NBA,Sacramento Kings,New Orleans Pelicans,123,133,New Orleans Pelicans,away,,,,,2.0,0.281,0.338,0.77,False
+2026-03-06,nba,NBA,Minnesota Timberwolves,Toronto Raptors,115,107,Minnesota Timberwolves,home,,,,,2.0,0.585,0.566,0.77,False
+2026-03-05,nba,NBA,New York Knicks,Oklahoma City Thunder,100,103,Oklahoma City Thunder,away,,,,,2.0,0.653,0.688,0.77,False
+2026-03-05,nba,NBA,Philadelphia 76ers,Utah Jazz,106,102,Philadelphia 76ers,home,,,,,2.0,0.558,0.325,0.77,False
+2026-03-05,nba,NBA,Memphis Grizzlies,Portland Trail Blazers,114,122,Portland Trail Blazers,away,,,,,2.0,0.431,0.495,0.77,False
+2026-03-05,nba,NBA,Milwaukee Bucks,Atlanta Hawks,113,131,Atlanta Hawks,away,,,,,2.0,0.463,0.477,0.77,False
+2026-03-05,soccer,La Liga,Real Sociedad,Valencia,0,1,Valencia,away,0.43,0.417,1.45,1.45,2.0,,,,
+2026-03-05,nba,NBA,LA Clippers,Indiana Pacers,130,107,LA Clippers,home,,,,,2.0,0.481,0.289,0.77,False
+2026-03-05,nba,NBA,Boston Celtics,Charlotte Hornets,89,118,Charlotte Hornets,away,,,,,2.0,0.656,0.512,0.77,False
+2026-03-04,nba,NBA,Philadelphia 76ers,San Antonio Spurs,91,131,San Antonio Spurs,away,,,,,2.0,0.521,0.66,0.76,False
+2026-03-04,nba,NBA,Los Angeles Lakers,New Orleans Pelicans,110,101,Los Angeles Lakers,home,,,,,2.0,0.57,0.346,0.76,False
+2026-03-04,nba,NBA,Minnesota Timberwolves,Memphis Grizzlies,117,110,Minnesota Timberwolves,home,,,,,2.0,0.596,0.434,0.76,False
+2026-03-04,nba,NBA,Chicago Bulls,Oklahoma City Thunder,108,116,Oklahoma City Thunder,away,,,,,2.0,0.45,0.714,0.76,False
+2026-03-04,nba,NBA,Sacramento Kings,Phoenix Suns,103,114,Phoenix Suns,away,,,,,2.0,0.29,0.545,0.76,False
+2026-03-04,nba,NBA,Cleveland Cavaliers,Detroit Pistons,113,109,Cleveland Cavaliers,home,,,,,2.0,0.584,0.702,0.76,False
+2026-03-04,nba,NBA,Toronto Raptors,New York Knicks,95,111,New York Knicks,away,,,,,2.0,0.595,0.608,0.76,False
+2026-03-04,nba,NBA,Miami Heat,Brooklyn Nets,124,98,Miami Heat,home,,,,,2.0,0.518,0.32,0.76,False
+2026-03-04,nba,NBA,Orlando Magic,Washington Wizards,126,109,Orlando Magic,home,,,,,2.0,0.5,0.296,0.76,False
+2026-03-04,nba,NBA,Charlotte Hornets,Dallas Mavericks,117,90,Charlotte Hornets,home,,,,,2.0,0.503,0.404,0.76,False
+2026-03-04,soccer,Premier League,Liverpool,Man City,1,0,Liverpool,home,0.513,0.378,2.06,1.82,2.0,,,,
+2026-03-03,soccer,La Liga,Betis,Valencia,0,0,draw,draw,0.472,0.667,1.15,0.79,2.0,,,,
+2026-03-03,nba,NBA,Washington Wizards,Houston Rockets,118,123,Houston Rockets,away,,,,,2.0,0.308,0.604,0.76,False
+2026-03-03,nba,NBA,Golden State Warriors,LA Clippers,101,114,LA Clippers,away,,,,,2.0,0.497,0.47,0.76,False
+2026-03-03,nba,NBA,Utah Jazz,Denver Nuggets,125,128,Denver Nuggets,away,,,,,2.0,0.34,0.579,0.76,False
+2026-03-03,nba,NBA,Milwaukee Bucks,Boston Celtics,81,108,Boston Celtics,away,,,,,2.0,0.44,0.621,0.76,False
+2026-03-03,soccer,Europa League,Leverkusen,Marseille,1,0,Leverkusen,home,0.66,0.679,0.99,1.61,2.0,,,,
+2026-03-02,soccer,Premier League,Newcastle,Liverpool,4,0,Newcastle,home,0.707,0.557,1.0,1.39,2.0,,,,
+2026-03-02,soccer,Champions League,Porto,Dortmund,1,0,Porto,home,0.551,0.618,2.34,1.08,2.0,,,,
+2026-03-02,nba,NBA,Los Angeles Lakers,Sacramento Kings,128,104,Los Angeles Lakers,home,,,,,2.0,0.584,0.316,0.75,False
+2026-03-02,nba,NBA,Boston Celtics,Philadelphia 76ers,114,98,Boston Celtics,home,,,,,2.0,0.655,0.556,0.75,False
+2026-03-02,nba,NBA,Dallas Mavericks,Oklahoma City Thunder,87,100,Oklahoma City Thunder,away,,,,,2.0,0.391,0.672,0.75,False
+2026-03-02,soccer,La Liga,Villarreal,Valencia,0,1,Valencia,away,0.527,0.419,1.94,1.25,2.0,,,,
+2026-03-02,nba,NBA,LA Clippers,New Orleans Pelicans,137,117,LA Clippers,home,,,,,2.0,0.468,0.389,0.75,False
+2026-03-01,nba,NBA,Washington Wizards,Toronto Raptors,125,134,Toronto Raptors,away,,,,,2.0,0.342,0.532,0.75,False
+2026-03-01,nba,NBA,Golden State Warriors,Los Angeles Lakers,101,129,Los Angeles Lakers,away,,,,,2.0,0.509,0.558,0.75,False
+2026-03-01,nba,NBA,Utah Jazz,New Orleans Pelicans,105,115,New Orleans Pelicans,away,,,,,2.0,0.37,0.364,0.75,False
+2026-03-01,nba,NBA,Orlando Magic,Detroit Pistons,92,106,Detroit Pistons,away,,,,,2.0,0.509,0.704,0.75,False
+2026-03-01,nba,NBA,Atlanta Hawks,Portland Trail Blazers,135,101,Atlanta Hawks,home,,,,,2.0,0.47,0.492,0.75,False
+2026-03-01,nba,NBA,Indiana Pacers,Memphis Grizzlies,106,125,Memphis Grizzlies,away,,,,,2.0,0.3,0.426,0.75,False
+2026-03-01,nba,NBA,Denver Nuggets,Minnesota Timberwolves,108,117,Minnesota Timberwolves,away,,,,,2.0,0.601,0.59,0.75,False
+2026-03-01,nba,NBA,Chicago Bulls,Milwaukee Bucks,120,97,Chicago Bulls,home,,,,,2.0,0.441,0.459,0.75,False
+2026-03-01,nba,NBA,Brooklyn Nets,Cleveland Cavaliers,102,106,Cleveland Cavaliers,away,,,,,2.0,0.316,0.603,0.75,False
+2026-03-01,soccer,Serie A,Inter,Fiorentina,1,0,Inter,home,0.536,0.651,1.51,1.15,2.0,,,,
+2026-03-01,nba,NBA,New York Knicks,San Antonio Spurs,114,89,New York Knicks,home,,,,,2.0,0.573,0.664,0.75,False
+2026-02-28,nba,NBA,Charlotte Hornets,Portland Trail Blazers,109,93,Charlotte Hornets,home,,,,,2.0,0.471,0.471,0.74,False
+2026-02-28,nba,NBA,Miami Heat,Houston Rockets,115,105,Miami Heat,home,,,,,2.0,0.487,0.608,0.74,False
+2026-02-28,nba,NBA,Oklahoma City Thunder,Denver Nuggets,127,121,Oklahoma City Thunder,home,,,,,2.0,0.66,0.561,0.74,False
+2026-02-28,nba,NBA,Dallas Mavericks,Memphis Grizzlies,105,124,Memphis Grizzlies,away,,,,,2.0,0.395,0.393,0.74,False
+2026-02-28,nba,NBA,Detroit Pistons,Cleveland Cavaliers,122,119,Detroit Pistons,home,,,,,2.0,0.678,0.613,0.74,False
+2026-02-28,nba,NBA,Boston Celtics,Brooklyn Nets,148,111,Boston Celtics,home,,,,,2.0,0.608,0.323,0.74,False
+2026-02-28,nba,NBA,Milwaukee Bucks,New York Knicks,98,127,New York Knicks,away,,,,,2.0,0.489,0.564,0.74,False
+2026-02-27,nba,NBA,Philadelphia 76ers,Miami Heat,124,117,Philadelphia 76ers,home,,,,,2.0,0.531,0.525,0.73,False
+2026-02-27,nba,NBA,Indiana Pacers,Charlotte Hornets,109,133,Charlotte Hornets,away,,,,,2.0,0.321,0.498,0.73,False
+2026-02-27,nba,NBA,Atlanta Hawks,Washington Wizards,126,96,Atlanta Hawks,home,,,,,2.0,0.492,0.331,0.73,False
+2026-02-27,nba,NBA,Brooklyn Nets,San Antonio Spurs,110,126,San Antonio Spurs,away,,,,,2.0,0.303,0.669,0.73,False
+2026-02-27,nba,NBA,Orlando Magic,Houston Rockets,108,113,Houston Rockets,away,,,,,2.0,0.517,0.599,0.73,False
+2026-02-27,nba,NBA,Chicago Bulls,Portland Trail Blazers,112,121,Portland Trail Blazers,away,,,,,2.0,0.423,0.481,0.73,False
+2026-02-27,nba,NBA,Dallas Mavericks,Sacramento Kings,121,130,Sacramento Kings,away,,,,,2.0,0.407,0.295,0.73,False
+2026-02-27,nba,NBA,Phoenix Suns,Los Angeles Lakers,113,110,Phoenix Suns,home,,,,,2.0,0.521,0.577,0.73,False
+2026-02-27,nba,NBA,Utah Jazz,New Orleans Pelicans,118,129,New Orleans Pelicans,away,,,,,2.0,0.331,0.358,0.73,False
+2026-02-27,nba,NBA,LA Clippers,Minnesota Timberwolves,88,94,Minnesota Timberwolves,away,,,,,2.0,0.484,0.568,0.73,False
+2026-02-26,nba,NBA,Memphis Grizzlies,Golden State Warriors,112,133,Golden State Warriors,away,,,,,2.0,0.43,0.506,0.73,False
+2026-02-26,soccer,Champions League,Benfica,PSG,1,0,Benfica,home,0.415,0.54,2.29,1.93,2.0,,,,
+2026-02-26,soccer,La Liga,Villarreal,Barcelona,2,2,draw,draw,0.672,0.396,1.35,0.76,2.0,,,,
+2026-02-26,soccer,Champions League,PSG,Shakhtar,2,0,PSG,home,0.437,0.675,1.64,1.52,2.0,,,,
+2026-02-26,nba,NBA,Detroit Pistons,Oklahoma City Thunder,124,116,Detroit Pistons,home,,,,,2.0,0.707,0.679,0.73,False
+2026-02-26,nba,NBA,Toronto Raptors,San Antonio Spurs,107,110,San Antonio Spurs,away,,,,,2.0,0.546,0.65,0.73,False
+2026-02-26,soccer,Premier League,Liverpool,Chelsea,2,2,draw,draw,0.486,0.661,1.78,1.79,2.0,,,,
+2026-02-26,nba,NBA,Houston Rockets,Sacramento Kings,128,97,Houston Rockets,home,,,,,2.0,0.588,0.309,0.73,False
+2026-02-26,nba,NBA,Milwaukee Bucks,Cleveland Cavaliers,118,116,Milwaukee Bucks,home,,,,,2.0,0.46,0.578,0.73,False
+2026-02-26,nba,NBA,Denver Nuggets,Boston Celtics,103,84,Denver Nuggets,home,,,,,2.0,0.584,0.62,0.73,False
+2026-02-26,soccer,Europa League,Marseille,West Ham,1,1,draw,draw,0.426,0.384,1.43,1.63,2.0,,,,
+2026-02-26,soccer,La Liga,Real Sociedad,Real Madrid,4,0,Real Sociedad,home,0.635,0.478,2.34,0.62,2.0,,,,
+2026-02-25,nba,NBA,Cleveland Cavaliers,New York Knicks,109,94,Cleveland Cavaliers,home,,,,,2.0,0.579,0.612,0.72,False
+2026-02-25,nba,NBA,New Orleans Pelicans,Golden State Warriors,113,109,New Orleans Pelicans,home,,,,,2.0,0.349,0.506,0.72,False
+2026-02-25,nba,NBA,Phoenix Suns,Boston Celtics,81,97,Boston Celtics,away,,,,,2.0,0.569,0.595,0.72,False
+2026-02-25,nba,NBA,Portland Trail Blazers,Minnesota Timberwolves,121,124,Minnesota Timberwolves,away,,,,,2.0,0.479,0.595,0.72,False
+2026-02-25,soccer,Champions League,Shakhtar,Porto,0,2,Porto,away,0.719,0.659,2.06,1.13,2.0,,,,
+2026-02-25,soccer,Europa League,Leverkusen,Marseille,2,1,Leverkusen,home,0.537,0.578,0.97,0.78,2.0,,,,
+2026-02-25,nba,NBA,Los Angeles Lakers,Orlando Magic,109,110,Orlando Magic,away,,,,,2.0,0.547,0.546,0.72,False
+2026-02-25,nba,NBA,Toronto Raptors,Oklahoma City Thunder,107,116,Oklahoma City Thunder,away,,,,,2.0,0.59,0.678,0.72,False
+2026-02-25,nba,NBA,Chicago Bulls,Charlotte Hornets,99,131,Charlotte Hornets,away,,,,,2.0,0.436,0.471,0.72,False
+2026-02-25,nba,NBA,Brooklyn Nets,Dallas Mavericks,114,123,Dallas Mavericks,away,,,,,2.0,0.3,0.407,0.72,False
+2026-02-25,nba,NBA,Atlanta Hawks,Washington Wizards,119,98,Atlanta Hawks,home,,,,,2.0,0.474,0.342,0.72,False
+2026-02-25,nba,NBA,Indiana Pacers,Philadelphia 76ers,114,135,Philadelphia 76ers,away,,,,,2.0,0.325,0.508,0.72,False
+2026-02-25,nba,NBA,Milwaukee Bucks,Miami Heat,128,117,Milwaukee Bucks,home,,,,,2.0,0.442,0.523,0.72,False
+2026-02-24,nba,NBA,Detroit Pistons,San Antonio Spurs,103,114,San Antonio Spurs,away,,,,,2.0,0.68,0.66,0.72,False
+2026-02-24,nba,NBA,Memphis Grizzlies,Sacramento Kings,114,123,Sacramento Kings,away,,,,,2.0,0.414,0.282,0.72,False
+2026-02-24,soccer,Champions League,Bayern,Shakhtar,0,1,Shakhtar,away,0.58,0.426,2.32,1.31,2.0,,,,
+2026-02-24,soccer,Europa League,Sporting,Leverkusen,3,0,Sporting,home,0.467,0.576,2.24,0.95,2.0,,,,
+2026-02-24,soccer,La Liga,Valencia,Sevilla,1,1,Valencia,home,0.617,0.367,1.3,1.68,2.0,,,,
+2026-02-24,soccer,Champions League,Ajax,Porto,2,0,Ajax,home,0.464,0.395,1.83,1.67,2.0,,,,
+2026-02-24,nba,NBA,Houston Rockets,Utah Jazz,125,105,Houston Rockets,home,,,,,2.0,0.578,0.378,0.72,False
+2026-02-23,nba,NBA,Chicago Bulls,New York Knicks,99,105,New York Knicks,away,,,,,2.0,0.434,0.613,0.71,False
+2026-02-23,nba,NBA,Minnesota Timberwolves,Philadelphia 76ers,108,135,Philadelphia 76ers,away,,,,,2.0,0.583,0.514,0.71,False
+2026-02-23,nba,NBA,Phoenix Suns,Portland Trail Blazers,77,92,Portland Trail Blazers,away,,,,,2.0,0.55,0.495,0.71,False
+2026-02-23,nba,NBA,LA Clippers,Orlando Magic,109,111,Orlando Magic,away,,,,,2.0,0.48,0.536,0.71,False
+2026-02-22,nba,NBA,New Orleans Pelicans,Philadelphia 76ers,126,111,New Orleans Pelicans,home,,,,,2.0,0.319,0.566,0.71,False
+2026-02-22,nba,NBA,Chicago Bulls,Detroit Pistons,110,126,Detroit Pistons,away,,,,,2.0,0.437,0.658,0.71,False
+2026-02-22,nba,NBA,Indiana Pacers,Dallas Mavericks,130,134,Dallas Mavericks,away,,,,,2.0,0.369,0.382,0.71,False
+2026-02-22,soccer,Europa League,Leverkusen,West Ham,0,0,draw,draw,0.435,0.357,1.65,1.35,2.0,,,,
+2026-02-22,nba,NBA,Washington Wizards,Charlotte Hornets,112,129,Charlotte Hornets,away,,,,,2.0,0.361,0.496,0.71,False
+2026-02-22,nba,NBA,New York Knicks,Houston Rockets,108,106,New York Knicks,home,,,,,2.0,0.596,0.601,0.71,False
+2026-02-22,nba,NBA,San Antonio Spurs,Sacramento Kings,139,122,San Antonio Spurs,home,,,,,2.0,0.657,0.291,0.71,False
+2026-02-22,nba,NBA,Los Angeles Lakers,Boston Celtics,89,111,Boston Celtics,away,,,,,2.0,0.58,0.608,0.71,False
+2026-02-22,nba,NBA,Atlanta Hawks,Brooklyn Nets,115,104,Atlanta Hawks,home,,,,,2.0,0.483,0.328,0.71,False
+2026-02-22,soccer,Europa League,Brighton,Leverkusen,1,0,Brighton,home,0.678,0.609,1.53,0.62,2.0,,,,
+2026-02-22,nba,NBA,Milwaukee Bucks,Toronto Raptors,94,122,Toronto Raptors,away,,,,,2.0,0.471,0.564,0.71,False
+2026-02-22,nba,NBA,Golden State Warriors,Denver Nuggets,128,117,Golden State Warriors,home,,,,,2.0,0.539,0.604,0.71,False
+2026-02-22,nba,NBA,Miami Heat,Memphis Grizzlies,136,120,Miami Heat,home,,,,,2.0,0.535,0.427,0.71,False
+2026-02-22,nba,NBA,Oklahoma City Thunder,Cleveland Cavaliers,121,113,Oklahoma City Thunder,home,,,,,2.0,0.689,0.582,0.71,False
+2026-02-21,nba,NBA,Phoenix Suns,Orlando Magic,113,110,Phoenix Suns,home,,,,,2.0,0.559,0.55,0.7,False
+2026-02-21,nba,NBA,Atlanta Hawks,Miami Heat,97,128,Miami Heat,away,,,,,2.0,0.492,0.513,0.7,False
+2026-02-21,soccer,Europa League,Brighton,Fenerbahce,2,0,Brighton,home,0.475,0.372,2.13,1.26,2.0,,,,
+2026-02-21,nba,NBA,Portland Trail Blazers,Denver Nuggets,103,157,Denver Nuggets,away,,,,,2.0,0.483,0.609,0.7,False
+2026-02-21,nba,NBA,Oklahoma City Thunder,Brooklyn Nets,105,86,Oklahoma City Thunder,home,,,,,2.0,0.695,0.35,0.7,False
+2026-02-21,nba,NBA,New Orleans Pelicans,Milwaukee Bucks,118,139,Milwaukee Bucks,away,,,,,2.0,0.335,0.458,0.7,False
+2026-02-21,nba,NBA,Minnesota Timberwolves,Dallas Mavericks,122,111,Minnesota Timberwolves,home,,,,,2.0,0.587,0.359,0.7,False
+2026-02-21,nba,NBA,Washington Wizards,Indiana Pacers,131,118,Washington Wizards,home,,,,,2.0,0.352,0.305,0.7,False
+2026-02-21,nba,NBA,Memphis Grizzlies,Utah Jazz,123,114,Memphis Grizzlies,home,,,,,2.0,0.402,0.371,0.7,False
+2026-02-21,soccer,La Liga,Atletico,Barcelona,2,0,Atletico,home,0.581,0.629,0.93,0.91,2.0,,,,
+2026-02-21,nba,NBA,Charlotte Hornets,Cleveland Cavaliers,113,118,Cleveland Cavaliers,away,,,,,2.0,0.491,0.582,0.7,False
+2026-02-21,nba,NBA,Los Angeles Lakers,LA Clippers,125,122,Los Angeles Lakers,home,,,,,2.0,0.588,0.497,0.7,False
+2026-02-20,nba,NBA,New York Knicks,Detroit Pistons,111,126,Detroit Pistons,away,,,,,2.0,0.594,0.664,0.69,False
+2026-02-20,nba,NBA,Chicago Bulls,Toronto Raptors,101,110,Toronto Raptors,away,,,,,2.0,0.413,0.58,0.69,False
+2026-02-20,nba,NBA,LA Clippers,Denver Nuggets,115,114,LA Clippers,home,,,,,2.0,0.478,0.591,0.69,False
+2026-02-20,nba,NBA,San Antonio Spurs,Phoenix Suns,121,94,San Antonio Spurs,home,,,,,2.0,0.616,0.538,0.69,False
+2026-02-20,nba,NBA,Golden State Warriors,Boston Celtics,110,121,Boston Celtics,away,,,,,2.0,0.527,0.609,0.69,False
+2026-02-20,nba,NBA,Sacramento Kings,Orlando Magic,94,131,Orlando Magic,away,,,,,2.0,0.279,0.494,0.69,False
+2026-02-20,nba,NBA,Washington Wizards,Indiana Pacers,112,105,Washington Wizards,home,,,,,2.0,0.366,0.377,0.69,False
+2026-02-20,nba,NBA,Philadelphia 76ers,Atlanta Hawks,107,117,Atlanta Hawks,away,,,,,2.0,0.56,0.454,0.69,False
+2026-02-20,nba,NBA,Cleveland Cavaliers,Brooklyn Nets,112,84,Cleveland Cavaliers,home,,,,,2.0,0.617,0.366,0.69,False
+2026-02-20,nba,NBA,Charlotte Hornets,Houston Rockets,101,105,Houston Rockets,away,,,,,2.0,0.471,0.599,0.69,False
+2026-02-20,soccer,La Liga,Sevilla,Barcelona,0,2,Barcelona,away,0.461,0.616,1.57,0.92,2.0,,,,
+2026-02-20,soccer,Europa League,Rangers,West Ham,0,2,West Ham,away,0.498,0.466,0.97,1.71,2.0,,,,
+2026-02-20,soccer,Europa League,Roma,Fenerbahce,2,0,Roma,home,0.516,0.425,1.15,1.08,2.0,,,,
+2026-02-19,soccer,Europa League,Brighton,Sporting,1,1,Brighton,home,0.531,0.518,0.98,1.38,2.0,,,,
+2026-02-19,soccer,Premier League,Chelsea,Liverpool,2,0,Chelsea,home,0.529,0.636,1.15,1.01,2.0,,,,
+2026-02-19,soccer,Champions League,Benfica,Ajax,1,0,Benfica,home,0.459,0.374,2.05,1.29,2.0,,,,
+2026-02-18,soccer,Champions League,Dortmund,Porto,3,0,Dortmund,home,0.639,0.653,1.28,1.15,2.0,,,,
+2026-02-18,soccer,Europa League,Roma,Leverkusen,0,1,Leverkusen,away,0.459,0.482,2.09,1.98,2.0,,,,
+2026-02-17,soccer,Premier League,Arsenal,Newcastle,4,0,Arsenal,home,0.673,0.654,2.25,0.96,2.0,,,,
+2026-02-16,soccer,Serie A,Atalanta,Lazio,1,0,Atalanta,home,0.534,0.472,1.81,0.95,2.0,,,,
+2026-02-16,nba,NBA,Team Stripes,Team Stars,21,47,Team Stars,away,,,,,2.0,0.495,0.488,0.67,False
+2026-02-15,nba,NBA,Team Stripes,Team Stars,42,40,Team Stripes,home,,,,,2.0,0.506,0.487,0.67,False
+2026-02-15,nba,NBA,Team Stripes,World,48,45,Team Stripes,home,,,,,2.0,0.468,0.496,0.67,False
+2026-02-15,soccer,Europa League,West Ham,Brighton,1,0,West Ham,home,0.548,0.646,2.01,1.54,2.0,,,,
+2026-02-15,soccer,La Liga,Barcelona,Real Madrid,0,1,Real Madrid,away,0.476,0.48,0.98,1.34,2.0,,,,
+2026-02-15,nba,NBA,Team Stars,World,37,35,Team Stars,home,,,,,2.0,0.495,0.505,0.67,False
+2026-02-14,soccer,Serie A,Roma,Fiorentina,2,0,Roma,home,0.549,0.51,1.15,0.95,2.0,,,,
+2026-02-13,soccer,Champions League,Ajax,Benfica,0,1,Benfica,away,0.451,0.446,1.29,0.82,2.0,,,,
+2026-02-13,nba,NBA,Los Angeles Lakers,Dallas Mavericks,124,104,Los Angeles Lakers,home,,,,,2.0,0.567,0.406,0.66,False
+2026-02-13,soccer,Europa League,Brighton,Leverkusen,2,1,Brighton,home,0.636,0.546,2.15,1.4,2.0,,,,
+2026-02-13,nba,NBA,Utah Jazz,Portland Trail Blazers,119,135,Portland Trail Blazers,away,,,,,2.0,0.418,0.463,0.66,False
+2026-02-13,nba,NBA,Oklahoma City Thunder,Milwaukee Bucks,93,110,Milwaukee Bucks,away,,,,,2.0,0.676,0.441,0.66,False
+2026-02-13,soccer,Champions League,Bayern,Benfica,2,0,Bayern,home,0.575,0.558,1.79,1.64,2.0,,,,
+2026-02-12,nba,NBA,Denver Nuggets,Memphis Grizzlies,122,116,Denver Nuggets,home,,,,,2.0,0.614,0.413,0.65,False
+2026-02-12,nba,NBA,Utah Jazz,Sacramento Kings,121,93,Utah Jazz,home,,,,,2.0,0.398,0.304,0.65,False
+2026-02-12,nba,NBA,Phoenix Suns,Oklahoma City Thunder,109,136,Oklahoma City Thunder,away,,,,,2.0,0.561,0.683,0.65,False
+2026-02-12,nba,NBA,Toronto Raptors,Detroit Pistons,95,113,Detroit Pistons,away,,,,,2.0,0.557,0.668,0.65,False
+2026-02-12,nba,NBA,Golden State Warriors,San Antonio Spurs,113,126,San Antonio Spurs,away,,,,,2.0,0.536,0.597,0.65,False
+2026-02-12,nba,NBA,New Orleans Pelicans,Miami Heat,111,123,Miami Heat,away,,,,,2.0,0.361,0.529,0.65,False
+2026-02-12,nba,NBA,Minnesota Timberwolves,Portland Trail Blazers,133,109,Minnesota Timberwolves,home,,,,,2.0,0.566,0.452,0.65,False
+2026-02-12,nba,NBA,Houston Rockets,LA Clippers,102,105,LA Clippers,away,,,,,2.0,0.575,0.486,0.65,False
+2026-02-12,nba,NBA,Charlotte Hornets,Atlanta Hawks,110,107,Charlotte Hornets,home,,,,,2.0,0.462,0.472,0.65,False
+2026-02-12,nba,NBA,Philadelphia 76ers,New York Knicks,89,138,New York Knicks,away,,,,,2.0,0.521,0.606,0.65,False
+2026-02-12,nba,NBA,Brooklyn Nets,Indiana Pacers,110,115,Indiana Pacers,away,,,,,2.0,0.359,0.354,0.65,False
+2026-02-12,nba,NBA,Boston Celtics,Chicago Bulls,124,105,Boston Celtics,home,,,,,2.0,0.585,0.45,0.65,False
+2026-02-12,nba,NBA,Orlando Magic,Milwaukee Bucks,108,116,Milwaukee Bucks,away,,,,,2.0,0.535,0.477,0.65,False
+2026-02-12,nba,NBA,Cleveland Cavaliers,Washington Wizards,138,113,Cleveland Cavaliers,home,,,,,2.0,0.563,0.37,0.65,False
+2026-02-12,soccer,Europa League,Marseille,Leverkusen,1,1,Marseille,home,0.582,0.435,1.91,0.82,2.0,,,,
+2026-02-12,soccer,Serie A,Atalanta,Juventus,1,0,Atalanta,home,0.54,0.576,1.42,1.78,2.0,,,,
+2026-02-11,nba,NBA,Houston Rockets,LA Clippers,102,95,Houston Rockets,home,,,,,2.0,0.586,0.501,0.64,False
+2026-02-11,nba,NBA,New York Knicks,Indiana Pacers,134,137,Indiana Pacers,away,,,,,2.0,0.587,0.328,0.64,False
+2026-02-11,nba,NBA,Phoenix Suns,Dallas Mavericks,120,111,Phoenix Suns,home,,,,,2.0,0.567,0.436,0.64,False
+2026-02-11,nba,NBA,Los Angeles Lakers,San Antonio Spurs,108,136,San Antonio Spurs,away,,,,,2.0,0.573,0.633,0.64,False
+2026-02-10,soccer,Premier League,Arsenal,Man City,0,1,Man City,away,0.489,0.356,2.18,0.61,2.0,,,,
+2026-02-10,soccer,Serie A,Atalanta,Fiorentina,0,1,Fiorentina,away,0.628,0.357,1.87,1.43,2.0,,,,
+2026-02-09,soccer,Serie A,Inter,Napoli,2,0,Inter,home,0.438,0.44,1.65,1.9,2.0,,,,
+2026-02-08,soccer,Serie A,Atalanta,Fiorentina,3,0,Atalanta,home,0.429,0.468,1.34,0.89,2.0,,,,
+2026-02-08,soccer,Serie A,Juventus,Atalanta,1,1,draw,draw,0.539,0.502,1.04,1.81,2.0,,,,
+2026-02-08,soccer,Europa League,Sporting,Marseille,0,1,Marseille,away,0.532,0.508,2.43,0.79,2.0,,,,
+2026-02-07,soccer,Europa League,Leverkusen,Brighton,0,2,Brighton,away,0.444,0.458,1.73,1.9,2.0,,,,
+2026-02-07,soccer,Premier League,Newcastle,Man United,2,0,Newcastle,home,0.495,0.432,2.34,0.91,2.0,,,,
+2026-02-07,soccer,Champions League,Dortmund,Benfica,1,0,Dortmund,home,0.598,0.447,2.26,1.32,2.0,,,,
+2026-02-07,soccer,Serie A,AC Milan,Napoli,2,0,AC Milan,home,0.41,0.391,1.16,1.86,2.0,,,,
+2026-02-06,soccer,Serie A,Napoli,Lazio,2,2,draw,draw,0.45,0.466,1.57,1.9,2.0,,,,
+2026-02-06,soccer,Serie A,Lazio,AC Milan,1,1,draw,draw,0.617,0.623,1.3,0.98,2.0,,,,
+2026-02-06,soccer,Premier League,Aston Villa,Liverpool,0,1,Liverpool,away,0.585,0.585,1.99,1.89,2.0,,,,
+2026-02-06,soccer,Europa League,Fenerbahce,Marseille,1,0,Fenerbahce,home,0.521,0.36,1.95,1.64,2.0,,,,
+2026-02-05,soccer,Serie A,Roma,Atalanta,3,3,draw,draw,0.441,0.452,1.82,1.36,2.0,,,,
+2026-02-05,soccer,La Liga,Valencia,Real Sociedad,0,3,Real Sociedad,away,0.694,0.487,2.43,0.62,2.0,,,,
+2026-02-04,soccer,Serie A,Fiorentina,Juventus,1,0,Fiorentina,home,0.687,0.363,0.93,1.23,2.0,,,,
+2026-02-04,soccer,Champions League,Benfica,Dortmund,1,3,Dortmund,away,0.485,0.533,1.9,1.1,2.0,,,,
+2026-02-04,soccer,Serie A,Napoli,Inter,1,0,Napoli,home,0.508,0.538,1.2,0.62,2.0,,,,
+2026-02-04,soccer,Premier League,Chelsea,Man United,1,0,Chelsea,home,0.435,0.382,1.77,1.5,2.0,,,,
+2026-02-02,soccer,Champions League,PSG,Bayern,0,1,Bayern,away,0.541,0.66,1.41,0.8,2.0,,,,
+2026-02-02,soccer,La Liga,Real Madrid,Valencia,0,2,Valencia,away,0.558,0.52,1.46,0.99,2.0,,,,
+2026-02-02,soccer,Premier League,Arsenal,Liverpool,1,0,Arsenal,home,0.664,0.59,1.26,0.89,2.0,,,,
+2026-02-01,soccer,Premier League,Arsenal,Tottenham,0,2,Tottenham,away,0.593,0.468,1.2,1.13,2.0,,,,
+2026-02-01,soccer,Europa League,Rangers,Leverkusen,4,0,Rangers,home,0.546,0.565,1.12,1.28,2.0,,,,
+2026-01-27,soccer,Europa League,Marseille,Sporting,1,1,Marseille,home,0.684,0.532,1.05,0.71,2.0,,,,
+2026-01-27,soccer,Europa League,Leverkusen,Fenerbahce,1,1,Leverkusen,home,0.484,0.532,1.66,1.62,2.0,,,,
+2026-01-26,soccer,Serie A,Lazio,Napoli,2,2,draw,draw,0.668,0.458,2.09,0.83,2.0,,,,
+2026-01-26,soccer,Europa League,Marseille,Leverkusen,2,0,Marseille,home,0.538,0.42,1.06,0.97,2.0,,,,
+2026-01-26,soccer,Serie A,Napoli,Atalanta,2,0,Napoli,home,0.572,0.416,1.9,1.82,2.0,,,,
+2026-01-25,soccer,Europa League,Marseille,Leverkusen,2,2,draw,draw,0.603,0.653,1.04,0.69,2.0,,,,
+2026-01-25,soccer,Serie A,Fiorentina,Juventus,2,0,Fiorentina,home,0.506,0.614,1.53,1.07,2.0,,,,
+2026-01-25,soccer,Champions League,Porto,Benfica,3,0,Porto,home,0.451,0.387,2.13,1.67,2.0,,,,
+2026-01-25,soccer,Serie A,Lazio,Inter,0,1,Inter,away,0.403,0.491,1.05,1.27,2.0,,,,
+2026-01-25,soccer,Premier League,Liverpool,Arsenal,1,0,Liverpool,home,0.655,0.419,2.38,0.81,2.0,,,,
+2026-01-24,soccer,Serie A,Juventus,AC Milan,1,0,Juventus,home,0.473,0.568,1.41,0.89,2.0,,,,
+2026-01-23,soccer,Champions League,Shakhtar,PSG,0,2,PSG,away,0.688,0.425,0.86,1.92,2.0,,,,
+2026-01-23,soccer,Europa League,Sporting,Leverkusen,1,1,Sporting,home,0.409,0.62,1.72,1.11,2.0,,,,
+2026-01-22,soccer,Champions League,PSG,Ajax,1,0,PSG,home,0.674,0.424,1.32,1.92,2.0,,,,
+2026-01-22,soccer,Europa League,West Ham,Leverkusen,3,3,draw,draw,0.651,0.66,2.26,0.83,2.0,,,,
+2026-01-21,soccer,Serie A,Atalanta,Fiorentina,0,2,Fiorentina,away,0.654,0.609,1.88,0.83,2.0,,,,
+2026-01-21,soccer,Serie A,Lazio,Atalanta,1,1,draw,draw,0.468,0.644,1.65,1.55,2.0,,,,
+2026-01-21,soccer,La Liga,Real Madrid,Betis,0,3,Betis,away,0.677,0.549,1.38,1.57,2.0,,,,
+2026-01-21,soccer,Premier League,Arsenal,Chelsea,3,3,draw,draw,0.623,0.568,2.3,0.62,2.0,,,,
+2026-01-21,soccer,Champions League,Ajax,Porto,2,0,Ajax,home,0.508,0.548,1.51,1.99,2.0,,,,
+2026-01-21,soccer,La Liga,Atletico,Betis,1,1,Betis,away,0.534,0.4,1.67,1.79,2.0,,,,
+2026-01-20,soccer,Europa League,Sporting,Fenerbahce,2,2,draw,draw,0.412,0.441,2.49,1.24,2.0,,,,
+2026-01-20,soccer,Champions League,Ajax,Shakhtar,3,0,Ajax,home,0.419,0.561,1.1,1.49,2.0,,,,
+2026-01-19,soccer,Champions League,Bayern,Benfica,0,3,Benfica,away,0.657,0.443,1.89,1.64,2.0,,,,
+2026-01-19,soccer,Serie A,Roma,Lazio,2,2,draw,draw,0.524,0.519,1.34,1.34,2.0,,,,
+2026-01-18,soccer,Europa League,Sporting,Brighton,1,3,Brighton,away,0.508,0.66,2.38,1.44,2.0,,,,
+2026-01-14,soccer,Serie A,Atalanta,Juventus,1,1,draw,draw,0.509,0.506,1.03,1.49,2.0,,,,
+2026-01-14,soccer,Serie A,AC Milan,Napoli,0,1,Napoli,away,0.487,0.649,1.61,1.14,2.0,,,,
+2026-01-14,soccer,La Liga,Atletico,Real Sociedad,1,0,Atletico,home,0.613,0.618,1.24,1.74,2.0,,,,
+2026-01-14,soccer,Premier League,Aston Villa,Tottenham,0,0,draw,draw,0.566,0.393,2.35,0.73,2.0,,,,
+2026-01-14,soccer,Serie A,Roma,Inter,1,1,draw,draw,0.555,0.594,1.33,0.62,2.0,,,,
+2026-01-13,soccer,Europa League,Marseille,Leverkusen,2,2,draw,draw,0.451,0.487,0.83,1.31,2.0,,,,
+2026-01-13,soccer,Serie A,Roma,AC Milan,0,1,AC Milan,away,0.616,0.641,1.84,1.68,2.0,,,,
+2026-01-13,soccer,La Liga,Real Madrid,Villarreal,0,2,Villarreal,away,0.717,0.483,1.86,0.66,2.0,,,,
+2026-01-13,soccer,La Liga,Betis,Atletico,3,0,Betis,home,0.644,0.432,1.91,1.97,2.0,,,,
+2026-01-13,soccer,Serie A,Inter,Roma,1,0,Inter,home,0.646,0.558,2.26,1.19,2.0,,,,
+2026-01-12,soccer,Champions League,Benfica,Dortmund,1,1,draw,draw,0.496,0.596,1.93,1.46,2.0,,,,
+2026-01-12,soccer,La Liga,Atletico,Sevilla,0,2,Sevilla,away,0.458,0.679,1.09,1.83,2.0,,,,
+2026-01-12,soccer,Europa League,Marseille,Rangers,2,1,Marseille,home,0.573,0.456,1.54,1.68,2.0,,,,
+2026-01-11,soccer,Champions League,Shakhtar,Dortmund,0,2,Dortmund,away,0.582,0.475,1.38,0.83,2.0,,,,
+2026-01-10,soccer,Serie A,Inter,Napoli,2,0,Inter,home,0.457,0.492,0.81,0.89,2.0,,,,
+2026-01-10,soccer,Champions League,Dortmund,Bayern,0,3,Bayern,away,0.444,0.613,0.89,1.68,2.0,,,,
+2026-01-09,soccer,Serie A,Atalanta,Inter,2,1,Atalanta,home,0.65,0.66,1.06,0.92,2.0,,,,
+2026-01-09,soccer,Premier League,Man City,Aston Villa,1,1,draw,draw,0.554,0.528,1.3,1.9,2.0,,,,
+2026-01-09,soccer,La Liga,Betis,Barcelona,2,2,draw,draw,0.425,0.575,1.08,1.7,2.0,,,,
+2026-01-09,soccer,Serie A,Lazio,Inter,1,1,draw,draw,0.597,0.662,1.37,0.67,2.0,,,,
+2026-01-09,soccer,Europa League,Marseille,West Ham,1,1,draw,draw,0.566,0.405,1.93,1.03,2.0,,,,
+2026-01-09,soccer,Europa League,Brighton,Rangers,1,1,draw,draw,0.668,0.61,1.0,1.82,2.0,,,,
+2026-01-08,soccer,La Liga,Barcelona,Sevilla,2,2,draw,draw,0.695,0.404,0.97,0.8,2.0,,,,
+2026-01-07,soccer,La Liga,Real Madrid,Valencia,0,0,draw,draw,0.614,0.417,1.9,1.26,2.0,,,,
+2026-01-07,soccer,Europa League,Sporting,Roma,2,0,Sporting,home,0.655,0.635,2.29,1.58,2.0,,,,
+2026-01-07,soccer,Serie A,Lazio,Roma,1,1,Roma,away,0.551,0.383,1.74,1.23,2.0,,,,
+2026-01-07,soccer,Europa League,Leverkusen,Fenerbahce,4,1,Leverkusen,home,0.653,0.362,1.4,1.65,2.0,,,,
+2026-01-06,soccer,Champions League,Ajax,Porto,0,1,Porto,away,0.435,0.414,1.41,1.26,2.0,,,,
+2026-01-06,soccer,Serie A,Lazio,Juventus,3,3,draw,draw,0.543,0.356,1.05,1.63,2.0,,,,
+2026-01-06,soccer,Serie A,Roma,Juventus,1,0,Roma,home,0.476,0.645,0.91,0.66,2.0,,,,
+2026-01-06,soccer,La Liga,Barcelona,Sevilla,4,0,Barcelona,home,0.602,0.632,1.18,0.63,2.0,,,,
+2026-01-05,soccer,Europa League,Brighton,Sporting,1,1,Brighton,home,0.474,0.584,1.61,0.65,2.0,,,,
+2026-01-04,soccer,Premier League,Aston Villa,Arsenal,0,1,Arsenal,away,0.639,0.517,1.34,0.84,2.0,,,,
+2026-01-03,soccer,La Liga,Real Madrid,Valencia,1,1,Real Madrid,home,0.589,0.478,2.26,0.81,2.0,,,,
+2026-01-03,soccer,Serie A,Lazio,Juventus,1,0,Lazio,home,0.555,0.514,1.94,1.71,2.0,,,,
+2026-01-01,soccer,La Liga,Atletico,Barcelona,0,0,draw,draw,0.595,0.59,1.63,1.01,2.0,,,,
+2026-01-01,soccer,Champions League,PSG,Porto,0,2,Porto,away,0.424,0.354,1.09,1.34,2.0,,,,

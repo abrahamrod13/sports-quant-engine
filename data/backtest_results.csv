@@ -1,0 +1,197 @@
+date,sport,league,match,pick,pick_side,actual_result,actual_winner,won,probability,edge,volatility,confidence,odds,stake,profit,balance
+2026-05-08,nba,NBA,Oklahoma City Thunder vs Los Angeles Lakers,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5377,0.0377,0.2,BAJA,2.0,30.0,30.0,1030.0
+2026-05-07,nba,NBA,Detroit Pistons vs Cleveland Cavaliers,Detroit Pistons,home,home,Detroit Pistons,True,0.5315,0.0315,0.2,BAJA,2.0,30.9,30.9,1060.9
+2026-05-07,nba,NBA,San Antonio Spurs vs Minnesota Timberwolves,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5442,0.0442,0.2,BAJA,2.0,31.83,31.83,1092.73
+2026-05-06,nba,NBA,New York Knicks vs Philadelphia 76ers,New York Knicks,home,home,New York Knicks,True,0.536,0.036,0.2,BAJA,2.0,32.78,32.78,1125.51
+2026-05-06,nba,NBA,Oklahoma City Thunder vs Los Angeles Lakers,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5362,0.0362,0.2,BAJA,2.0,33.77,33.77,1159.27
+2026-05-05,nba,NBA,New York Knicks vs Philadelphia 76ers,New York Knicks,home,home,New York Knicks,True,0.535,0.035,0.2,BAJA,2.0,34.78,34.78,1194.05
+2026-05-05,nba,NBA,Detroit Pistons vs Cleveland Cavaliers,Detroit Pistons,home,home,Detroit Pistons,True,0.5329,0.0329,0.2,BAJA,2.0,35.82,35.82,1229.87
+2026-05-05,nba,NBA,San Antonio Spurs vs Minnesota Timberwolves,San Antonio Spurs,home,away,Minnesota Timberwolves,False,0.5534,0.0534,0.2,MEDIA,2.0,36.9,-36.9,1192.98
+2026-05-03,nba,NBA,Detroit Pistons vs Orlando Magic,Detroit Pistons,home,home,Detroit Pistons,True,0.5443,0.0443,0.2,BAJA,2.0,35.79,35.79,1228.77
+2026-05-02,nba,NBA,Boston Celtics vs Philadelphia 76ers,Boston Celtics,home,away,Philadelphia 76ers,False,0.5412,0.0412,0.2,BAJA,2.0,36.86,-36.86,1191.9
+2026-04-29,nba,NBA,New York Knicks vs Atlanta Hawks,New York Knicks,home,home,New York Knicks,True,0.5324,0.0324,0.2,BAJA,2.0,35.76,35.76,1227.66
+2026-04-29,nba,NBA,Detroit Pistons vs Orlando Magic,Detroit Pistons,home,home,Detroit Pistons,True,0.5493,0.0493,0.2,BAJA,2.0,36.83,36.83,1264.49
+2026-04-29,nba,NBA,San Antonio Spurs vs Portland Trail Blazers,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5591,0.0591,0.2,MEDIA,2.0,37.93,37.93,1302.43
+2026-04-28,nba,NBA,Boston Celtics vs Philadelphia 76ers,Boston Celtics,home,away,Philadelphia 76ers,False,0.544,0.044,0.2,BAJA,2.0,39.07,-39.07,1263.35
+2026-04-23,nba,NBA,Oklahoma City Thunder vs Phoenix Suns,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5542,0.0542,0.2,MEDIA,2.0,37.9,37.9,1301.25
+2026-04-22,nba,NBA,Detroit Pistons vs Orlando Magic,Detroit Pistons,home,home,Detroit Pistons,True,0.5531,0.0531,0.2,MEDIA,2.0,39.04,39.04,1340.29
+2026-04-22,nba,NBA,San Antonio Spurs vs Portland Trail Blazers,San Antonio Spurs,home,away,Portland Trail Blazers,False,0.5607,0.0607,0.2,MEDIA,2.0,40.21,-40.21,1300.08
+2026-04-21,nba,NBA,Denver Nuggets vs Minnesota Timberwolves,Denver Nuggets,home,away,Minnesota Timberwolves,False,0.5358,0.0358,0.2,BAJA,2.0,39.0,-39.0,1261.08
+2026-04-21,nba,NBA,New York Knicks vs Atlanta Hawks,New York Knicks,home,away,Atlanta Hawks,False,0.536,0.036,0.2,BAJA,2.0,37.83,-37.83,1223.25
+2026-04-21,nba,NBA,Boston Celtics vs Philadelphia 76ers,Boston Celtics,home,away,Philadelphia 76ers,False,0.5448,0.0448,0.2,BAJA,2.0,36.7,-36.7,1186.55
+2026-04-20,nba,NBA,Cleveland Cavaliers vs Toronto Raptors,Cleveland Cavaliers,home,home,Cleveland Cavaliers,True,0.5313,0.0313,0.2,BAJA,2.0,35.6,35.6,1222.15
+2026-04-20,nba,NBA,San Antonio Spurs vs Portland Trail Blazers,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5617,0.0617,0.2,MEDIA,2.0,36.66,36.66,1258.81
+2026-04-19,nba,NBA,Detroit Pistons vs Orlando Magic,Detroit Pistons,home,away,Orlando Magic,False,0.5458,0.0458,0.2,BAJA,2.0,37.76,-37.76,1221.05
+2026-04-19,nba,NBA,Oklahoma City Thunder vs Phoenix Suns,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5524,0.0524,0.2,MEDIA,2.0,36.63,36.63,1257.68
+2026-04-19,nba,NBA,Boston Celtics vs Philadelphia 76ers,Boston Celtics,home,home,Boston Celtics,True,0.5375,0.0375,0.2,BAJA,2.0,37.73,37.73,1295.41
+2026-04-18,nba,NBA,New York Knicks vs Atlanta Hawks,New York Knicks,home,home,New York Knicks,True,0.5387,0.0387,0.2,BAJA,2.0,38.86,38.86,1334.27
+2026-04-18,nba,NBA,Phoenix Suns vs Golden State Warriors,Phoenix Suns,home,home,Phoenix Suns,True,0.531,0.031,0.2,BAJA,2.0,40.03,40.03,1374.3
+2026-04-16,nba,NBA,LA Clippers vs Golden State Warriors,LA Clippers,home,away,Golden State Warriors,False,0.5317,0.0317,0.2,BAJA,2.0,41.23,-41.23,1333.07
+2026-04-13,nba,NBA,San Antonio Spurs vs Denver Nuggets,San Antonio Spurs,home,away,Denver Nuggets,False,0.5352,0.0352,0.2,BAJA,2.0,39.99,-39.99,1293.08
+2026-04-13,nba,NBA,Portland Trail Blazers vs Sacramento Kings,Portland Trail Blazers,home,home,Portland Trail Blazers,True,0.5716,0.0716,0.2,MEDIA,2.0,38.79,38.79,1331.87
+2026-04-13,nba,NBA,Houston Rockets vs Memphis Grizzlies,Houston Rockets,home,home,Houston Rockets,True,0.5854,0.0854,0.2,MEDIA,2.0,39.96,39.96,1371.83
+2026-04-13,nba,NBA,Oklahoma City Thunder vs Phoenix Suns,Oklahoma City Thunder,home,away,Phoenix Suns,False,0.562,0.062,0.2,MEDIA,2.0,41.15,-41.15,1330.67
+2026-04-13,nba,NBA,Los Angeles Lakers vs Utah Jazz,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5948,0.0948,0.2,MEDIA,2.0,39.92,39.92,1370.59
+2026-04-13,nba,NBA,Minnesota Timberwolves vs New Orleans Pelicans,Minnesota Timberwolves,home,home,Minnesota Timberwolves,True,0.5726,0.0726,0.2,MEDIA,2.0,41.12,41.12,1411.71
+2026-04-12,nba,NBA,Philadelphia 76ers vs Milwaukee Bucks,Philadelphia 76ers,home,home,Philadelphia 76ers,True,0.5445,0.0445,0.2,BAJA,2.0,42.35,42.35,1454.06
+2026-04-12,nba,NBA,New York Knicks vs Charlotte Hornets,New York Knicks,home,away,Charlotte Hornets,False,0.542,0.042,0.2,BAJA,2.0,43.62,-43.62,1410.44
+2026-04-12,nba,NBA,Toronto Raptors vs Brooklyn Nets,Toronto Raptors,home,home,Toronto Raptors,True,0.5752,0.0752,0.2,MEDIA,2.0,42.31,42.31,1452.75
+2026-04-12,nba,NBA,Boston Celtics vs Orlando Magic,Boston Celtics,home,home,Boston Celtics,True,0.5313,0.0313,0.2,BAJA,2.0,43.58,43.58,1496.33
+2026-04-12,nba,NBA,Cleveland Cavaliers vs Washington Wizards,Cleveland Cavaliers,home,home,Cleveland Cavaliers,True,0.5919,0.0919,0.2,MEDIA,2.0,44.89,44.89,1541.22
+2026-04-11,nba,NBA,San Antonio Spurs vs Dallas Mavericks,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5966,0.0966,0.2,MEDIA,2.0,46.24,46.24,1587.46
+2026-04-11,nba,NBA,Los Angeles Lakers vs Phoenix Suns,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5373,0.0373,0.2,BAJA,2.0,47.62,47.62,1635.08
+2026-04-11,nba,NBA,Milwaukee Bucks vs Brooklyn Nets,Milwaukee Bucks,home,home,Milwaukee Bucks,True,0.5549,0.0549,0.2,MEDIA,2.0,49.05,49.05,1684.14
+2026-04-10,nba,NBA,Boston Celtics vs New Orleans Pelicans,Boston Celtics,home,home,Boston Celtics,True,0.578,0.078,0.2,MEDIA,2.0,50.52,50.52,1734.66
+2026-04-10,nba,NBA,Houston Rockets vs Philadelphia 76ers,Houston Rockets,home,home,Houston Rockets,True,0.5324,0.0324,0.2,BAJA,2.0,52.04,52.04,1786.7
+2026-04-09,nba,NBA,Phoenix Suns vs Dallas Mavericks,Phoenix Suns,home,home,Phoenix Suns,True,0.5589,0.0589,0.2,MEDIA,2.0,53.6,53.6,1840.3
+2026-04-09,nba,NBA,San Antonio Spurs vs Portland Trail Blazers,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5576,0.0576,0.2,MEDIA,2.0,55.21,55.21,1895.51
+2026-04-09,nba,NBA,Denver Nuggets vs Memphis Grizzlies,Denver Nuggets,home,home,Denver Nuggets,True,0.581,0.081,0.2,MEDIA,2.0,56.87,56.87,1952.38
+2026-04-08,nba,NBA,New Orleans Pelicans vs Utah Jazz,New Orleans Pelicans,home,home,New Orleans Pelicans,True,0.5403,0.0403,0.2,BAJA,2.0,58.57,58.57,2010.95
+2026-04-08,nba,NBA,Golden State Warriors vs Sacramento Kings,Golden State Warriors,home,home,Golden State Warriors,True,0.5626,0.0626,0.2,MEDIA,2.0,60.33,60.33,2071.28
+2026-04-08,nba,NBA,Detroit Pistons vs Milwaukee Bucks,Detroit Pistons,home,home,Detroit Pistons,True,0.5689,0.0689,0.2,MEDIA,2.0,62.14,62.14,2133.42
+2026-04-08,nba,NBA,LA Clippers vs Dallas Mavericks,LA Clippers,home,home,LA Clippers,True,0.5628,0.0628,0.2,MEDIA,2.0,64.0,64.0,2197.42
+2026-04-08,nba,NBA,Boston Celtics vs Charlotte Hornets,Boston Celtics,home,home,Boston Celtics,True,0.5394,0.0394,0.2,BAJA,2.0,65.92,65.92,2263.34
+2026-04-07,nba,NBA,Denver Nuggets vs Portland Trail Blazers,Denver Nuggets,home,home,Denver Nuggets,True,0.5345,0.0345,0.2,BAJA,2.0,67.9,67.9,2331.24
+2026-04-07,nba,NBA,San Antonio Spurs vs Philadelphia 76ers,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5517,0.0517,0.2,MEDIA,2.0,69.94,69.94,2401.18
+2026-04-05,nba,NBA,Boston Celtics vs Toronto Raptors,Boston Celtics,home,home,Boston Celtics,True,0.5327,0.0327,0.2,BAJA,2.0,72.04,72.04,2473.21
+2026-04-05,nba,NBA,Milwaukee Bucks vs Memphis Grizzlies,Milwaukee Bucks,home,home,Milwaukee Bucks,True,0.5329,0.0329,0.2,BAJA,2.0,74.2,74.2,2547.41
+2026-04-05,nba,NBA,Cleveland Cavaliers vs Indiana Pacers,Cleveland Cavaliers,home,home,Cleveland Cavaliers,True,0.5977,0.0977,0.2,MEDIA,2.0,76.42,76.42,2623.83
+2026-04-05,nba,NBA,Oklahoma City Thunder vs Utah Jazz,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.6088,0.1088,0.2,ALTA,2.0,78.71,78.71,2702.55
+2026-04-04,nba,NBA,Miami Heat vs Washington Wizards,Miami Heat,home,home,Miami Heat,True,0.5809,0.0809,0.2,MEDIA,2.0,81.08,81.08,2783.62
+2026-04-04,nba,NBA,Houston Rockets vs Utah Jazz,Houston Rockets,home,home,Houston Rockets,True,0.5904,0.0904,0.2,MEDIA,2.0,83.51,83.51,2867.13
+2026-04-03,nba,NBA,New York Knicks vs Chicago Bulls,New York Knicks,home,home,New York Knicks,True,0.5657,0.0657,0.2,MEDIA,2.0,86.01,86.01,2953.15
+2026-04-03,nba,NBA,Charlotte Hornets vs Indiana Pacers,Charlotte Hornets,home,home,Charlotte Hornets,True,0.5726,0.0726,0.2,MEDIA,2.0,88.59,88.59,3041.74
+2026-04-03,nba,NBA,Oklahoma City Thunder vs Los Angeles Lakers,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5408,0.0408,0.2,BAJA,2.0,91.25,91.25,3132.99
+2026-04-03,nba,NBA,Portland Trail Blazers vs New Orleans Pelicans,Portland Trail Blazers,home,home,Portland Trail Blazers,True,0.5499,0.0499,0.2,BAJA,2.0,93.99,93.99,3226.98
+2026-04-02,nba,NBA,Houston Rockets vs Milwaukee Bucks,Houston Rockets,home,home,Houston Rockets,True,0.555,0.055,0.2,MEDIA,2.0,96.81,96.81,3323.79
+2026-04-02,nba,NBA,Chicago Bulls vs Indiana Pacers,Chicago Bulls,home,away,Indiana Pacers,False,0.5518,0.0518,0.2,MEDIA,2.0,99.71,-99.71,3224.08
+2026-04-02,nba,NBA,Detroit Pistons vs Minnesota Timberwolves,Detroit Pistons,home,home,Detroit Pistons,True,0.5308,0.0308,0.2,BAJA,2.0,96.72,96.72,3320.8
+2026-04-02,nba,NBA,Toronto Raptors vs Sacramento Kings,Toronto Raptors,home,away,Sacramento Kings,False,0.5774,0.0774,0.2,MEDIA,2.0,99.62,-99.62,3221.18
+2026-04-01,nba,NBA,Milwaukee Bucks vs Dallas Mavericks,Milwaukee Bucks,home,home,Milwaukee Bucks,True,0.5311,0.0311,0.2,BAJA,2.0,96.64,96.64,3317.81
+2026-04-01,nba,NBA,Detroit Pistons vs Toronto Raptors,Detroit Pistons,home,home,Detroit Pistons,True,0.5437,0.0437,0.2,BAJA,2.0,99.53,99.53,3417.35
+2026-03-31,nba,NBA,San Antonio Spurs vs Chicago Bulls,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5761,0.0761,0.2,MEDIA,2.0,102.52,102.52,3519.87
+2026-03-31,nba,NBA,Los Angeles Lakers vs Washington Wizards,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5933,0.0933,0.2,MEDIA,2.0,105.6,105.6,3625.46
+2026-03-30,nba,NBA,Denver Nuggets vs Golden State Warriors,Denver Nuggets,home,home,Denver Nuggets,True,0.5455,0.0455,0.2,BAJA,2.0,108.76,108.76,3734.23
+2026-03-29,nba,NBA,Oklahoma City Thunder vs New York Knicks,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5412,0.0412,0.2,BAJA,2.0,112.03,112.03,3846.25
+2026-03-29,nba,NBA,Portland Trail Blazers vs Washington Wizards,Portland Trail Blazers,home,home,Portland Trail Blazers,True,0.5677,0.0677,0.2,MEDIA,2.0,115.39,115.39,3961.64
+2026-03-29,nba,NBA,Phoenix Suns vs Utah Jazz,Phoenix Suns,home,home,Phoenix Suns,True,0.5716,0.0716,0.2,MEDIA,2.0,118.85,118.85,4080.49
+2026-03-28,nba,NBA,Golden State Warriors vs Washington Wizards,Golden State Warriors,home,home,Golden State Warriors,True,0.5613,0.0613,0.2,MEDIA,2.0,122.41,122.41,4202.9
+2026-03-28,nba,NBA,Toronto Raptors vs New Orleans Pelicans,Toronto Raptors,home,home,Toronto Raptors,True,0.5616,0.0616,0.2,MEDIA,2.0,126.09,126.09,4328.99
+2026-03-28,nba,NBA,Atlanta Hawks vs Sacramento Kings,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5674,0.0674,0.2,MEDIA,2.0,129.87,129.87,4458.86
+2026-03-28,nba,NBA,Portland Trail Blazers vs Dallas Mavericks,Portland Trail Blazers,home,away,Dallas Mavericks,False,0.5598,0.0598,0.2,MEDIA,2.0,133.77,-133.77,4325.09
+2026-03-28,nba,NBA,Denver Nuggets vs Utah Jazz,Denver Nuggets,home,home,Denver Nuggets,True,0.5849,0.0849,0.2,MEDIA,2.0,129.75,129.75,4454.85
+2026-03-28,nba,NBA,Oklahoma City Thunder vs Chicago Bulls,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5885,0.0885,0.2,MEDIA,2.0,133.65,133.65,4588.49
+2026-03-28,nba,NBA,Los Angeles Lakers vs Brooklyn Nets,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5929,0.0929,0.2,MEDIA,2.0,137.65,137.65,4726.15
+2026-03-27,nba,NBA,Boston Celtics vs Atlanta Hawks,Boston Celtics,home,home,Boston Celtics,True,0.5364,0.0364,0.2,BAJA,2.0,141.78,141.78,4867.93
+2026-03-26,nba,NBA,Denver Nuggets vs Dallas Mavericks,Denver Nuggets,home,home,Denver Nuggets,True,0.583,0.083,0.2,MEDIA,2.0,146.04,146.04,5013.97
+2026-03-26,nba,NBA,Golden State Warriors vs Brooklyn Nets,Golden State Warriors,home,home,Golden State Warriors,True,0.5634,0.0634,0.2,MEDIA,2.0,150.42,150.42,5164.39
+2026-03-26,nba,NBA,Portland Trail Blazers vs Milwaukee Bucks,Portland Trail Blazers,home,home,Portland Trail Blazers,True,0.5372,0.0372,0.2,BAJA,2.0,154.93,154.93,5319.32
+2026-03-26,nba,NBA,Utah Jazz vs Washington Wizards,Utah Jazz,home,away,Washington Wizards,False,0.5347,0.0347,0.2,BAJA,2.0,159.58,-159.58,5159.74
+2026-03-26,nba,NBA,Orlando Magic vs Sacramento Kings,Orlando Magic,home,home,Orlando Magic,True,0.5657,0.0657,0.2,MEDIA,2.0,154.79,154.79,5314.53
+2026-03-26,nba,NBA,Detroit Pistons vs New Orleans Pelicans,Detroit Pistons,home,home,Detroit Pistons,True,0.5766,0.0766,0.2,MEDIA,2.0,159.44,159.44,5473.97
+2026-03-25,nba,NBA,Detroit Pistons vs Atlanta Hawks,Detroit Pistons,home,away,Atlanta Hawks,False,0.5378,0.0378,0.2,BAJA,2.0,164.22,-164.22,5309.75
+2026-03-25,nba,NBA,Cleveland Cavaliers vs Miami Heat,Cleveland Cavaliers,home,away,Miami Heat,False,0.5361,0.0361,0.2,BAJA,2.0,159.29,-159.29,5150.46
+2026-03-25,nba,NBA,Philadelphia 76ers vs Chicago Bulls,Philadelphia 76ers,home,home,Philadelphia 76ers,True,0.5483,0.0483,0.2,BAJA,2.0,154.51,154.51,5304.97
+2026-03-25,nba,NBA,Cleveland Cavaliers vs Orlando Magic,Cleveland Cavaliers,home,home,Cleveland Cavaliers,True,0.5303,0.0303,0.2,BAJA,2.0,159.15,159.15,5464.12
+2026-03-24,nba,NBA,LA Clippers vs Milwaukee Bucks,LA Clippers,home,home,LA Clippers,True,0.5398,0.0398,0.2,BAJA,2.0,163.92,163.92,5628.04
+2026-03-24,nba,NBA,Portland Trail Blazers vs Brooklyn Nets,Portland Trail Blazers,home,home,Portland Trail Blazers,True,0.5642,0.0642,0.2,MEDIA,2.0,168.84,168.84,5796.89
+2026-03-24,nba,NBA,New York Knicks vs New Orleans Pelicans,New York Knicks,home,home,New York Knicks,True,0.5671,0.0671,0.2,MEDIA,2.0,173.91,173.91,5970.79
+2026-03-24,nba,NBA,Charlotte Hornets vs Sacramento Kings,Charlotte Hornets,home,home,Charlotte Hornets,True,0.5599,0.0599,0.2,MEDIA,2.0,179.12,179.12,6149.92
+2026-03-23,nba,NBA,Atlanta Hawks vs Memphis Grizzlies,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5468,0.0468,0.2,BAJA,2.0,184.5,184.5,6334.41
+2026-03-23,nba,NBA,Detroit Pistons vs Los Angeles Lakers,Detroit Pistons,home,home,Detroit Pistons,True,0.5315,0.0315,0.2,BAJA,2.0,190.03,190.03,6524.45
+2026-03-23,nba,NBA,Orlando Magic vs Indiana Pacers,Orlando Magic,home,away,Indiana Pacers,False,0.5737,0.0737,0.2,MEDIA,2.0,195.73,-195.73,6328.71
+2026-03-22,nba,NBA,Phoenix Suns vs Milwaukee Bucks,Phoenix Suns,home,away,Milwaukee Bucks,False,0.5481,0.0481,0.2,BAJA,2.0,189.86,-189.86,6138.85
+2026-03-22,nba,NBA,Denver Nuggets vs Portland Trail Blazers,Denver Nuggets,home,home,Denver Nuggets,True,0.5396,0.0396,0.2,BAJA,2.0,184.17,184.17,6323.02
+2026-03-22,nba,NBA,New York Knicks vs Washington Wizards,New York Knicks,home,home,New York Knicks,True,0.5858,0.0858,0.2,MEDIA,2.0,189.69,189.69,6512.71
+2026-03-22,nba,NBA,San Antonio Spurs vs Indiana Pacers,San Antonio Spurs,home,home,San Antonio Spurs,True,0.6045,0.1045,0.2,ALTA,2.0,195.38,195.38,6708.09
+2026-03-21,nba,NBA,Minnesota Timberwolves vs Portland Trail Blazers,Minnesota Timberwolves,home,away,Portland Trail Blazers,False,0.5369,0.0369,0.2,BAJA,2.0,201.24,-201.24,6506.85
+2026-03-21,nba,NBA,Charlotte Hornets vs Memphis Grizzlies,Charlotte Hornets,home,home,Charlotte Hornets,True,0.5511,0.0511,0.2,MEDIA,2.0,195.21,195.21,6702.05
+2026-03-20,nba,NBA,San Antonio Spurs vs Phoenix Suns,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5447,0.0447,0.2,BAJA,2.0,201.06,201.06,6903.11
+2026-03-20,nba,NBA,Detroit Pistons vs Golden State Warriors,Detroit Pistons,home,home,Detroit Pistons,True,0.5591,0.0591,0.2,MEDIA,2.0,207.09,207.09,7110.21
+2026-03-19,nba,NBA,Minnesota Timberwolves vs Utah Jazz,Minnesota Timberwolves,home,home,Minnesota Timberwolves,True,0.5692,0.0692,0.2,MEDIA,2.0,213.31,213.31,7323.51
+2026-03-18,nba,NBA,Boston Celtics vs Golden State Warriors,Boston Celtics,home,home,Boston Celtics,True,0.542,0.042,0.2,BAJA,2.0,219.71,219.71,7543.22
+2026-03-17,nba,NBA,New York Knicks vs Indiana Pacers,New York Knicks,home,home,New York Knicks,True,0.5858,0.0858,0.2,MEDIA,2.0,226.3,226.3,7769.51
+2026-03-16,nba,NBA,New York Knicks vs Golden State Warriors,New York Knicks,home,home,New York Knicks,True,0.5404,0.0404,0.2,BAJA,2.0,233.09,233.09,8002.6
+2026-03-16,nba,NBA,Boston Celtics vs Phoenix Suns,Boston Celtics,home,home,Boston Celtics,True,0.5305,0.0305,0.2,BAJA,2.0,240.08,240.08,8242.68
+2026-03-15,nba,NBA,Cleveland Cavaliers vs Dallas Mavericks,Cleveland Cavaliers,home,away,Dallas Mavericks,False,0.5655,0.0655,0.2,MEDIA,2.0,247.28,-247.28,7995.4
+2026-03-15,nba,NBA,Oklahoma City Thunder vs Minnesota Timberwolves,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5405,0.0405,0.2,BAJA,2.0,239.86,239.86,8235.26
+2026-03-15,nba,NBA,Milwaukee Bucks vs Indiana Pacers,Milwaukee Bucks,home,home,Milwaukee Bucks,True,0.5574,0.0574,0.2,MEDIA,2.0,247.06,247.06,8482.32
+2026-03-15,nba,NBA,LA Clippers vs Sacramento Kings,LA Clippers,home,away,Sacramento Kings,False,0.5647,0.0647,0.2,MEDIA,2.0,254.47,-254.47,8227.85
+2026-03-14,nba,NBA,Philadelphia 76ers vs Brooklyn Nets,Philadelphia 76ers,home,home,Philadelphia 76ers,True,0.5667,0.0667,0.2,MEDIA,2.0,246.84,246.84,8474.68
+2026-03-14,nba,NBA,Boston Celtics vs Washington Wizards,Boston Celtics,home,home,Boston Celtics,True,0.5836,0.0836,0.2,MEDIA,2.0,254.24,254.24,8728.92
+2026-03-14,nba,NBA,San Antonio Spurs vs Charlotte Hornets,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5508,0.0508,0.2,MEDIA,2.0,261.87,261.87,8990.79
+2026-03-14,nba,NBA,Atlanta Hawks vs Milwaukee Bucks,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5366,0.0366,0.2,BAJA,2.0,269.72,269.72,9260.51
+2026-03-14,nba,NBA,Portland Trail Blazers vs Utah Jazz,Portland Trail Blazers,home,home,Portland Trail Blazers,True,0.5458,0.0458,0.2,BAJA,2.0,277.82,277.82,9538.33
+2026-03-14,nba,NBA,Houston Rockets vs New Orleans Pelicans,Houston Rockets,home,home,Houston Rockets,True,0.5628,0.0628,0.2,MEDIA,2.0,286.15,286.15,9824.48
+2026-03-13,nba,NBA,Los Angeles Lakers vs Chicago Bulls,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.555,0.055,0.2,MEDIA,2.0,294.73,294.73,10119.21
+2026-03-13,nba,NBA,Oklahoma City Thunder vs Boston Celtics,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5304,0.0304,0.2,BAJA,2.0,303.58,303.58,10422.79
+2026-03-13,nba,NBA,Memphis Grizzlies vs Dallas Mavericks,Memphis Grizzlies,home,away,Dallas Mavericks,False,0.5332,0.0332,0.2,BAJA,2.0,312.68,-312.68,10110.11
+2026-03-13,nba,NBA,San Antonio Spurs vs Denver Nuggets,San Antonio Spurs,home,away,Denver Nuggets,False,0.5356,0.0356,0.2,BAJA,2.0,303.3,-303.3,9806.8
+2026-03-13,nba,NBA,Detroit Pistons vs Memphis Grizzlies,Detroit Pistons,home,home,Detroit Pistons,True,0.5746,0.0746,0.2,MEDIA,2.0,294.2,294.2,10101.01
+2026-03-12,nba,NBA,Detroit Pistons vs Philadelphia 76ers,Detroit Pistons,home,home,Detroit Pistons,True,0.5427,0.0427,0.2,BAJA,2.0,303.03,303.03,10404.04
+2026-03-12,nba,NBA,Orlando Magic vs Washington Wizards,Orlando Magic,home,home,Orlando Magic,True,0.5737,0.0737,0.2,MEDIA,2.0,312.12,312.12,10716.16
+2026-03-12,nba,NBA,Atlanta Hawks vs Brooklyn Nets,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5631,0.0631,0.2,MEDIA,2.0,321.48,321.48,11037.64
+2026-03-12,nba,NBA,Miami Heat vs Milwaukee Bucks,Miami Heat,home,home,Miami Heat,True,0.5419,0.0419,0.2,BAJA,2.0,331.13,331.13,11368.77
+2026-03-11,nba,NBA,Golden State Warriors vs Chicago Bulls,Golden State Warriors,home,away,Chicago Bulls,False,0.5318,0.0318,0.2,BAJA,2.0,341.06,-341.06,11027.71
+2026-03-10,nba,NBA,Atlanta Hawks vs Dallas Mavericks,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5526,0.0526,0.2,MEDIA,2.0,330.83,330.83,11358.54
+2026-03-10,nba,NBA,Miami Heat vs Washington Wizards,Miami Heat,home,home,Miami Heat,True,0.5673,0.0673,0.2,MEDIA,2.0,340.76,340.76,11699.3
+2026-03-10,nba,NBA,Philadelphia 76ers vs Memphis Grizzlies,Philadelphia 76ers,home,home,Philadelphia 76ers,True,0.5435,0.0435,0.2,BAJA,2.0,350.98,350.98,12050.28
+2026-03-09,nba,NBA,Phoenix Suns vs Charlotte Hornets,Phoenix Suns,home,home,Phoenix Suns,True,0.5342,0.0342,0.2,BAJA,2.0,361.51,361.51,12411.79
+2026-03-09,nba,NBA,Portland Trail Blazers vs Indiana Pacers,Portland Trail Blazers,home,home,Portland Trail Blazers,True,0.5581,0.0581,0.2,MEDIA,2.0,372.35,372.35,12784.14
+2026-03-09,nba,NBA,Oklahoma City Thunder vs Denver Nuggets,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5429,0.0429,0.2,BAJA,2.0,383.52,383.52,13167.66
+2026-03-08,nba,NBA,Toronto Raptors vs Dallas Mavericks,Toronto Raptors,home,home,Toronto Raptors,True,0.5618,0.0618,0.2,MEDIA,2.0,395.03,395.03,13562.69
+2026-03-08,nba,NBA,Oklahoma City Thunder vs Golden State Warriors,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5499,0.0499,0.2,BAJA,2.0,406.88,406.88,13969.57
+2026-03-08,nba,NBA,Milwaukee Bucks vs Utah Jazz,Milwaukee Bucks,home,home,Milwaukee Bucks,True,0.5435,0.0435,0.2,BAJA,2.0,419.09,419.09,14388.66
+2026-03-07,nba,NBA,San Antonio Spurs vs LA Clippers,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5542,0.0542,0.2,MEDIA,2.0,431.66,431.66,14820.32
+2026-03-07,nba,NBA,Phoenix Suns vs New Orleans Pelicans,Phoenix Suns,home,home,Phoenix Suns,True,0.5611,0.0611,0.2,MEDIA,2.0,444.61,444.61,15264.93
+2026-03-07,nba,NBA,Detroit Pistons vs Brooklyn Nets,Detroit Pistons,home,away,Brooklyn Nets,False,0.5937,0.0937,0.2,MEDIA,2.0,457.95,-457.95,14806.98
+2026-03-07,nba,NBA,Los Angeles Lakers vs Indiana Pacers,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5702,0.0702,0.2,MEDIA,2.0,444.21,444.21,15251.19
+2026-03-07,nba,NBA,Boston Celtics vs Dallas Mavericks,Boston Celtics,home,home,Boston Celtics,True,0.5658,0.0658,0.2,MEDIA,2.0,457.54,457.54,15708.73
+2026-03-07,nba,NBA,Houston Rockets vs Portland Trail Blazers,Houston Rockets,home,home,Houston Rockets,True,0.5447,0.0447,0.2,BAJA,2.0,471.26,471.26,16179.99
+2026-03-06,nba,NBA,Orlando Magic vs Dallas Mavericks,Orlando Magic,home,home,Orlando Magic,True,0.544,0.044,0.2,BAJA,2.0,485.4,485.4,16665.39
+2026-03-06,nba,NBA,Miami Heat vs Brooklyn Nets,Miami Heat,home,home,Miami Heat,True,0.5623,0.0623,0.2,MEDIA,2.0,499.96,499.96,17165.35
+2026-03-06,nba,NBA,Houston Rockets vs Golden State Warriors,Houston Rockets,home,away,Golden State Warriors,False,0.5311,0.0311,0.2,BAJA,2.0,514.96,-514.96,16650.39
+2026-03-06,nba,NBA,Phoenix Suns vs Chicago Bulls,Phoenix Suns,home,away,Chicago Bulls,False,0.5408,0.0408,0.2,BAJA,2.0,499.51,-499.51,16150.88
+2026-03-05,nba,NBA,Philadelphia 76ers vs Utah Jazz,Philadelphia 76ers,home,home,Philadelphia 76ers,True,0.5662,0.0662,0.2,MEDIA,2.0,484.53,484.53,16635.41
+2026-03-05,nba,NBA,LA Clippers vs Indiana Pacers,LA Clippers,home,home,LA Clippers,True,0.5608,0.0608,0.2,MEDIA,2.0,499.06,499.06,17134.47
+2026-03-05,nba,NBA,Boston Celtics vs Charlotte Hornets,Boston Celtics,home,away,Charlotte Hornets,False,0.5438,0.0438,0.2,BAJA,2.0,514.03,-514.03,16620.43
+2026-03-04,nba,NBA,Los Angeles Lakers vs New Orleans Pelicans,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5636,0.0636,0.2,MEDIA,2.0,498.61,498.61,17119.05
+2026-03-04,nba,NBA,Minnesota Timberwolves vs Memphis Grizzlies,Minnesota Timberwolves,home,home,Minnesota Timberwolves,True,0.5494,0.0494,0.2,BAJA,2.0,513.57,513.57,17632.62
+2026-03-04,nba,NBA,Miami Heat vs Brooklyn Nets,Miami Heat,home,home,Miami Heat,True,0.5604,0.0604,0.2,MEDIA,2.0,528.98,528.98,18161.6
+2026-03-04,nba,NBA,Orlando Magic vs Washington Wizards,Orlando Magic,home,home,Orlando Magic,True,0.5627,0.0627,0.2,MEDIA,2.0,544.85,544.85,18706.44
+2026-03-04,nba,NBA,Charlotte Hornets vs Dallas Mavericks,Charlotte Hornets,home,home,Charlotte Hornets,True,0.5394,0.0394,0.2,BAJA,2.0,561.19,561.19,19267.64
+2026-03-02,nba,NBA,Los Angeles Lakers vs Sacramento Kings,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5726,0.0726,0.2,MEDIA,2.0,578.03,578.03,19845.67
+2026-03-02,nba,NBA,Boston Celtics vs Philadelphia 76ers,Boston Celtics,home,home,Boston Celtics,True,0.5353,0.0353,0.2,BAJA,2.0,595.37,595.37,20441.04
+2026-03-02,nba,NBA,LA Clippers vs New Orleans Pelicans,LA Clippers,home,home,LA Clippers,True,0.5362,0.0362,0.2,BAJA,2.0,613.23,613.23,21054.27
+2026-02-28,nba,NBA,Oklahoma City Thunder vs Denver Nuggets,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5351,0.0351,0.2,BAJA,2.0,631.63,631.63,21685.9
+2026-02-28,nba,NBA,Boston Celtics vs Brooklyn Nets,Boston Celtics,home,home,Boston Celtics,True,0.575,0.075,0.2,MEDIA,2.0,650.58,650.58,22336.47
+2026-02-27,nba,NBA,Atlanta Hawks vs Washington Wizards,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5533,0.0533,0.2,MEDIA,2.0,670.09,670.09,23006.57
+2026-02-27,nba,NBA,Dallas Mavericks vs Sacramento Kings,Dallas Mavericks,home,away,Sacramento Kings,False,0.5456,0.0456,0.2,BAJA,2.0,690.2,-690.2,22316.37
+2026-02-26,nba,NBA,Houston Rockets vs Sacramento Kings,Houston Rockets,home,home,Houston Rockets,True,0.5749,0.0749,0.2,MEDIA,2.0,669.49,669.49,22985.86
+2026-02-25,nba,NBA,Atlanta Hawks vs Washington Wizards,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5476,0.0476,0.2,BAJA,2.0,689.58,689.58,23675.44
+2026-02-24,nba,NBA,Memphis Grizzlies vs Sacramento Kings,Memphis Grizzlies,home,away,Sacramento Kings,False,0.55,0.05,0.2,MEDIA,2.0,710.26,-710.26,22965.17
+2026-02-24,nba,NBA,Houston Rockets vs Utah Jazz,Houston Rockets,home,home,Houston Rockets,True,0.558,0.058,0.2,MEDIA,2.0,688.96,688.96,23654.13
+2026-02-23,nba,NBA,Minnesota Timberwolves vs Philadelphia 76ers,Minnesota Timberwolves,home,away,Philadelphia 76ers,False,0.5313,0.0313,0.2,BAJA,2.0,709.62,-709.62,22944.5
+2026-02-22,nba,NBA,San Antonio Spurs vs Sacramento Kings,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5901,0.0901,0.2,MEDIA,2.0,688.34,688.34,23632.84
+2026-02-22,nba,NBA,Atlanta Hawks vs Brooklyn Nets,Atlanta Hawks,home,home,Atlanta Hawks,True,0.5523,0.0523,0.2,MEDIA,2.0,708.99,708.99,24341.83
+2026-02-22,nba,NBA,Miami Heat vs Memphis Grizzlies,Miami Heat,home,home,Miami Heat,True,0.5403,0.0403,0.2,BAJA,2.0,730.25,730.25,25072.08
+2026-02-22,nba,NBA,Oklahoma City Thunder vs Cleveland Cavaliers,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.5359,0.0359,0.2,BAJA,2.0,752.16,752.16,25824.24
+2026-02-21,nba,NBA,Oklahoma City Thunder vs Brooklyn Nets,Oklahoma City Thunder,home,home,Oklahoma City Thunder,True,0.583,0.083,0.2,MEDIA,2.0,774.73,774.73,26598.97
+2026-02-21,nba,NBA,Minnesota Timberwolves vs Dallas Mavericks,Minnesota Timberwolves,home,home,Minnesota Timberwolves,True,0.5637,0.0637,0.2,MEDIA,2.0,797.97,797.97,27396.94
+2026-02-21,nba,NBA,Washington Wizards vs Indiana Pacers,Washington Wizards,home,home,Washington Wizards,True,0.5325,0.0325,0.2,BAJA,2.0,821.91,821.91,28218.85
+2026-02-21,nba,NBA,Los Angeles Lakers vs LA Clippers,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5354,0.0354,0.2,BAJA,2.0,846.57,846.57,29065.41
+2026-02-20,nba,NBA,San Antonio Spurs vs Phoenix Suns,San Antonio Spurs,home,home,San Antonio Spurs,True,0.5322,0.0322,0.2,BAJA,2.0,871.96,871.96,29937.37
+2026-02-20,nba,NBA,Philadelphia 76ers vs Atlanta Hawks,Philadelphia 76ers,home,away,Atlanta Hawks,False,0.5392,0.0392,0.2,BAJA,2.0,898.12,-898.12,29039.25
+2026-02-20,nba,NBA,Cleveland Cavaliers vs Brooklyn Nets,Cleveland Cavaliers,home,home,Cleveland Cavaliers,True,0.5671,0.0671,0.2,MEDIA,2.0,871.18,871.18,29910.43
+2026-02-13,nba,NBA,Los Angeles Lakers vs Dallas Mavericks,Los Angeles Lakers,home,home,Los Angeles Lakers,True,0.5502,0.0502,0.2,MEDIA,2.0,897.31,897.31,30807.74
+2026-02-13,nba,NBA,Oklahoma City Thunder vs Milwaukee Bucks,Oklahoma City Thunder,home,away,Milwaukee Bucks,False,0.561,0.061,0.2,MEDIA,2.0,924.23,-924.23,29883.51
+2026-02-12,nba,NBA,Denver Nuggets vs Memphis Grizzlies,Denver Nuggets,home,home,Denver Nuggets,True,0.5567,0.0567,0.2,MEDIA,2.0,896.51,896.51,30780.02
+2026-02-12,nba,NBA,Utah Jazz vs Sacramento Kings,Utah Jazz,home,home,Utah Jazz,True,0.5418,0.0418,0.2,BAJA,2.0,923.4,923.4,31703.42
+2026-02-12,nba,NBA,Minnesota Timberwolves vs Portland Trail Blazers,Minnesota Timberwolves,home,home,Minnesota Timberwolves,True,0.5406,0.0406,0.2,BAJA,2.0,951.1,951.1,32654.52
+2026-02-12,nba,NBA,Houston Rockets vs LA Clippers,Houston Rockets,home,away,LA Clippers,False,0.5354,0.0354,0.2,BAJA,2.0,979.64,-979.64,31674.88
+2026-02-12,nba,NBA,Boston Celtics vs Chicago Bulls,Boston Celtics,home,home,Boston Celtics,True,0.5443,0.0443,0.2,BAJA,2.0,950.25,950.25,32625.13
+2026-02-12,nba,NBA,Orlando Magic vs Milwaukee Bucks,Orlando Magic,home,away,Milwaukee Bucks,False,0.5302,0.0302,0.2,BAJA,2.0,978.75,-978.75,31646.38
+2026-02-12,nba,NBA,Cleveland Cavaliers vs Washington Wizards,Cleveland Cavaliers,home,home,Cleveland Cavaliers,True,0.5572,0.0572,0.2,MEDIA,2.0,949.39,949.39,32595.77
+2026-02-11,nba,NBA,Houston Rockets vs LA Clippers,Houston Rockets,home,home,Houston Rockets,True,0.5343,0.0343,0.2,BAJA,2.0,977.87,977.87,33573.64
+2026-02-11,nba,NBA,New York Knicks vs Indiana Pacers,New York Knicks,home,away,Indiana Pacers,False,0.5705,0.0705,0.2,MEDIA,2.0,1007.21,-1007.21,32566.43
+2026-02-11,nba,NBA,Phoenix Suns vs Dallas Mavericks,Phoenix Suns,home,home,Phoenix Suns,True,0.544,0.044,0.2,BAJA,2.0,976.99,976.99,33543.43

@@ -1,0 +1,6 @@
+date,sport,match,bet_type,pick,odds,probability,edge,volatility,confidence,result,profit_loss,validated_date
+2026-05-18,MLB,Tampa Bay Rays vs Baltimore Orioles,Moneyline,Tampa Bay Rays,-116,0.6712,0.1336,0.44,0.57,WIN,86.21,2026-05-19
+2026-05-18,MLB,Minnesota Twins vs Houston Astros,Moneyline,Minnesota Twins,-142,0.7031,0.1149,0.39,0.559,WIN,70.42,2026-05-19
+2026-05-19,MLB,Minnesota Twins vs Houston Astros,Moneyline,Minnesota Twins,-138,0.7226,0.1412,0.2,0.647,LOSS,-100.0,2026-05-20
+2026-05-20,MLB,Minnesota Twins vs Houston Astros,Moneyline,Minnesota Twins,-152,0.8,0.1976,0.2,0.817,WIN,65.79,2026-05-20
+2026-05-20,MLB,Arizona Diamondbacks vs San Francisco Giants,Moneyline,Arizona Diamondbacks,,0.6715,0.1715,0.43,0.59,PENDING,0.0,

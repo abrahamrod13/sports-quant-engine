@@ -4,7 +4,10 @@ NBA PREDICCIONES MANANA - PIPE FORMAT
 from nba_core import NBACore
 from nba_data_fetcher import get_tomorrow_nba_games, get_fanduel_nba_odds
 from nba_market_exploiter import NBAMarketExploiter
-from nba_injury_fetcher import get_out_players
+try:
+    from nba_injury_fetcher import get_out_players
+except:
+    def get_out_players(x): return []
 from nba_series_momentum import series_momentum_analysis
 from nba_advanced_stats import get_team_advanced_stats, get_net_rating
 import pandas as pd

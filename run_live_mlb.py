@@ -15,17 +15,10 @@ import pandas as pd
 import os
 from datetime import datetime
 
-print("=" * 120)
-print("MLB QUANT ENGINE V8 - COMPACT MODE")
-print("=" * 120)
-print(f"{'GAME':<35} {'PICK':<25} {'ODDS':>8} {'PROB':>7} {'EDGE':>8} {'CONF':>5} {'ML':>5} {'RL':>5} {'O/U':>5} {'TEAM':>5} {'F5':>5}")
-print("-" * 120)
+print("MLB|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|RL|OU|TEAM|F5")
 
 mlb_engine = MLBEngine()
 market_intel = MarketIntelligence()
-sharp = SharpEdgeEngine()
-exploiter = MarketExploiter()
-mc = MonteCarloMLB()
 all_setups = []
 
 mlb_games = get_today_mlb_games()
@@ -34,7 +27,6 @@ if len(mlb_games) > 0:
     fanduel_mlb = get_fanduel_odds_full('baseball_mlb')
     if len(fanduel_mlb) > 0:
         mlb_games = mlb_games.merge(fanduel_mlb, on='match', how='left', suffixes=('', '_fd'))
-    
     mlb_games = mlb_games.drop_duplicates(subset=['match'], keep='first')
     
     for _, row in mlb_games.iterrows():
@@ -81,7 +73,6 @@ if len(mlb_games) > 0:
             'home_team': home_team, 'away_team': away_team,
             'home_win_pct': home_win, 'away_win_pct': away_win,
             'home_pitcher': home_p_data, 'away_pitcher': away_p_data,
-            'home_pitcher_name': home_p_name, 'away_pitcher_name': away_p_name,
             'home_momentum': home_momentum, 'away_momentum': away_momentum,
             'home_bullpen': home_bullpen, 'away_bullpen': away_bullpen,
             'home_matchup': {
@@ -110,7 +101,6 @@ if len(mlb_games) > 0:
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         intel = market_intel.final_decision(game_data, result)
         
-        # Determinar pick
         if result['edge'] > 0:
             pick = home_team if result['probability'] >= 0.5 else away_team
             odds_str = str(h2h_home if pick == home_team else h2h_away)
@@ -118,49 +108,34 @@ if len(mlb_games) > 0:
             pick = "NO PICK"
             odds_str = "-"
         
-        # Moneyline status
         ml_status = "[OK]" if intel['approved'] else ("[SUS]" if result['edge'] > 0.03 else "[X]")
         
-        # Runline status
         rl_status = "[X]"
         if result['probability'] >= 0.55:
             rl_prob = result['probability'] - 0.08
-            rl_edge = rl_prob - 0.45
-            rl_status = "[OK]" if rl_edge > 0.02 else "[?]"
+            rl_status = "[OK]" if rl_prob - 0.45 > 0.02 else "[?]"
         elif result['probability'] <= 0.45:
             rl_prob = (1 - result['probability']) - 0.08
-            rl_edge = rl_prob - 0.45
-            rl_status = "[OK]" if rl_edge > 0.02 else "[?]"
+            rl_status = "[OK]" if rl_prob - 0.45 > 0.02 else "[?]"
         
-        # Over/Under status
         home_eff_era = home_p_data.get('last3_era', home_p_data.get('era', 4.50))
         away_eff_era = away_p_data.get('last3_era', away_p_data.get('era', 4.50))
         total_prob = 0.5
-        if home_eff_era > 5.5 and away_eff_era > 5.5:
-            total_prob = 0.62
-        elif home_eff_era < 3.0 and away_eff_era < 3.0:
-            total_prob = 0.38
-        elif home_eff_era > 5.0 or away_eff_era > 5.0:
-            total_prob = 0.56
+        if home_eff_era > 5.5 and away_eff_era > 5.5: total_prob = 0.62
+        elif home_eff_era < 3.0 and away_eff_era < 3.0: total_prob = 0.38
+        elif home_eff_era > 5.0 or away_eff_era > 5.0: total_prob = 0.56
         over_edge = total_prob - 0.45
         ou_status = "[OK]" if over_edge > 0.02 else ("[OK]U" if (1-total_prob)-0.45 > 0.02 else "[?]")
         
-        # Team total
         home_over_prob = 0.5 + (home_momentum.get('ops_last7', 0.720) - 0.700) * 0.8 + (away_eff_era - 4.0) * 0.05
         home_over_prob = max(0.25, min(0.85, home_over_prob))
         team_status = "[OK]" if home_over_prob > 0.55 else "[?]"
         
-        # First 5
         f5_prob = result['probability']
-        f5_edge = f5_prob - 0.45
-        f5_status = "[OK]" if f5_edge > 0.02 else "[?]"
+        f5_status = "[OK]" if f5_prob - 0.45 > 0.02 else "[?]"
         
-        game_name = f"{home_team} vs {away_team}"[:33]
-        pick_name = pick[:23] if pick != "NO PICK" else pick
+        print(f"MLB|{home_team}|{away_team}|{pick}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         
-        print(f"{game_name:<35} {pick_name:<25} {odds_str:>8} {result['probability']:>6.1%} {result['edge']:>+7.1%} {result['confidence_level']:>5} {ml_status:>5} {rl_status:>5} {ou_status:>5} {team_status:>5} {f5_status:>5}")
-        
-        # Guardar si aprobado
         if intel['approved']:
             result['sport'] = 'MLB'
             result['match'] = row['match']
@@ -178,20 +153,9 @@ if len(mlb_games) > 0:
                     existing = pd.read_csv(log_file)
                     match_name = result.get('match', '')
                     today_str = datetime.now().strftime('%Y-%m-%d')
-                    already_saved = len(existing[
-                        (existing['date'] == today_str) &
-                        (existing['match'] == match_name) &
-                        (existing['bet_type'] == 'Moneyline')
-                    ]) > 0
-                except:
-                    pass
+                    already_saved = len(existing[(existing['date'] == today_str) & (existing['match'] == match_name) & (existing['bet_type'] == 'Moneyline')]) > 0
+                except: pass
             if not already_saved:
-                save_bet('MLB', result.get('match', ''), 'Moneyline',
-                        pick, h2h_home if pick == home_team else h2h_away,
-                        result.get('probability', 0), result.get('edge', 0),
-                        result.get('volatility', 0), result.get('confidence_score', 0))
+                save_bet('MLB', result.get('match', ''), 'Moneyline', pick, h2h_home if pick == home_team else h2h_away, result.get('probability', 0), result.get('edge', 0), result.get('volatility', 0), result.get('confidence_score', 0))
 
-print("-" * 120)
-print(f"\n[GO] {len(all_setups)} SETUPS | [SUS] = Suspect (validate MC) | [?] = Marginal | [X] = No edge")
-print("ML = Moneyline | RL = Runline | O/U = Over/Under | TEAM = Team Total | F5 = First 5")
-print("=" * 120)
+print(f"SUMMARY|{len(all_setups)}")

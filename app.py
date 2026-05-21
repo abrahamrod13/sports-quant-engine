@@ -84,6 +84,33 @@ st.markdown("""
         margin: 1rem 0;
         border: 1px solid #333;
     }
+    .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 0.9rem;
+    }
+    .results-table th {
+        background: #0f3460;
+        color: #e94560;
+        padding: 0.7rem;
+        text-align: center;
+        border-bottom: 2px solid #e94560;
+    }
+    .results-table td {
+        background: #1a1a2e;
+        color: #ccc;
+        padding: 0.5rem;
+        text-align: center;
+        border-bottom: 1px solid #333;
+    }
+    .results-table tr:hover td {
+        background: #16213e;
+    }
+    .status-ok { color: #00ff88; font-weight: bold; }
+    .status-sus { color: #f0a500; font-weight: bold; }
+    .status-no { color: #e94560; }
+    .status-marginal { color: #888; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -98,10 +125,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================
-# FUNCIÓN PARA EJECUTAR SCRIPTS
+# FUNCIÓN PARA EJECUTAR SCRIPTS Y PARSEAR OUTPUT
 # ============================================
-def run_script(script_name):
-    output_placeholder = st.empty()
+def run_script_and_parse(script_name):
+    """Ejecuta script y devuelve líneas parseadas para tabla"""
     output_text = ""
     
     process = subprocess.Popen(
@@ -114,10 +141,159 @@ def run_script(script_name):
     
     for line in process.stdout:
         output_text += line
-        output_placeholder.code(output_text[-6000:], language=None)
     
     process.wait()
     return output_text
+
+def parse_compact_output(output_text):
+    """Parsea el output compacto a lista de diccionarios"""
+    lines = output_text.strip().split('\n')
+    results = []
+    
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('===') or line.startswith('---') or line.startswith('[GO]') or line.startswith('ML =') or line.startswith('Date:'):
+            continue
+        if 'GAME' in line and 'PICK' in line:
+            continue
+        
+        parts = line.split()
+        if len(parts) >= 10:
+            try:
+                game = ' '.join(parts[0:3]) if len(parts) > 3 else parts[0]
+                # Intentar extraer campos
+                results.append(line)
+            except:
+                pass
+    
+    return results
+
+def display_results_table(output_text, sport="MLB"):
+    """Muestra output como tabla visual"""
+    if not output_text.strip():
+        st.warning(f"No {sport} games found or data unavailable.")
+        return
+    
+    lines = output_text.strip().split('\n')
+    data_rows = []
+    
+    for line in lines:
+        line = line.strip()
+        if not line or line.startswith('===') or line.startswith('---'):
+            continue
+        if 'GAME' in line and 'PICK' in line:
+            continue
+        if line.startswith('[GO]') or line.startswith('ML =') or line.startswith('Date:'):
+            continue
+        
+        parts = line.split()
+        if len(parts) >= 8:
+            data_rows.append(line)
+    
+    if not data_rows:
+        st.code(output_text[-3000:], language=None)
+        return
+    
+    # Crear tabla visual
+    table_html = '<table class="results-table"><thead><tr>'
+    
+    if sport == "MLB":
+        headers = ['GAME', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF', 'ML', 'RL', 'O/U', 'TEAM', 'F5']
+        table_html += ''.join([f'<th>{h}</th>' for h in headers])
+        table_html += '</tr></thead><tbody>'
+        
+        for row in data_rows:
+            parts = row.split()
+            if len(parts) >= 11:
+                game = ' '.join(parts[0:3])
+                pick = ' '.join(parts[3:6]) if len(parts) > 6 else parts[3]
+                odds = parts[-8] if len(parts) >= 8 else '-'
+                prob = parts[-7] if len(parts) >= 7 else '-'
+                edge = parts[-6] if len(parts) >= 6 else '-'
+                conf = parts[-5] if len(parts) >= 5 else '-'
+                ml = parts[-4] if len(parts) >= 4 else '-'
+                rl = parts[-3] if len(parts) >= 3 else '-'
+                ou = parts[-2] if len(parts) >= 2 else '-'
+                team = parts[-1] if len(parts) >= 1 else '-'
+                f5 = parts[0] if len(parts) > 0 else '-'
+                
+                # Reorganizar para MLB
+                try:
+                    game = ' '.join(parts[0:3])[:30]
+                    pick = parts[3][:20] if len(parts) > 3 else ''
+                    odds = parts[4] if len(parts) > 4 else ''
+                    prob = parts[5] if len(parts) > 5 else ''
+                    edge = parts[6] if len(parts) > 6 else ''
+                    conf = parts[7] if len(parts) > 7 else ''
+                    ml_st = parts[8] if len(parts) > 8 else ''
+                    rl_st = parts[9] if len(parts) > 9 else ''
+                    ou_st = parts[10] if len(parts) > 10 else ''
+                    team_st = parts[11] if len(parts) > 11 else ''
+                    f5_st = parts[12] if len(parts) > 12 else ''
+                    
+                    # Colores
+                    ml_color = 'status-ok' if '[OK]' in ml_st else ('status-sus' if '[SUS]' in ml_st else 'status-no')
+                    rl_color = 'status-ok' if '[OK]' in rl_st else 'status-marginal'
+                    ou_color = 'status-ok' if '[OK]' in ou_st else 'status-marginal'
+                    
+                    table_html += f'<tr>'
+                    table_html += f'<td>{game}</td>'
+                    table_html += f'<td><b>{pick}</b></td>'
+                    table_html += f'<td>{odds}</td>'
+                    table_html += f'<td>{prob}</td>'
+                    table_html += f'<td>{edge}</td>'
+                    table_html += f'<td>{conf}</td>'
+                    table_html += f'<td class="{ml_color}">{ml_st}</td>'
+                    table_html += f'<td class="{rl_color}">{rl_st}</td>'
+                    table_html += f'<td class="{ou_color}">{ou_st}</td>'
+                    table_html += f'<td>{team_st}</td>'
+                    table_html += f'<td>{f5_st}</td>'
+                    table_html += '</tr>'
+                except:
+                    pass
+    
+    elif sport == "NBA":
+        headers = ['GAME', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF', 'ML', 'SPREAD']
+        table_html += ''.join([f'<th>{h}</th>' for h in headers])
+        table_html += '</tr></thead><tbody>'
+        
+        for row in data_rows:
+            parts = row.split()
+            if len(parts) >= 8:
+                try:
+                    game = ' '.join(parts[0:3])[:30]
+                    pick = parts[3][:20] if len(parts) > 3 else ''
+                    odds = parts[4] if len(parts) > 4 else ''
+                    prob = parts[5] if len(parts) > 5 else ''
+                    edge = parts[6] if len(parts) > 6 else ''
+                    conf = parts[7] if len(parts) > 7 else ''
+                    ml_st = parts[8] if len(parts) > 8 else ''
+                    spread = parts[9] if len(parts) > 9 else ''
+                    
+                    ml_color = 'status-ok' if '[OK]' in ml_st else ('status-sus' if '[SUS]' in ml_st else 'status-no')
+                    
+                    table_html += f'<tr>'
+                    table_html += f'<td>{game}</td>'
+                    table_html += f'<td><b>{pick}</b></td>'
+                    table_html += f'<td>{odds}</td>'
+                    table_html += f'<td>{prob}</td>'
+                    table_html += f'<td>{edge}</td>'
+                    table_html += f'<td>{conf}</td>'
+                    table_html += f'<td class="{ml_color}">{ml_st}</td>'
+                    table_html += f'<td>{spread}</td>'
+                    table_html += '</tr>'
+                except:
+                    pass
+    
+    table_html += '</tbody></table>'
+    st.markdown(table_html, unsafe_allow_html=True)
+    
+    # Mostrar resumen
+    for line in lines:
+        if line.startswith('[GO]'):
+            st.info(line)
+        if line.startswith('ML ='):
+            st.caption(line)
 
 # ============================================
 # MÉTRICAS RÁPIDAS
@@ -162,22 +338,26 @@ col1, col2, col3, col4 = st.columns(4)
 with col1:
     if st.button("MLB TODAY", use_container_width=True, key="mlb_today"):
         with st.spinner("Scanning MLB games..."):
-            run_script("run_live_mlb.py")
+            output = run_script_and_parse("run_live_mlb.py")
+            display_results_table(output, "MLB")
 
 with col2:
     if st.button("MLB TOMORROW", use_container_width=True, key="mlb_tomorrow"):
         with st.spinner("Predicting MLB games..."):
-            run_script("run_tomorrow_mlb.py")
+            output = run_script_and_parse("run_tomorrow_mlb.py")
+            display_results_table(output, "MLB")
 
 with col3:
     if st.button("NBA TODAY", use_container_width=True, key="nba_today"):
         with st.spinner("Scanning NBA games..."):
-            run_script("run_live_nba.py")
+            output = run_script_and_parse("run_live_nba.py")
+            display_results_table(output, "NBA")
 
 with col4:
     if st.button("NBA TOMORROW", use_container_width=True, key="nba_tomorrow"):
         with st.spinner("Predicting NBA games..."):
-            run_script("run_tomorrow_nba.py")
+            output = run_script_and_parse("run_tomorrow_nba.py")
+            display_results_table(output, "NBA")
 
 # ============================================
 # MONTE CARLO
@@ -193,7 +373,7 @@ if len(games_df) > 0:
     if len(valid_games) > 0:
         game_options = {}
         for idx, row in valid_games.iterrows():
-            label = f"[{idx}] {row['home_team']} vs {row['away_team']} | {row.get('home_pitcher_name', '')} vs {row.get('away_pitcher_name', '')}"
+            label = f"{row['home_team']} vs {row['away_team']} | {row.get('home_pitcher_name', '')} vs {row.get('away_pitcher_name', '')}"
             game_options[label] = idx
         
         col_mc1, col_mc2, col_mc3 = st.columns([2, 1, 1])
@@ -245,8 +425,6 @@ if len(games_df) > 0:
                 }
                 
                 results = mc.simulate_game(game_data, n_sims)
-                
-                # Calcular modelo para comparación
                 model_result = mlb_engine.evaluate_mlb_game(game_data, 2.0)
                 model_prob = model_result.get('probability', 0.5)
                 mc_prob = results['home_win_pct']
@@ -254,27 +432,24 @@ if len(games_df) > 0:
                 
                 if abs(diff) > 0.12:
                     diff_color = "#e94560"
-                    diff_label = "LARGE DISCREPANCY - Model may be overfitting"
+                    diff_label = "LARGE DISCREPANCY"
                 elif abs(diff) > 0.07:
                     diff_color = "#f0a500"
-                    diff_label = "MODERATE DISCREPANCY - Adjust confidence"
+                    diff_label = "MODERATE"
                 elif abs(diff) > 0.03:
                     diff_color = "#4caf50"
-                    diff_label = "SLIGHT DISCREPANCY - Within range"
+                    diff_label = "SLIGHT"
                 else:
                     diff_color = "#00ff88"
-                    diff_label = "ALIGNED - Model validated"
+                    diff_label = "ALIGNED"
                 
-                # MOSTRAR RESULTADOS
                 st.success(f"Monte Carlo Complete - {n_sims:,} simulations")
-                
                 st.markdown(f"### {results['home_team']} vs {results['away_team']}")
                 
-                # COMPARACIÓN MODELO VS MONTE CARLO
                 st.markdown(f"""
                 <div class="comparison-box">
                     <b>MODEL vs MONTE CARLO:</b><br>
-                    Model Probability: {model_prob:.1%} | Monte Carlo: {mc_prob:.1%} | 
+                    Model: {model_prob:.1%} | Monte Carlo: {mc_prob:.1%} | 
                     <span style="color:{diff_color}">Diff: {diff:+.1%} ({diff_label})</span>
                 </div>
                 """, unsafe_allow_html=True)
@@ -286,28 +461,24 @@ if len(games_df) > 0:
                     st.markdown("#### WIN PROBABILITY")
                     st.metric(results['home_team'], f"{results['home_win_pct']:.1%}")
                     st.metric(results['away_team'], f"{results['away_win_pct']:.1%}")
-                    
                     st.markdown("#### RUNS (average)")
                     st.write(f"{results['home_team']}: {results['avg_home_runs']}")
                     st.write(f"{results['away_team']}: {results['avg_away_runs']}")
-                    st.write(f"Total: {results['avg_total_runs']} (median: {results['median_total_runs']}, std: {results['total_std']})")
+                    st.write(f"Total: {results['avg_total_runs']} (median: {results['median_total_runs']})")
                     st.markdown('</div>', unsafe_allow_html=True)
                 
                 with col_r2:
                     st.markdown('<div class="mc-result">', unsafe_allow_html=True)
-                    st.markdown("#### TOTALS PROBABILITIES")
+                    st.markdown("#### TOTALS")
                     st.write(f"Over 6.5: {results['over_6_5']:.1%}")
                     st.write(f"Over 7.5: {results['over_7_5']:.1%}")
                     st.write(f"Over 8.5: {results['over_8_5']:.1%}")
                     st.write(f"Over 9.5: {results['over_9_5']:.1%}")
-                    st.write(f"Over 10.5: {results['over_10_5']:.1%}")
-                    
-                    st.markdown("#### RUNLINE PROBABILITIES")
+                    st.markdown("#### RUNLINE")
                     st.write(f"{results['home_team']} -1.5: {results['home_runline_minus1_5']:.1%}")
                     st.write(f"{results['away_team']} -1.5: {results['away_runline_minus1_5']:.1%}")
                     st.markdown('</div>', unsafe_allow_html=True)
                 
-                # Team Totals
                 col_t1, col_t2 = st.columns(2)
                 with col_t1:
                     st.markdown("#### TEAM TOTALS")
@@ -328,9 +499,9 @@ col_v1, col_v2, col_v3 = st.columns(3)
 with col_v1:
     if st.button("VALIDATE PENDING", use_container_width=True):
         from betting_logger import validate_pending_bets
-        with st.spinner("Validating pending bets..."):
+        with st.spinner("Validating..."):
             validate_pending_bets()
-            st.success("Validation complete!")
+            st.success("Done!")
 
 with col_v2:
     if st.button("MLB RESULTS", use_container_width=True):
@@ -341,7 +512,7 @@ with col_v3:
     if st.button("DEDUPLICATE LOG", use_container_width=True):
         from betting_logger import deduplicate_log
         deduplicate_log()
-        st.success("Log cleaned!")
+        st.success("Done!")
 
 # ============================================
 # FOOTER
@@ -349,6 +520,6 @@ with col_v3:
 st.markdown("""
 <div class="footer">
     Sports Quant Engine V8 | Market Inefficiency Detection System<br>
-    MLB + NBA + Monte Carlo Validation | Running since May 2026
+    MLB + NBA + Monte Carlo Validation
 </div>
 """, unsafe_allow_html=True)

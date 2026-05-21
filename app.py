@@ -41,8 +41,9 @@ def run_script_and_parse(script_name):
     process.wait()
     return output_text
 
-def parse_mlb_data(output_text):
+def parse_mlb_output(output_text):
     games = []
+    metadata = {}
     for line in output_text.strip().split('\n'):
         if line.startswith('MLB|'):
             parts = line.split('|')
@@ -53,7 +54,21 @@ def parse_mlb_data(output_text):
                     'conf': parts[7], 'ml': parts[8], 'rl': parts[9],
                     'ou': parts[10], 'team': parts[11], 'f5': parts[12]
                 })
-    return games
+        elif line.startswith('DATA|'):
+            parts = line.split('|')
+            if len(parts) >= 22:
+                key = f"{parts[1]}|{parts[2]}"
+                metadata[key] = {
+                    'home_pitcher': parts[3], 'home_era': parts[4], 'home_whip': parts[5], 'home_k9': parts[6],
+                    'away_pitcher': parts[7], 'away_era': parts[8], 'away_whip': parts[9], 'away_k9': parts[10],
+                    'stadium': parts[11], 'divisional': parts[12] == 'True',
+                    'home_win': parts[13], 'away_win': parts[14],
+                    'home_bullpen_era': parts[15], 'away_bullpen_era': parts[16],
+                    'home_bullpen_fatigue': parts[17], 'away_bullpen_fatigue': parts[18],
+                    'home_ops': parts[19], 'away_ops': parts[20],
+                    'home_run_diff': parts[21], 'away_run_diff': parts[22] if len(parts) > 22 else '0'
+                }
+    return games, metadata
 
 try:
     from betting_logger import get_betting_stats
@@ -82,18 +97,23 @@ st.markdown('<h2 class="section-title">QUICK SCAN</h2>', unsafe_allow_html=True)
 col1, col2, col3, col4 = st.columns(4)
 
 if 'mlb_data' not in st.session_state: st.session_state.mlb_data = None
+if 'mlb_metadata' not in st.session_state: st.session_state.mlb_metadata = None
 
 with col1:
     if st.button("MLB TODAY", use_container_width=True, key="mlb_today"):
         with st.spinner("Scanning MLB..."):
             output = run_script_and_parse("run_live_mlb.py")
-            st.session_state.mlb_data = parse_mlb_data(output)
+            games, metadata = parse_mlb_output(output)
+            st.session_state.mlb_data = games
+            st.session_state.mlb_metadata = metadata
 
 with col2:
     if st.button("MLB TOMORROW", use_container_width=True, key="mlb_tomorrow"):
         with st.spinner("Predicting MLB..."):
             output = run_script_and_parse("run_tomorrow_mlb.py")
-            st.session_state.mlb_data = parse_mlb_data(output)
+            games, metadata = parse_mlb_output(output)
+            st.session_state.mlb_data = games
+            st.session_state.mlb_metadata = metadata
 
 with col3:
     if st.button("NBA TODAY", use_container_width=True, key="nba_today"):
@@ -129,9 +149,48 @@ if st.session_state.mlb_data:
     if st.button("SHOW FULL ANALYSIS", use_container_width=True):
         idx = game_options.index(selected)
         g = st.session_state.mlb_data[idx]
+        meta = st.session_state.mlb_metadata.get(f"{g['home']}|{g['away']}", {})
         
         st.markdown("---")
         st.markdown(f"## FULL ANALYSIS: {g['home']} vs {g['away']}")
+        
+        # PITCHERS (si hay metadata)
+        if meta:
+            st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+            st.markdown("#### PITCHERS")
+            col_p1, col_p2 = st.columns(2)
+            with col_p1:
+                st.markdown(f"**{g['home']}:** {meta['home_pitcher']}")
+                st.write(f"ERA: {meta['home_era']} | WHIP: {meta['home_whip']} | K9: {meta['home_k9']}")
+            with col_p2:
+                st.markdown(f"**{g['away']}:** {meta['away_pitcher']}")
+                st.write(f"ERA: {meta['away_era']} | WHIP: {meta['away_whip']} | K9: {meta['away_k9']}")
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            # GAME INFO
+            st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+            st.markdown("#### GAME INFO")
+            col_s1, col_s2, col_s3 = st.columns(3)
+            with col_s1:
+                st.metric("Stadium", meta['stadium'])
+                st.write(f"Divisional: {'Yes' if meta['divisional'] else 'No'}")
+            with col_s2:
+                st.metric(f"{g['home']} Record", meta['home_win'])
+                st.metric(f"{g['away']} Record", meta['away_win'])
+            with col_s3:
+                st.write(f"Home Bullpen ERA: {meta['home_bullpen_era']} ({meta['home_bullpen_fatigue']})")
+                st.write(f"Away Bullpen ERA: {meta['away_bullpen_era']} ({meta['away_bullpen_fatigue']})")
+            st.markdown('</div>', unsafe_allow_html=True)
+            
+            # MOMENTUM
+            st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+            st.markdown("#### MOMENTUM")
+            col_mo1, col_mo2 = st.columns(2)
+            with col_mo1:
+                st.write(f"{g['home']} OPS: {meta['home_ops']} | Run Diff: {meta['home_run_diff']}")
+            with col_mo2:
+                st.write(f"{g['away']} OPS: {meta['away_ops']} | Run Diff: {meta['away_run_diff']}")
+            st.markdown('</div>', unsafe_allow_html=True)
         
         # MONEYLINE
         st.markdown('<div class="mc-result">', unsafe_allow_html=True)
@@ -147,7 +206,6 @@ if st.session_state.mlb_data:
         # BETTING OPTIONS
         st.markdown('<div class="mc-result">', unsafe_allow_html=True)
         st.markdown("#### BETTING OPTIONS")
-        
         col_b1, col_b2, col_b3, col_b4, col_b5 = st.columns(5)
         with col_b1:
             if "[OK]" in g['ml']: st.success(f"Moneyline: {g['ml']}")

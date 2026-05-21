@@ -162,3 +162,10 @@ wrapt==1.17.3
 xgboost==3.0.5
 yarl==1.22.0
 yfinance==0.2.65
+streamlit
+pandas
+numpy
+requests
+sqlalchemy
+beautifulsoup4
+lxml

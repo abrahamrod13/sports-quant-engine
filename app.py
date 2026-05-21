@@ -17,77 +17,41 @@ st.markdown("""
         margin-bottom: 2rem;
         border: 1px solid #e94560;
     }
-    .main-header h1 {
-        color: #e94560;
-        font-size: 2.5rem;
-        margin: 0;
-        text-shadow: 0 0 10px rgba(233,69,96,0.3);
-    }
+    .main-header h1 { color: #e94560; font-size: 2.5rem; margin: 0; text-shadow: 0 0 10px rgba(233,69,96,0.3); }
     .main-header p { color: #8b949e; font-size: 1.1rem; }
     .stButton > button {
         background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-        color: #e94560 !important;
-        border: 1px solid #e94560;
-        border-radius: 10px;
-        padding: 0.8rem 1.5rem;
-        font-weight: bold;
-        transition: all 0.3s;
-        height: 60px;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+        color: #e94560 !important; border: 1px solid #e94560; border-radius: 10px;
+        padding: 0.8rem 1.5rem; font-weight: bold; transition: all 0.3s; height: 60px;
+        text-transform: uppercase; letter-spacing: 1px;
     }
     .stButton > button:hover {
         background: linear-gradient(135deg, #e94560 0%, #c23152 100%);
-        color: white !important;
-        border-color: #e94560;
-        transform: scale(1.02);
+        color: white !important; border-color: #e94560; transform: scale(1.02);
         box-shadow: 0 0 15px rgba(233,69,96,0.3);
     }
-    .metric-card {
-        background: #161b22;
-        padding: 1.5rem;
-        border-radius: 10px;
-        border: 1px solid #30363d;
-        text-align: center;
-    }
-    .section-title {
-        color: #e94560;
-        border-bottom: 2px solid #e94560;
-        padding-bottom: 0.5rem;
-        margin-top: 2rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-size: 1.1rem;
-    }
+    .metric-card { background: #161b22; padding: 1.5rem; border-radius: 10px; border: 1px solid #30363d; text-align: center; }
+    .section-title { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 0.5rem; margin-top: 2rem; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; }
     .footer { text-align: center; color: #484f58; margin-top: 3rem; padding: 1rem; border-top: 1px solid #21262d; }
     .mc-result { background: #0f3460; padding: 1.5rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #30363d; }
     .comparison-box { background: #161b22; padding: 1rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #30363d; }
     
-    .results-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 1rem 0;
-        font-size: 0.82rem;
+    .results-container {
+        background: #0f3460;
+        padding: 1.5rem;
         border-radius: 10px;
-        overflow: hidden;
+        margin: 1rem 0;
+        border: 1px solid #30363d;
     }
+    .results-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
     .results-table th {
-        background: linear-gradient(135deg, #0f3460, #1a1a2e);
-        color: #e94560;
-        padding: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        border-bottom: 2px solid #e94560;
+        background: #1a1a2e; color: #e94560; padding: 0.7rem;
+        text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e94560;
     }
-    .results-table td {
-        background: #161b22;
-        color: #c9d1d9;
-        padding: 0.6rem;
-        border-bottom: 1px solid #21262d;
-    }
+    .results-table td { background: #161b22; color: #c9d1d9; padding: 0.5rem; border-bottom: 1px solid #21262d; text-align: center; }
     .results-table tr:hover td { background: #1a2332; }
-    .status-ok { background: #0d2818 !important; color: #3fb950 !important; font-weight: bold; border-radius: 4px; padding: 2px 8px !important; }
-    .status-sus { background: #3d2e00 !important; color: #d2991d !important; font-weight: bold; border-radius: 4px; padding: 2px 8px !important; }
+    .status-ok { background: #0d2818 !important; color: #3fb950 !important; font-weight: bold; border-radius: 4px; padding: 3px 10px !important; }
+    .status-sus { background: #3d2e00 !important; color: #d2991d !important; font-weight: bold; border-radius: 4px; padding: 3px 10px !important; }
     .status-no { color: #f85149; }
     .status-marginal { color: #8b949e; }
     .pick-highlight { color: #58a6ff; font-weight: bold; }
@@ -104,125 +68,119 @@ st.markdown("""
 def run_script_and_parse(script_name):
     output_text = ""
     process = subprocess.Popen([sys.executable, script_name], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
-    for line in process.stdout:
-        output_text += line
+    for line in process.stdout: output_text += line
     process.wait()
     return output_text
 
 def display_results_table(output_text, sport="MLB"):
     if not output_text.strip():
-        st.warning(f"No {sport} games found or data unavailable.")
+        st.warning(f"No {sport} games found.")
         return
     
     lines = output_text.strip().split('\n')
     data_rows = []
+    summary = ""
+    
     for line in lines:
         line = line.strip()
-        if not line or line.startswith('===') or line.startswith('---'):
-            continue
-        if 'GAME' in line and 'PICK' in line:
-            continue
-        if line.startswith('[GO]') or line.startswith('ML =') or line.startswith('Date:'):
-            continue
-        parts = line.split()
-        if len(parts) >= 8:
+        if not line: continue
+        if line.startswith('MLB|') or line.startswith('NBA|'):
             data_rows.append(line)
+        elif line.startswith('SUMMARY|'):
+            summary = line.replace('SUMMARY|', '')
     
     if not data_rows:
         st.code(output_text[-2000:], language=None)
         return
     
-    table_html = '<table class="results-table"><thead><tr>'
+    st.markdown('<div class="results-container">', unsafe_allow_html=True)
     
     if sport == "MLB":
-        headers = ['GAME', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF', 'ML', 'RL', 'O/U', 'TEAM', 'F5']
+        st.markdown(f"#### MLB SCAN RESULTS ({len(data_rows)} games)")
+        table_html = '<table class="results-table"><thead><tr>'
+        headers = ['HOME', 'AWAY', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF', 'ML', 'RL', 'O/U', 'TEAM', 'F5']
         table_html += ''.join([f'<th>{h}</th>' for h in headers])
         table_html += '</tr></thead><tbody>'
         
         for row in data_rows:
-            parts = row.split()
-            if len(parts) >= 11:
-                try:
-                    game = ' '.join(parts[0:3])[:28]
-                    pick = parts[3][:18]
-                    odds = parts[4]
-                    prob = parts[5]
-                    edge = parts[6]
-                    conf = parts[7]
-                    ml_st = parts[8]
-                    rl_st = parts[9]
-                    ou_st = parts[10]
-                    team_st = parts[11] if len(parts) > 11 else ''
-                    f5_st = parts[12] if len(parts) > 12 else ''
-                    
-                    ml_color = 'status-ok' if '[OK]' in ml_st else ('status-sus' if '[SUS]' in ml_st else 'status-no')
-                    rl_color = 'status-ok' if '[OK]' in rl_st else 'status-marginal'
-                    ou_color = 'status-ok' if '[OK]' in ou_st else 'status-marginal'
-                    
-                    table_html += f'<tr>'
-                    table_html += f'<td>{game}</td>'
-                    table_html += f'<td class="pick-highlight">{pick}</td>'
-                    table_html += f'<td>{odds}</td>'
-                    table_html += f'<td>{prob}</td>'
-                    table_html += f'<td>{edge}</td>'
-                    table_html += f'<td>{conf}</td>'
-                    table_html += f'<td><span class="{ml_color}">{ml_st}</span></td>'
-                    table_html += f'<td><span class="{rl_color}">{rl_st}</span></td>'
-                    table_html += f'<td><span class="{ou_color}">{ou_st}</span></td>'
-                    table_html += f'<td>{team_st}</td>'
-                    table_html += f'<td>{f5_st}</td>'
-                    table_html += '</tr>'
-                except:
-                    pass
+            parts = row.split('|')
+            if len(parts) >= 13:
+                home = parts[1]
+                away = parts[2]
+                pick = parts[3]
+                odds = parts[4]
+                prob = parts[5]
+                edge = parts[6]
+                conf = parts[7]
+                ml_st = parts[8]
+                rl_st = parts[9]
+                ou_st = parts[10]
+                team_st = parts[11]
+                f5_st = parts[12]
+                
+                ml_color = 'status-ok' if '[OK]' in ml_st else ('status-sus' if '[SUS]' in ml_st else 'status-no')
+                rl_color = 'status-ok' if '[OK]' in rl_st else 'status-marginal'
+                ou_color = 'status-ok' if '[OK]' in ou_st else 'status-marginal'
+                
+                table_html += f'<tr>'
+                table_html += f'<td>{home}</td><td>{away}</td>'
+                table_html += f'<td class="pick-highlight">{pick}</td>'
+                table_html += f'<td>{odds}</td><td>{prob}</td><td>{edge}</td><td>{conf}</td>'
+                table_html += f'<td><span class="{ml_color}">{ml_st}</span></td>'
+                table_html += f'<td><span class="{rl_color}">{rl_st}</span></td>'
+                table_html += f'<td><span class="{ou_color}">{ou_st}</span></td>'
+                table_html += f'<td>{team_st}</td><td>{f5_st}</td>'
+                table_html += '</tr>'
+        
+        table_html += '</tbody></table>'
+        st.markdown(table_html, unsafe_allow_html=True)
+        
+        if summary:
+            st.metric("Approved Setups", summary)
+        st.caption("[OK] = Approved | [SUS] = Suspect (validate MC) | [?] = Marginal | [X] = No edge")
     
     elif sport == "NBA":
-        headers = ['GAME', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF', 'ML', 'SPREAD']
+        st.markdown(f"#### NBA SCAN RESULTS ({len(data_rows)} games)")
+        table_html = '<table class="results-table"><thead><tr>'
+        headers = ['HOME', 'AWAY', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF', 'ML', 'SPREAD']
         table_html += ''.join([f'<th>{h}</th>' for h in headers])
         table_html += '</tr></thead><tbody>'
         
         for row in data_rows:
-            parts = row.split()
-            if len(parts) >= 8:
-                try:
-                    game = ' '.join(parts[0:3])[:28]
-                    pick = parts[3][:18]
-                    odds = parts[4]
-                    prob = parts[5]
-                    edge = parts[6]
-                    conf = parts[7]
-                    ml_st = parts[8]
-                    spread = parts[9] if len(parts) > 9 else ''
-                    ml_color = 'status-ok' if '[OK]' in ml_st else ('status-sus' if '[SUS]' in ml_st else 'status-no')
-                    
-                    table_html += f'<tr>'
-                    table_html += f'<td>{game}</td>'
-                    table_html += f'<td class="pick-highlight">{pick}</td>'
-                    table_html += f'<td>{odds}</td>'
-                    table_html += f'<td>{prob}</td>'
-                    table_html += f'<td>{edge}</td>'
-                    table_html += f'<td>{conf}</td>'
-                    table_html += f'<td><span class="{ml_color}">{ml_st}</span></td>'
-                    table_html += f'<td>{spread}</td>'
-                    table_html += '</tr>'
-                except:
-                    pass
+            parts = row.split('|')
+            if len(parts) >= 9:
+                home = parts[1]
+                away = parts[2]
+                pick = parts[3]
+                odds = parts[4]
+                prob = parts[5]
+                edge = parts[6]
+                conf = parts[7]
+                ml_st = parts[8]
+                spread = parts[9] if len(parts) > 9 else ''
+                
+                ml_color = 'status-ok' if '[OK]' in ml_st else ('status-sus' if '[SUS]' in ml_st else 'status-no')
+                
+                table_html += f'<tr>'
+                table_html += f'<td>{home}</td><td>{away}</td>'
+                table_html += f'<td class="pick-highlight">{pick}</td>'
+                table_html += f'<td>{odds}</td><td>{prob}</td><td>{edge}</td><td>{conf}</td>'
+                table_html += f'<td><span class="{ml_color}">{ml_st}</span></td>'
+                table_html += f'<td>{spread}</td>'
+                table_html += '</tr>'
+        
+        table_html += '</tbody></table>'
+        st.markdown(table_html, unsafe_allow_html=True)
+        
+        if summary:
+            st.metric("Approved Setups", summary)
     
-    table_html += '</tbody></table>'
-    st.markdown(table_html, unsafe_allow_html=True)
-    
-    for line in lines:
-        if line.startswith('[GO]'):
-            st.success(line)
-        if line.startswith('ML ='):
-            st.caption(line)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 try:
     from betting_logger import get_betting_stats
     mlb_stats = get_betting_stats('MLB')
-    nba_stats = get_betting_stats('NBA')
-except:
-    mlb_stats = None
-    nba_stats = None
+except: mlb_stats = None
 
 col_m1, col_m2, col_m3, col_m4 = st.columns(4)
 with col_m1:
@@ -289,8 +247,7 @@ if len(games_df) > 0:
         with col_mc2:
             n_sims = st.number_input("Simulations:", min_value=1000, max_value=50000, value=10000, step=1000, key="mc_sims")
         with col_mc3:
-            st.write("")
-            st.write("")
+            st.write(""); st.write("")
             run_mc = st.button("RUN MONTE CARLO", use_container_width=True, key="mc_run")
         
         if run_mc:
@@ -380,7 +337,7 @@ col_v1, col_v2, col_v3 = st.columns(3)
 with col_v1:
     if st.button("VALIDATE PENDING", use_container_width=True):
         from betting_logger import validate_pending_bets
-        with st.spinner("Validating..."): validate_pending_bets()
+        validate_pending_bets()
         st.success("Done!")
 with col_v2:
     if st.button("MLB RESULTS", use_container_width=True):

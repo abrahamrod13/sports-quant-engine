@@ -7,6 +7,8 @@ from mlb_engine import MLBEngine
 from market_intelligence import MarketIntelligence
 from odds_fetcher import get_fanduel_odds_full
 from betting_logger import save_bet
+from mlb_injury_fetcher import get_out_players_mlb
+from prediction_tracker import save_winner_prediction
 import pandas as pd
 import os
 from datetime import datetime, timedelta
@@ -61,6 +63,12 @@ if len(mlb_games) > 0:
         away_momentum = get_team_momentum(away_id)
         home_vs_away = get_pitcher_vs_team(row.get('home_pitcher_id'), away_id)
         away_vs_home = get_pitcher_vs_team(row.get('away_pitcher_id'), home_id)
+        
+        # LESIONES
+        home_injuries = get_out_players_mlb(home_team)
+        away_injuries = get_out_players_mlb(away_team)
+        home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
+        away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
         game_data = {
             'home_team': home_team, 'away_team': away_team,
@@ -119,13 +127,22 @@ if len(mlb_games) > 0:
         f5_status = "[OK]" if result['probability'] - 0.45 > 0.02 else "[?]"
         
         print(f"MLB|{home_team}|{away_team}|{pick}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
-                # DATA LINE PARA FULL ANALYSIS
-        print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}")
-
+        print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
+        
+        # PREDICCIÓN DE GANADOR
+        predicted_winner = home_team if result['probability'] >= 0.5 else away_team
+        save_winner_prediction(row['match'], predicted_winner, result['probability'])
+        
         if intel['approved']:
+            result['sport'] = 'MLB'
+            result['match'] = row['match']
+            result['home_team'] = home_team
+            result['away_team'] = away_team
             result['pick'] = pick
             result['bet_type'] = 'Moneyline'
+            result['odds_american'] = h2h_home if pick == home_team else h2h_away
             all_setups.append(result)
+            
             log_file = 'data/betting_log.csv'
             already_saved = False
             if os.path.exists(log_file):

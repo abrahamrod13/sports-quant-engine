@@ -10,6 +10,8 @@ from sharp_edge_engine import SharpEdgeEngine
 from market_exploiter import MarketExploiter
 from odds_fetcher import get_fanduel_odds_full
 from betting_logger import save_bet
+from mlb_injury_fetcher import get_out_players_mlb
+from prediction_tracker import save_winner_prediction
 from montecarlo_mlb import MonteCarloMLB
 import pandas as pd
 import os
@@ -50,17 +52,13 @@ if len(mlb_games) > 0:
         if home_p_name == 'TBD' or away_p_name == 'TBD':
             continue
         
-        if not home_p_data:
-            home_p_data = mlb_engine.smart_pitcher_defaults(home_p_name)
-        if not away_p_data:
-            away_p_data = mlb_engine.smart_pitcher_defaults(away_p_name)
+        if not home_p_data: home_p_data = mlb_engine.smart_pitcher_defaults(home_p_name)
+        if not away_p_data: away_p_data = mlb_engine.smart_pitcher_defaults(away_p_name)
         
         home_last3 = get_pitcher_last3(row.get('home_pitcher_id'))
         away_last3 = get_pitcher_last3(row.get('away_pitcher_id'))
-        if home_last3:
-            home_p_data['last3_era'] = round(sum(g['era'] for g in home_last3) / len(home_last3), 2)
-        if away_last3:
-            away_p_data['last3_era'] = round(sum(g['era'] for g in away_last3) / len(away_last3), 2)
+        if home_last3: home_p_data['last3_era'] = round(sum(g['era'] for g in home_last3) / len(home_last3), 2)
+        if away_last3: away_p_data['last3_era'] = round(sum(g['era'] for g in away_last3) / len(away_last3), 2)
         
         home_bullpen = get_bullpen_data(home_id)
         away_bullpen = get_bullpen_data(away_id)
@@ -69,33 +67,35 @@ if len(mlb_games) > 0:
         home_vs_away = get_pitcher_vs_team(row.get('home_pitcher_id'), away_id)
         away_vs_home = get_pitcher_vs_team(row.get('away_pitcher_id'), home_id)
         
+        # LESIONES
+        home_injuries = get_out_players_mlb(home_team)
+        away_injuries = get_out_players_mlb(away_team)
+        home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
+        away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
+        
         game_data = {
             'home_team': home_team, 'away_team': away_team,
             'home_win_pct': home_win, 'away_win_pct': away_win,
             'home_pitcher': home_p_data, 'away_pitcher': away_p_data,
+            'home_pitcher_name': home_p_name, 'away_pitcher_name': away_p_name,
             'home_momentum': home_momentum, 'away_momentum': away_momentum,
             'home_bullpen': home_bullpen, 'away_bullpen': away_bullpen,
             'home_matchup': {
                 'avg': home_vs_away.get('avg', 0.250) if home_vs_away else 0.250,
                 'ops': home_vs_away.get('ops', 0.720) if home_vs_away else 0.720,
                 'hr': home_vs_away.get('hr', 0) if home_vs_away else 0,
-                'pa': home_vs_away.get('plate_appearances', 0) if home_vs_away else 0,
-                'k_rate': 0.22
+                'pa': home_vs_away.get('plate_appearances', 0) if home_vs_away else 0, 'k_rate': 0.22
             },
             'away_matchup': {
                 'avg': away_vs_home.get('avg', 0.250) if away_vs_home else 0.250,
                 'ops': away_vs_home.get('ops', 0.720) if away_vs_home else 0.720,
                 'hr': away_vs_home.get('hr', 0) if away_vs_home else 0,
-                'pa': away_vs_home.get('plate_appearances', 0) if away_vs_home else 0,
-                'k_rate': 0.22
+                'pa': away_vs_home.get('plate_appearances', 0) if away_vs_home else 0, 'k_rate': 0.22
             },
-            'stadium': row.get('stadium', ''),
-            'divisional_game': row.get('is_divisional', False),
+            'stadium': row.get('stadium', ''), 'divisional_game': row.get('is_divisional', False),
             'bullpen_home_weak': home_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
             'bullpen_away_weak': away_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
-            'hr_heavy_teams': home_win > 0.58 or away_win > 0.58,
-            'wind_outward': False,
-            'odds': fav_odds_dec
+            'hr_heavy_teams': home_win > 0.58 or away_win > 0.58, 'wind_outward': False, 'odds': fav_odds_dec
         }
         
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
@@ -112,11 +112,9 @@ if len(mlb_games) > 0:
         
         rl_status = "[X]"
         if result['probability'] >= 0.55:
-            rl_prob = result['probability'] - 0.08
-            rl_status = "[OK]" if rl_prob - 0.45 > 0.02 else "[?]"
+            rl_status = "[OK]" if result['probability'] - 0.08 - 0.45 > 0.02 else "[?]"
         elif result['probability'] <= 0.45:
-            rl_prob = (1 - result['probability']) - 0.08
-            rl_status = "[OK]" if rl_prob - 0.45 > 0.02 else "[?]"
+            rl_status = "[OK]" if (1-result['probability']) - 0.08 - 0.45 > 0.02 else "[?]"
         
         home_eff_era = home_p_data.get('last3_era', home_p_data.get('era', 4.50))
         away_eff_era = away_p_data.get('last3_era', away_p_data.get('era', 4.50))
@@ -130,14 +128,15 @@ if len(mlb_games) > 0:
         home_over_prob = 0.5 + (home_momentum.get('ops_last7', 0.720) - 0.700) * 0.8 + (away_eff_era - 4.0) * 0.05
         home_over_prob = max(0.25, min(0.85, home_over_prob))
         team_status = "[OK]" if home_over_prob > 0.55 else "[?]"
-        
-        f5_prob = result['probability']
-        f5_status = "[OK]" if f5_prob - 0.45 > 0.02 else "[?]"
+        f5_status = "[OK]" if result['probability'] - 0.45 > 0.02 else "[?]"
         
         print(f"MLB|{home_team}|{away_team}|{pick}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
-                # DATA LINE PARA FULL ANALYSIS
-        print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}")
-
+        print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
+        
+        # PREDICCIÓN DE GANADOR
+        predicted_winner = home_team if result['probability'] >= 0.5 else away_team
+        save_winner_prediction(row['match'], predicted_winner, result['probability'])
+        
         if intel['approved']:
             result['sport'] = 'MLB'
             result['match'] = row['match']

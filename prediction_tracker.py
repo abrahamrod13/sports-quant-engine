@@ -26,15 +26,15 @@ def save_winner_prediction(match, predicted_winner, probability):
     new_row.to_csv(TRACKER_FILE, mode='a', header=False, index=False)
 
 def validate_winner_predictions():
-    """Busca resultados reales y actualiza aciertos"""
     if not os.path.exists(TRACKER_FILE):
         return None
     
     df = pd.read_csv(TRACKER_FILE)
-    pending = df[df['correct'] == '']
+    # Solo validar filas sin resultado
+    pending = df[(df['correct'].isna()) | (df['correct'] == '')]
     
     if len(pending) == 0:
-        return None
+        return df
     
     import requests
     
@@ -49,16 +49,22 @@ def validate_winner_predictions():
                 for game in date_data.get('games', []):
                     home = game['teams']['home']['team']['name']
                     away = game['teams']['away']['team']['name']
+                    status = game.get('status', {}).get('detailedState', '')
                     
-                    if home in row['match'] and away in row['match']:
-                        status = game.get('status', {}).get('detailedState', '')
-                        if status == 'Final':
-                            home_score = game['teams']['home'].get('score', 0)
-                            away_score = game['teams']['away'].get('score', 0)
-                            actual_winner = home if home_score > away_score else away
-                            
-                            df.at[idx, 'actual_winner'] = actual_winner
-                            df.at[idx, 'correct'] = 'YES' if row['predicted_winner'] == actual_winner else 'NO'
+                    # Matcheo flexible
+                    match_str = row['match'].lower()
+                    if home.lower() in match_str and away.lower() in match_str and status == 'Final':
+                        home_score = int(game['teams']['home'].get('score', 0))
+                        away_score = int(game['teams']['away'].get('score', 0))
+                        actual_winner = home if home_score > away_score else away
+                        
+                        df.at[idx, 'actual_winner'] = actual_winner
+                        if row['predicted_winner'] == 'TOO CLOSE':
+                            df.at[idx, 'correct'] = 'SKIP'
+                        elif row['predicted_winner'].lower() == actual_winner.lower():
+                            df.at[idx, 'correct'] = 'YES'
+                        else:
+                            df.at[idx, 'correct'] = 'NO'
         except:
             pass
     
@@ -66,12 +72,12 @@ def validate_winner_predictions():
     return df
 
 def get_winner_stats():
-    """Estadísticas de aciertos de predicción pura"""
     if not os.path.exists(TRACKER_FILE):
         return None
     
     df = pd.read_csv(TRACKER_FILE)
-    completed = df[df['correct'] != '']
+    # Solo predicciones reales (no SKIP, no TOO CLOSE)
+    completed = df[df['correct'].isin(['YES', 'NO'])]
     
     if len(completed) == 0:
         return None
@@ -82,6 +88,5 @@ def get_winner_stats():
     return {
         'total': total,
         'correct': correct,
-        'accuracy': round(correct / total * 100, 1),
-        'last5': completed.tail(5)[['date', 'match', 'predicted_winner', 'correct']].to_dict('records')
+        'accuracy': round(correct / total * 100, 1)
     }

@@ -10,15 +10,16 @@ from sharp_edge_engine import SharpEdgeEngine
 from market_exploiter import MarketExploiter
 from odds_fetcher import get_fanduel_odds_full
 from betting_logger import save_bet
-try:
-    from mlb_injury_fetcher import get_out_players_mlb
-except:
-    def get_out_players_mlb(x): return []
 from prediction_tracker import save_winner_prediction
 from montecarlo_mlb import MonteCarloMLB
 import pandas as pd
 import os
 from datetime import datetime
+
+try:
+    from mlb_injury_fetcher import get_out_players_mlb
+except:
+    def get_out_players_mlb(x): return []
 
 print("MLB|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|RL|OU|TEAM|F5")
 
@@ -72,11 +73,11 @@ if len(mlb_games) > 0:
         
         # LESIONES
         try:
-    home_injuries = get_out_players_mlb(home_team)
-    away_injuries = get_out_players_mlb(away_team)
-except:
-    home_injuries = []
-    away_injuries = []
+            home_injuries = get_out_players_mlb(home_team)
+            away_injuries = get_out_players_mlb(away_team)
+        except:
+            home_injuries = []
+            away_injuries = []
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
@@ -142,7 +143,10 @@ except:
         
         # PREDICCIÓN DE GANADOR
         predicted_winner = home_team if result['probability'] >= 0.5 else away_team
-        save_winner_prediction(row['match'], predicted_winner, result['probability'])
+        try:
+            save_winner_prediction(row['match'], predicted_winner, result['probability'])
+        except:
+            pass
         
         if intel['approved']:
             result['sport'] = 'MLB'
@@ -164,6 +168,8 @@ except:
                     already_saved = len(existing[(existing['date'] == today_str) & (existing['match'] == match_name) & (existing['bet_type'] == 'Moneyline')]) > 0
                 except: pass
             if not already_saved:
-                save_bet('MLB', result.get('match', ''), 'Moneyline', pick, h2h_home if pick == home_team else h2h_away, result.get('probability', 0), result.get('edge', 0), result.get('volatility', 0), result.get('confidence_score', 0))
+                try:
+                    save_bet('MLB', result.get('match', ''), 'Moneyline', pick, h2h_home if pick == home_team else h2h_away, result.get('probability', 0), result.get('edge', 0), result.get('volatility', 0), result.get('confidence_score', 0))
+                except: pass
 
 print(f"SUMMARY|{len(all_setups)}")

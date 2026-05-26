@@ -7,7 +7,10 @@ from mlb_engine import MLBEngine
 from market_intelligence import MarketIntelligence
 from odds_fetcher import get_fanduel_odds_full
 from betting_logger import save_bet
-from mlb_injury_fetcher import get_out_players_mlb
+try:
+    from mlb_injury_fetcher import get_out_players_mlb
+except:
+    def get_out_players_mlb(x): return []
 from prediction_tracker import save_winner_prediction
 import pandas as pd
 import os
@@ -65,8 +68,12 @@ if len(mlb_games) > 0:
         away_vs_home = get_pitcher_vs_team(row.get('away_pitcher_id'), home_id)
         
         # LESIONES
-        home_injuries = get_out_players_mlb(home_team)
-        away_injuries = get_out_players_mlb(away_team)
+        try:
+    home_injuries = get_out_players_mlb(home_team)
+    away_injuries = get_out_players_mlb(away_team)
+except:
+    home_injuries = []
+    away_injuries = []
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         

@@ -15,3 +15,7 @@ date,match,predicted_winner,actual_winner,correct,probability
 2026-05-26,San Diego Padres vs Philadelphia Phillies,San Diego Padres,,,0.6364
 2026-05-26,San Francisco Giants vs Arizona Diamondbacks,Arizona Diamondbacks,,,0.3347
 2026-05-26,Los Angeles Dodgers vs Colorado Rockies,Los Angeles Dodgers,,,0.6469
+2026-05-26,Cleveland Guardians vs Washington Nationals,Washington Nationals,,,0.4021
+2026-05-26,Baltimore Orioles vs Tampa Bay Rays,Tampa Bay Rays,,,0.4366
+2026-05-26,Detroit Tigers vs Los Angeles Angels,Detroit Tigers,,,0.5433
+2026-05-26,Pittsburgh Pirates vs Chicago Cubs,Pittsburgh Pirates,,,0.5709

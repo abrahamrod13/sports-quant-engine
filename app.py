@@ -74,13 +74,13 @@ def get_winner(home, away, prob_str):
     try:
         prob_val = float(prob_str.rstrip('%'))
         if prob_val >= 60:
-            return home
+            return home, prob_val
         elif prob_val <= 40:
-            return away
+            return away, 100 - prob_val
         else:
-            return "TOO CLOSE"
+            return "TOO CLOSE", prob_val
     except:
-        return "TOO CLOSE"
+        return "TOO CLOSE", 50
 
 def bayesian_analysis(home_team, away_team, model_prob, confidence):
     log_file = 'data/betting_log.csv'
@@ -172,9 +172,10 @@ if st.session_state.mlb_data:
         table_html += f'<th>{h}</th>'
     table_html += '</tr></thead><tbody>'
     for g in st.session_state.mlb_data:
-        winner = get_winner(g['home'], g['away'], g['prob'])
+        winner, winner_prob = get_winner(g['home'], g['away'], g['prob'])
         winner_class = 'pick-highlight' if winner != "TOO CLOSE" else 'too-close'
-        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{winner_class}">{winner}</td><td>{g["prob"]}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
+        prob_display = f"{winner_prob:.1f}%" if winner != "TOO CLOSE" else g['prob']
+        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{winner_class}">{winner}</td><td>{prob_display}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
     table_html += '</tbody></table>'
     st.markdown(table_html, unsafe_allow_html=True)
     
@@ -188,11 +189,11 @@ if st.session_state.mlb_data:
         
         st.markdown(f"## FULL ANALYSIS: {g['home']} vs {g['away']}")
         
-        winner = get_winner(g['home'], g['away'], g['prob'])
+        winner, winner_prob = get_winner(g['home'], g['away'], g['prob'])
         if winner == "TOO CLOSE":
             st.markdown(f"### PREDICTION: TOO CLOSE TO CALL ({g['prob']})")
         else:
-            st.markdown(f"### PREDICTED WINNER: {winner} ({g['prob']})")
+            st.markdown(f"### PREDICTED WINNER: {winner} ({winner_prob:.1f}%)")
         
         if meta:
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)

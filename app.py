@@ -27,6 +27,7 @@ st.markdown("""
     .results-table td { background: #161b22; color: #c9d1d9; padding: 0.5rem; border-bottom: 1px solid #21262d; text-align: center; }
     .results-table tr:hover td { background: #1a2332; }
     .pick-highlight { color: #58a6ff; font-weight: bold; }
+    .too-close { color: #f0a500; font-style: italic; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -69,26 +70,17 @@ def parse_mlb_output(output_text):
                 }
     return games, metadata
 
-def parse_nba_output(output_text):
-    games, metadata = [], {}
-    for line in output_text.strip().split('\n'):
-        if line.startswith('NBA|') and 'HOME' not in line:
-            parts = line.split('|')
-            if len(parts) >= 13:
-                games.append({'home': parts[1], 'away': parts[2], 'pick': parts[3], 'odds': parts[4], 'prob': parts[5], 'edge': parts[6], 'conf': parts[7], 'ml': parts[8], 'spread': parts[9], 'home_record': parts[10], 'away_record': parts[11], 'playoff': parts[12]})
-        elif line.startswith('DATA_NBA|'):
-            parts = line.split('|')
-            if len(parts) >= 10:
-                key = f"{parts[1]}|{parts[2]}"
-                metadata[key] = {'home_ortg': parts[3], 'away_ortg': parts[4], 'home_net': parts[5], 'away_net': parts[6], 'notes': parts[7], 'home_injuries': parts[8], 'away_injuries': parts[9]}
-    return games, metadata
-
 def get_winner(home, away, prob_str):
     try:
         prob_val = float(prob_str.rstrip('%'))
-        return home if prob_val >= 50 else away
+        if prob_val >= 60:
+            return home
+        elif prob_val <= 40:
+            return away
+        else:
+            return "TOO CLOSE"
     except:
-        return home
+        return "TOO CLOSE"
 
 def bayesian_analysis(home_team, away_team, model_prob, confidence):
     log_file = 'data/betting_log.csv'
@@ -145,8 +137,6 @@ col1, col2, col3, col4 = st.columns(4)
 
 if 'mlb_data' not in st.session_state: st.session_state.mlb_data = None
 if 'mlb_metadata' not in st.session_state: st.session_state.mlb_metadata = None
-if 'nba_data' not in st.session_state: st.session_state.nba_data = None
-if 'nba_metadata' not in st.session_state: st.session_state.nba_metadata = None
 
 with col1:
     if st.button("MLB TODAY", use_container_width=True, key="mlb_today"):
@@ -183,7 +173,8 @@ if st.session_state.mlb_data:
     table_html += '</tr></thead><tbody>'
     for g in st.session_state.mlb_data:
         winner = get_winner(g['home'], g['away'], g['prob'])
-        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="pick-highlight">{winner}</td><td>{g["prob"]}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
+        winner_class = 'pick-highlight' if winner != "TOO CLOSE" else 'too-close'
+        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{winner_class}">{winner}</td><td>{g["prob"]}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
     table_html += '</tbody></table>'
     st.markdown(table_html, unsafe_allow_html=True)
     
@@ -198,7 +189,10 @@ if st.session_state.mlb_data:
         st.markdown(f"## FULL ANALYSIS: {g['home']} vs {g['away']}")
         
         winner = get_winner(g['home'], g['away'], g['prob'])
-        st.markdown(f"### PREDICTED WINNER: {winner} ({g['prob']})")
+        if winner == "TOO CLOSE":
+            st.markdown(f"### PREDICTION: TOO CLOSE TO CALL ({g['prob']})")
+        else:
+            st.markdown(f"### PREDICTED WINNER: {winner} ({g['prob']})")
         
         if meta:
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)

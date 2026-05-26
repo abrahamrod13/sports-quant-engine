@@ -51,7 +51,7 @@ def parse_mlb_output(output_text):
             parts = line.split('|')
             if len(parts) >= 13:
                 games.append({'home': parts[1], 'away': parts[2], 'pick': parts[3], 'odds': parts[4], 'prob': parts[5], 'edge': parts[6], 'conf': parts[7], 'ml': parts[8], 'rl': parts[9], 'ou': parts[10], 'team': parts[11], 'f5': parts[12]})
-        elif line.startswith('DATA|'):
+                elif line.startswith('DATA|'):
             parts = line.split('|')
             if len(parts) >= 22:
                 key = f"{parts[1]}|{parts[2]}"

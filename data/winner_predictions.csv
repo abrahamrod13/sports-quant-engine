@@ -1,0 +1,17 @@
+date,match,predicted_winner,actual_winner,correct,probability
+2026-05-26,Cleveland Guardians vs Washington Nationals,Washington Nationals,,,0.4078
+2026-05-26,Cleveland Guardians vs Washington Nationals,Washington Nationals,,,0.4078
+2026-05-26,Baltimore Orioles vs Tampa Bay Rays,Tampa Bay Rays,,,0.4366
+2026-05-26,Detroit Tigers vs Los Angeles Angels,Detroit Tigers,,,0.5433
+2026-05-26,Pittsburgh Pirates vs Chicago Cubs,Pittsburgh Pirates,,,0.5709
+2026-05-26,Boston Red Sox vs Atlanta Braves,Atlanta Braves,,,0.4947
+2026-05-26,Toronto Blue Jays vs Miami Marlins,Toronto Blue Jays,,,0.5543
+2026-05-26,New York Mets vs Cincinnati Reds,Cincinnati Reds,,,0.4262
+2026-05-26,Chicago White Sox vs Minnesota Twins,Minnesota Twins,,,0.2399
+2026-05-26,Kansas City Royals vs New York Yankees,New York Yankees,,,0.2607
+2026-05-26,Milwaukee Brewers vs St. Louis Cardinals,Milwaukee Brewers,,,0.5136
+2026-05-26,Texas Rangers vs Houston Astros,Texas Rangers,,,0.5782
+2026-05-26,Athletics vs Seattle Mariners,Seattle Mariners,,,0.4382
+2026-05-26,San Diego Padres vs Philadelphia Phillies,San Diego Padres,,,0.6364
+2026-05-26,San Francisco Giants vs Arizona Diamondbacks,Arizona Diamondbacks,,,0.3347
+2026-05-26,Los Angeles Dodgers vs Colorado Rockies,Los Angeles Dodgers,,,0.6469

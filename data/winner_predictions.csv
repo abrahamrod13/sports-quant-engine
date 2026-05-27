@@ -1,2 +1,7 @@
 date,match,predicted_winner,actual_winner,correct,probability
-2026-05-27,Cleveland Guardians vs Washington Nationals,Washington Nationals,,,62.0
+2026-05-27,Cleveland Guardians vs Washington Nationals,Washington Nationals,Cleveland Guardians,NO,62.0
+2026-05-26,Chicago White Sox vs Minnesota Twins,Minnesota Twins,Minnesota Twins,YES,76.0
+2026-05-26,Kansas City Royals vs New York Yankees,New York Yankees,New York Yankees,YES,73.9
+2026-05-26,San Francisco Giants vs Arizona Diamondbacks,Arizona Diamondbacks,Arizona Diamondbacks,YES,66.5
+2026-05-26,San Diego Padres vs Philadelphia Phillies,San Diego Padres,Philadelphia Phillies,NO,63.6
+2026-05-26,Los Angeles Dodgers vs Colorado Rockies,Los Angeles Dodgers,Los Angeles Dodgers,YES,64.7

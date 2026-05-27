@@ -20,6 +20,16 @@ try:
 except:
     def get_out_players_mlb(x): return []
 
+# STATCAST ENGINE (inicializar una vez)
+statcast_engine = None
+try:
+    from statcast_engine import StatcastEngine
+    statcast_engine = StatcastEngine()
+    statcast_engine.fetch_data()
+    statcast_engine.calculate_team_rankings()
+except:
+    pass
+
 print("MLB|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|RL|OU|TEAM|F5")
 
 mlb_engine = MLBEngine()
@@ -105,6 +115,20 @@ if len(mlb_games) > 0:
         }
         
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
+        
+        # STATCAST POWER BONUS
+        try:
+            if statcast_engine:
+                home_power = statcast_engine.get_team_power(home_team)
+                away_power = statcast_engine.get_team_power(away_team)
+                if home_power and away_power:
+                    power_diff = home_power['power_score'] - away_power['power_score']
+                    adjustment = (power_diff / 10) * 0.015
+                    result['probability'] = min(0.85, max(0.15, result['probability'] + adjustment))
+                    result['edge'] = result['probability'] - (1 / fav_odds_dec)
+        except:
+            pass
+        
         intel = market_intel.final_decision(game_data, result)
         
         if result['edge'] > 0:

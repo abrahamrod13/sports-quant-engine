@@ -7,7 +7,6 @@ from mlb_engine import MLBEngine
 from market_intelligence import MarketIntelligence
 from odds_fetcher import get_fanduel_odds_full
 from betting_logger import save_bet
-from prediction_tracker import save_winner_prediction
 import pandas as pd
 import os
 from datetime import datetime, timedelta
@@ -68,7 +67,6 @@ if len(mlb_games) > 0:
         home_vs_away = get_pitcher_vs_team(row.get('home_pitcher_id'), away_id)
         away_vs_home = get_pitcher_vs_team(row.get('away_pitcher_id'), home_id)
         
-        # LESIONES
         try:
             home_injuries = get_out_players_mlb(home_team)
             away_injuries = get_out_players_mlb(away_team)
@@ -136,13 +134,6 @@ if len(mlb_games) > 0:
         
         print(f"MLB|{home_team}|{away_team}|{pick}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
-        
-        # PREDICCIÓN DE GANADOR
-        predicted_winner = home_team if result['probability'] >= 0.5 else away_team
-        try:
-            save_winner_prediction(row['match'], predicted_winner, result['probability'])
-        except:
-            pass
         
         if intel['approved']:
             result['sport'] = 'MLB'

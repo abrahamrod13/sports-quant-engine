@@ -145,6 +145,15 @@ with col1:
             games, metadata = parse_mlb_output(output)
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
+            # Guardar predicciones de ganador
+            for g in games:
+                winner, _ = get_winner(g['home'], g['away'], g['prob'])
+                if winner != "TOO CLOSE":
+                    try:
+                        from prediction_tracker import save_winner_prediction
+                        match_name = f"{g['home']} vs {g['away']}"
+                        save_winner_prediction(match_name, winner, float(g['prob'].rstrip('%')))
+                    except: pass
 
 with col2:
     if st.button("MLB TOMORROW", use_container_width=True, key="mlb_tomorrow"):
@@ -153,6 +162,15 @@ with col2:
             games, metadata = parse_mlb_output(output)
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
+            # Guardar predicciones de ganador
+            for g in games:
+                winner, _ = get_winner(g['home'], g['away'], g['prob'])
+                if winner != "TOO CLOSE":
+                    try:
+                        from prediction_tracker import save_winner_prediction
+                        match_name = f"{g['home']} vs {g['away']}"
+                        save_winner_prediction(match_name, winner, float(g['prob'].rstrip('%')))
+                    except: pass
 
 with col3:
     if st.button("NBA TODAY", use_container_width=True, key="nba_today"):
@@ -363,7 +381,9 @@ with col_v1:
     if st.button("VALIDATE PENDING", use_container_width=True):
         try:
             from betting_logger import validate_pending_bets
+            from prediction_tracker import validate_winner_predictions
             validate_pending_bets()
+            validate_winner_predictions()
             st.success("Done!")
         except:
             st.error("Validation failed")

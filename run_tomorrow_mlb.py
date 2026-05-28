@@ -16,15 +16,13 @@ try:
 except:
     def get_out_players_mlb(x): return []
 
-# STATCAST ENGINE
-statcast_engine = None
 try:
     from statcast_engine import StatcastEngine
     statcast_engine = StatcastEngine()
     statcast_engine.fetch_data()
     statcast_engine.calculate_team_rankings()
 except:
-    pass
+    statcast_engine = None
 
 tomorrow = datetime.now() + timedelta(days=1)
 
@@ -59,8 +57,7 @@ if len(mlb_games) > 0:
         home_p_name = row.get('home_pitcher_name', 'TBD')
         away_p_name = row.get('away_pitcher_name', 'TBD')
         
-        if home_p_name == 'TBD' or away_p_name == 'TBD':
-            continue
+        if home_p_name == 'TBD' or away_p_name == 'TBD': continue
         
         if not home_p_data: home_p_data = mlb_engine.smart_pitcher_defaults(home_p_name)
         if not away_p_data: away_p_data = mlb_engine.smart_pitcher_defaults(away_p_name)
@@ -81,8 +78,7 @@ if len(mlb_games) > 0:
             home_injuries = get_out_players_mlb(home_team)
             away_injuries = get_out_players_mlb(away_team)
         except:
-            home_injuries = []
-            away_injuries = []
+            home_injuries = []; away_injuries = []
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
@@ -92,18 +88,8 @@ if len(mlb_games) > 0:
             'home_pitcher': home_p_data, 'away_pitcher': away_p_data,
             'home_momentum': home_momentum, 'away_momentum': away_momentum,
             'home_bullpen': home_bullpen, 'away_bullpen': away_bullpen,
-            'home_matchup': {
-                'avg': home_vs_away.get('avg', 0.250) if home_vs_away else 0.250,
-                'ops': home_vs_away.get('ops', 0.720) if home_vs_away else 0.720,
-                'hr': home_vs_away.get('hr', 0) if home_vs_away else 0,
-                'pa': home_vs_away.get('plate_appearances', 0) if home_vs_away else 0, 'k_rate': 0.22
-            },
-            'away_matchup': {
-                'avg': away_vs_home.get('avg', 0.250) if away_vs_home else 0.250,
-                'ops': away_vs_home.get('ops', 0.720) if away_vs_home else 0.720,
-                'hr': away_vs_home.get('hr', 0) if away_vs_home else 0,
-                'pa': away_vs_home.get('plate_appearances', 0) if away_vs_home else 0, 'k_rate': 0.22
-            },
+            'home_matchup': {'avg': home_vs_away.get('avg', 0.250) if home_vs_away else 0.250, 'ops': home_vs_away.get('ops', 0.720) if home_vs_away else 0.720, 'hr': home_vs_away.get('hr', 0) if home_vs_away else 0, 'pa': home_vs_away.get('plate_appearances', 0) if home_vs_away else 0, 'k_rate': 0.22},
+            'away_matchup': {'avg': away_vs_home.get('avg', 0.250) if away_vs_home else 0.250, 'ops': away_vs_home.get('ops', 0.720) if away_vs_home else 0.720, 'hr': away_vs_home.get('hr', 0) if away_vs_home else 0, 'pa': away_vs_home.get('plate_appearances', 0) if away_vs_home else 0, 'k_rate': 0.22},
             'stadium': row.get('stadium', ''), 'divisional_game': row.get('is_divisional', False),
             'bullpen_home_weak': home_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
             'bullpen_away_weak': away_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
@@ -112,35 +98,58 @@ if len(mlb_games) > 0:
         
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         
-        # STATCAST POWER BONUS
         try:
             if statcast_engine:
                 home_power = statcast_engine.get_team_power(home_team)
                 away_power = statcast_engine.get_team_power(away_team)
                 if home_power and away_power:
-                    power_diff = home_power['power_score'] - away_power['power_score']
-                    adjustment = (power_diff / 10) * 0.015
-                    result['probability'] = min(0.85, max(0.15, result['probability'] + adjustment))
-                    result['edge'] = result['probability'] - (1 / fav_odds_dec)
-        except:
-            pass
+                    result['probability'] = min(0.85, max(0.15, result['probability'] + ((home_power['power_score'] - away_power['power_score']) / 10) * 0.015))
+        except: pass
         
+        try:
+            from series_momentum_engine import get_series_momentum
+            sm = get_series_momentum(home_team, away_team)
+            if sm:
+                momentum_bonus = 0
+                home_wins = int(sm['home_last5'].split('-')[0]); away_wins = int(sm['away_last5'].split('-')[0])
+                if home_wins >= 4 and away_wins <= 1: momentum_bonus += 0.03
+                elif home_wins >= 3 and away_wins <= 2: momentum_bonus += 0.015
+                if sm['home_run_diff_last5'] > 15: momentum_bonus += 0.02
+                if sm['h2h_games'] >= 2:
+                    if int(sm['h2h_record'].split('-')[0]) == sm['h2h_games']: momentum_bonus += 0.02
+                result['probability'] = min(0.85, max(0.15, result['probability'] + momentum_bonus))
+        except: pass
+        
+        try:
+            stars = ['Trout', 'Ohtani', 'Judge', 'Betts', 'Soto', 'Freeman', 'Tatis', 'Harper', 'Turner', 'Devers', 'Ramirez']
+            injury_penalty = 0
+            for inj in home_injuries:
+                if any(star.lower() in inj.get('player', '').lower() for star in stars): injury_penalty -= 0.04
+            for inj in away_injuries:
+                if any(star.lower() in inj.get('player', '').lower() for star in stars): injury_penalty += 0.04
+            result['probability'] = min(0.85, max(0.15, result['probability'] + injury_penalty))
+        except: pass
+        
+        try:
+            from lineup_fetcher import get_lineups_for_match, lineup_impact
+            lineups = get_lineups_for_match(home_team, away_team)
+            if lineups.get('has_lineups'):
+                result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_impact(lineups, home_team, away_team)))
+        except: pass
+        
+        result['edge'] = result['probability'] - (1 / fav_odds_dec)
         intel = market_intel.final_decision(game_data, result)
         
         if result['edge'] > 0:
             pick = home_team if result['probability'] >= 0.5 else away_team
             odds_str = str(h2h_home if pick == home_team else h2h_away)
         else:
-            pick = "NO PICK"
-            odds_str = "-"
+            pick = "NO PICK"; odds_str = "-"
         
         ml_status = "[OK]" if intel['approved'] else ("[SUS]" if result['edge'] > 0.03 else "[X]")
-        
         rl_status = "[X]"
-        if result['probability'] >= 0.55:
-            rl_status = "[OK]" if result['probability'] - 0.08 - 0.45 > 0.02 else "[?]"
-        elif result['probability'] <= 0.45:
-            rl_status = "[OK]" if (1-result['probability']) - 0.08 - 0.45 > 0.02 else "[?]"
+        if result['probability'] >= 0.55: rl_status = "[OK]" if result['probability'] - 0.08 - 0.45 > 0.02 else "[?]"
+        elif result['probability'] <= 0.45: rl_status = "[OK]" if (1-result['probability']) - 0.08 - 0.45 > 0.02 else "[?]"
         
         home_eff_era = home_p_data.get('last3_era', home_p_data.get('era', 4.50))
         away_eff_era = away_p_data.get('last3_era', away_p_data.get('era', 4.50))
@@ -160,27 +169,17 @@ if len(mlb_games) > 0:
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
         if intel['approved']:
-            result['sport'] = 'MLB'
-            result['match'] = row['match']
-            result['home_team'] = home_team
-            result['away_team'] = away_team
-            result['pick'] = pick
-            result['bet_type'] = 'Moneyline'
+            result['sport'] = 'MLB'; result['match'] = row['match']
+            result['home_team'] = home_team; result['away_team'] = away_team
+            result['pick'] = pick; result['bet_type'] = 'Moneyline'
             result['odds_american'] = h2h_home if pick == home_team else h2h_away
             all_setups.append(result)
-            
-            log_file = 'data/betting_log.csv'
-            already_saved = False
-            if os.path.exists(log_file):
-                try:
+            try:
+                log_file = 'data/betting_log.csv'
+                if os.path.exists(log_file):
                     existing = pd.read_csv(log_file)
-                    match_name = result.get('match', '')
-                    today_str = datetime.now().strftime('%Y-%m-%d')
-                    already_saved = len(existing[(existing['date'] == today_str) & (existing['match'] == match_name) & (existing['bet_type'] == 'Moneyline')]) > 0
-                except: pass
-            if not already_saved:
-                try:
-                    save_bet('MLB', result.get('match', ''), 'Moneyline', pick, h2h_home if pick == home_team else h2h_away, result.get('probability', 0), result.get('edge', 0), result.get('volatility', 0), result.get('confidence_score', 0))
-                except: pass
+                    if len(existing[(existing['date'] == datetime.now().strftime('%Y-%m-%d')) & (existing['match'] == result.get('match', ''))]) == 0:
+                        save_bet('MLB', result.get('match', ''), 'Moneyline', pick, h2h_home if pick == home_team else h2h_away, result.get('probability', 0), result.get('edge', 0), result.get('volatility', 0), result.get('confidence_score', 0))
+            except: pass
 
 print(f"SUMMARY|{len(all_setups)}")

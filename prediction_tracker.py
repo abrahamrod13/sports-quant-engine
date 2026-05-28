@@ -1,5 +1,6 @@
 """
 PREDICTION TRACKER - Guarda predicciones de GANADOR y mide accuracy
+VERSIÓN FINAL - Tipos corregidos, matcheo flexible
 """
 import pandas as pd
 import os
@@ -10,11 +11,26 @@ TRACKER_FILE = 'data/winner_predictions.csv'
 def init_tracker():
     os.makedirs('data', exist_ok=True)
     if not os.path.exists(TRACKER_FILE):
-        df = pd.DataFrame(columns=['date', 'match', 'predicted_winner', 'actual_winner', 'correct', 'probability'])
+        df = pd.DataFrame(columns=[
+            'date', 'match', 'predicted_winner', 
+            'actual_winner', 'correct', 'probability'
+        ])
         df.to_csv(TRACKER_FILE, index=False)
 
 def save_winner_prediction(match, predicted_winner, probability):
+    """Guarda una predicción en el tracker"""
     init_tracker()
+    
+    # Leer existente
+    if os.path.exists(TRACKER_FILE):
+        df = pd.read_csv(TRACKER_FILE)
+    else:
+        df = pd.DataFrame(columns=[
+            'date', 'match', 'predicted_winner',
+            'actual_winner', 'correct', 'probability'
+        ])
+    
+    # Crear nueva fila
     new_row = pd.DataFrame([{
         'date': datetime.now().strftime('%Y-%m-%d'),
         'match': match,
@@ -23,30 +39,49 @@ def save_winner_prediction(match, predicted_winner, probability):
         'correct': '',
         'probability': probability
     }])
-    new_row.to_csv(TRACKER_FILE, mode='a', header=False, index=False)
+    
+    # Concatenar y guardar
+    df = pd.concat([df, new_row], ignore_index=True)
+    df.to_csv(TRACKER_FILE, index=False)
 
 def validate_winner_predictions():
+    """
+    Busca resultados reales en MLB API y actualiza el CSV
+    """
     if not os.path.exists(TRACKER_FILE):
+        print("No tracker file found.")
         return None
     
+    # Leer CSV
     df = pd.read_csv(TRACKER_FILE)
-    # Asegurar columnas string
-    for col in ['actual_winner', 'correct']:
-        if col in df.columns:
-            df[col] = df[col].astype(str).replace('nan', '')
     
-    pending = df[(df['correct'] == '') | (df['correct'].isna())]
+    # Convertir columnas clave a string y limpiar NaN
+    for col in ['actual_winner', 'correct', 'predicted_winner', 'match']:
+        if col in df.columns:
+            df[col] = df[col].fillna('').astype(str)
+    
+    # Encontrar predicciones sin validar
+    pending_mask = (df['correct'] == '') | (df['correct'] == 'nan')
+    pending = df[pending_mask]
+    
+    print(f"🔍 {len(pending)} predicciones pendientes de validar")
     
     if len(pending) == 0:
+        df.to_csv(TRACKER_FILE, index=False)
         return df
     
     import requests
+    validated_count = 0
     
     for idx, row in pending.iterrows():
         try:
             url = "https://statsapi.mlb.com/api/v1/schedule"
             params = {'sportId': 1, 'date': row['date']}
-            response = requests.get(url, params=params)
+            response = requests.get(url, params=params, timeout=10)
+            
+            if response.status_code != 200:
+                continue
+            
             data = response.json()
             
             for date_data in data.get('dates', []):
@@ -55,38 +90,49 @@ def validate_winner_predictions():
                     away = game['teams']['away']['team']['name']
                     status = game.get('status', {}).get('detailedState', '')
                     
-                    # Matcheo flexible
-                    match_str = str(row['match']).lower().replace(' ', '')
-                    api_str = (home + away).lower().replace(' ', '')
+                    # Verificar si este juego matchea con nuestra predicción
+                    match_str = str(row['match']).lower()
+                    home_in_match = home.lower() in match_str
+                    away_in_match = away.lower() in match_str
                     
-                    if (home.lower() in str(row['match']).lower() and 
-                        away.lower() in str(row['match']).lower() and 
-                        status == 'Final'):
-                        
+                    if home_in_match and away_in_match and status == 'Final':
                         home_score = int(game['teams']['home'].get('score', 0))
                         away_score = int(game['teams']['away'].get('score', 0))
                         actual_winner = home if home_score > away_score else away
                         
-                        df.at[idx, 'actual_winner'] = str(actual_winner)
+                        # Guardar resultado
+                        df.at[idx, 'actual_winner'] = actual_winner
+                        
                         predicted = str(row['predicted_winner'])
                         
-                        if row['predicted_winner'] == 'TOO CLOSE':
+                        if predicted == 'TOO CLOSE':
                             df.at[idx, 'correct'] = 'SKIP'
                         elif predicted.lower() == actual_winner.lower():
                             df.at[idx, 'correct'] = 'YES'
                         else:
                             df.at[idx, 'correct'] = 'NO'
-        except:
-            pass
+                        
+                        validated_count += 1
+                        break  # Salir del loop de juegos
+        except Exception as e:
+            print(f"  ⚠️ Error validando {row['date']} - {row['match']}: {e}")
     
+    print(f"✅ {validated_count} predicciones validadas")
     df.to_csv(TRACKER_FILE, index=False)
     return df
 
 def get_winner_stats():
+    """Obtiene estadísticas de accuracy"""
     if not os.path.exists(TRACKER_FILE):
         return None
     
     df = pd.read_csv(TRACKER_FILE)
+    
+    # Asegurar tipos
+    if 'correct' in df.columns:
+        df['correct'] = df['correct'].fillna('').astype(str)
+    
+    # Solo predicciones reales (YES/NO)
     completed = df[df['correct'].isin(['YES', 'NO'])]
     
     if len(completed) == 0:
@@ -98,5 +144,5 @@ def get_winner_stats():
     return {
         'total': total,
         'correct': correct,
-        'accuracy': round(correct / total * 100, 1)
+        'accuracy': round(correct / total * 100, 1) if total > 0 else 0
     }

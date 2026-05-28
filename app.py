@@ -34,7 +34,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>MLB NBA SPORTS QUANT ENGINE V8</h1>
-    <p>Market Inefficiency Detection System | Monte Carlo + Bayesian + Statcast + Series Momentum</p>
+    <p>Market Inefficiency Detection System | Lineups + Series + Statcast + Calendar</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -111,7 +111,7 @@ with col_m3:
 with col_m4:
     st.markdown(f"""<div class="metric-btn"><span class="label">TOTAL BETS</span><span class="value">{mlb_stats['total_bets']}</span></div>""" if mlb_stats else """<div class="metric-btn"><span class="label">TOTAL BETS</span><span class="value">N/A</span></div>""", unsafe_allow_html=True)
 
-# WINNER PREDICTION ACCURACY
+# WINNER ACCURACY
 st.markdown('<h2 class="section-title">WINNER PREDICTION ACCURACY</h2>', unsafe_allow_html=True)
 try:
     from prediction_tracker import get_winner_stats, validate_winner_predictions
@@ -119,15 +119,13 @@ try:
     winner_stats = get_winner_stats()
     if winner_stats:
         col_w1, col_w2, col_w3 = st.columns(3)
-        with col_w1: st.metric("Total Predictions", winner_stats['total'])
+        with col_w1: st.metric("Total", winner_stats['total'])
         with col_w2: st.metric("Correct", winner_stats['correct'])
         with col_w3: st.metric("Accuracy", f"{winner_stats['accuracy']}%")
-    else:
-        st.info("No winner predictions yet.")
-except:
-    st.info("Prediction tracker initializing...")
+    else: st.info("No predictions yet.")
+except: st.info("Tracker initializing...")
 
-# WINNER PREDICTION CALENDAR
+# CALENDAR
 st.markdown('<h2 class="section-title">PREDICTION CALENDAR</h2>', unsafe_allow_html=True)
 try:
     tracker_file = 'data/winner_predictions.csv'
@@ -151,30 +149,16 @@ try:
                     parts = row['match'].split(' vs ')
                     home = parts[0] if len(parts) > 0 else ''
                     away = parts[1] if len(parts) > 1 else ''
-                    if result == 'YES':
-                        status = 'WIN'
-                        correct += 1; total_predicted += 1
-                    elif result == 'NO':
-                        status = 'LOSS'
-                        total_predicted += 1
-                    elif result == 'SKIP':
-                        status = 'SKIP'
-                    else:
-                        status = 'PENDING'
-                        if row['predicted_winner'] != 'TOO CLOSE':
-                            total_predicted += 1
+                    if result == 'YES': status = 'WIN'; correct += 1; total_predicted += 1
+                    elif result == 'NO': status = 'LOSS'; total_predicted += 1
+                    elif result == 'SKIP': status = 'SKIP'
+                    else: status = 'PENDING'; total_predicted += 1 if pred != 'TOO CLOSE' else 0
                     table_html += f'<tr><td>{home} vs {away}</td><td class="pick-highlight">{pred}</td><td>{actual}</td><td>{status}</td></tr>'
                 table_html += '</tbody></table>'
                 st.markdown(table_html, unsafe_allow_html=True)
                 if total_predicted > 0:
-                    day_acc = correct / total_predicted * 100
-                    st.metric(f"Day Accuracy", f"{correct}/{total_predicted} ({day_acc:.1f}%)")
-        else:
-            st.info("No predictions yet.")
-    else:
-        st.info("Prediction tracker initializing...")
-except Exception as e:
-    st.info(f"Calendar loading...")
+                    st.metric("Day Accuracy", f"{correct}/{total_predicted} ({correct/total_predicted*100:.1f}%)")
+except: st.info("Calendar loading...")
 
 # BOTONES
 st.markdown('<h2 class="section-title">QUICK SCAN</h2>', unsafe_allow_html=True)
@@ -213,12 +197,9 @@ with col2:
                     except: pass
 
 with col3:
-    if st.button("NBA TODAY", use_container_width=True, key="nba_today"):
-        st.info("NBA engine loading...")
-
+    if st.button("NBA TODAY", use_container_width=True, key="nba_today"): st.info("NBA loading...")
 with col4:
-    if st.button("NBA TOMORROW", use_container_width=True, key="nba_tomorrow"):
-        st.info("NBA engine loading...")
+    if st.button("NBA TOMORROW", use_container_width=True, key="nba_tomorrow"): st.info("NBA loading...")
 
 # TABLA MLB
 if st.session_state.mlb_data:
@@ -283,25 +264,34 @@ if st.session_state.mlb_data:
                     st.markdown("#### SERIES & MOMENTUM")
                     col_sm1, col_sm2, col_sm3 = st.columns(3)
                     with col_sm1:
-                        st.metric(f"{g['home']} Last 5", sm['home_last5'])
-                        st.metric(f"{g['home']} Last 10", sm['home_last10'])
-                        st.write(f"Streak: {sm['home_streak']}W")
-                        st.write(f"Run Diff: {sm['home_run_diff_last5']:+d}")
+                        st.metric(f"{g['home']} Last 5", sm['home_last5']); st.metric(f"Last 10", sm['home_last10'])
+                        st.write(f"Streak: {sm['home_streak']}W | Run Diff: {sm['home_run_diff_last5']:+d}")
                     with col_sm2:
-                        st.metric(f"{g['away']} Last 5", sm['away_last5'])
-                        st.metric(f"{g['away']} Last 10", sm['away_last10'])
-                        st.write(f"Streak: {sm['away_streak']}W")
-                        st.write(f"Run Diff: {sm['away_run_diff_last5']:+d}")
+                        st.metric(f"{g['away']} Last 5", sm['away_last5']); st.metric(f"Last 10", sm['away_last10'])
+                        st.write(f"Streak: {sm['away_streak']}W | Run Diff: {sm['away_run_diff_last5']:+d}")
                     with col_sm3:
-                        st.metric("H2H Record", sm['h2h_record'])
-                        st.write(f"Games in series: {sm['h2h_games']}")
+                        st.metric("H2H", sm['h2h_record']); st.write(f"Games: {sm['h2h_games']}")
                         if sm['h2h_details']:
-                            st.write("**Recent matchups:**")
-                            for date, detail in sm['h2h_details'][:3]:
-                                st.write(f"{date}: {detail}")
+                            for date, detail in sm['h2h_details'][:3]: st.write(f"{date}: {detail}")
                     st.markdown('</div>', unsafe_allow_html=True)
-            except:
-                pass
+            except: pass
+            
+            # LINEUPS
+            try:
+                from lineup_fetcher import get_lineups_for_match
+                lineups = get_lineups_for_match(g['home'], g['away'])
+                if lineups.get('has_lineups'):
+                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                    st.markdown("#### STARTING LINEUPS")
+                    col_l1, col_l2 = st.columns(2)
+                    with col_l1:
+                        st.markdown(f"**{lineups['defense_team']}**")
+                        for p in lineups['defense_lineup']: st.write(f"  {p['position']}: {p['name']}")
+                    with col_l2:
+                        st.markdown(f"**{lineups['offense_team']}**")
+                        for p in lineups['offense_lineup']: st.write(f"  {p['position']}: {p['name']}")
+                    st.markdown('</div>', unsafe_allow_html=True)
+            except: pass
         
         st.markdown('<div class="mc-result">', unsafe_allow_html=True)
         st.markdown("#### BETTING VALUE")
@@ -329,7 +319,7 @@ if st.session_state.mlb_data:
         st.markdown('</div>', unsafe_allow_html=True)
         try:
             bayes = bayesian_analysis(g['home'], g['away'], g['prob'], g['conf'])
-            st.markdown(f"""<div class="bayesian-box"><b>BAYESIAN UPDATE:</b> {bayes['bayesian_prob']:.1%} | Prior: {bayes['prior_strength']} ({bayes['historical_games']} historical games)</div>""", unsafe_allow_html=True)
+            st.markdown(f"""<div class="bayesian-box"><b>BAYESIAN:</b> {bayes['bayesian_prob']:.1%} | Prior: {bayes['prior_strength']} ({bayes['historical_games']} games)</div>""", unsafe_allow_html=True)
         except: pass
 
 # MONTE CARLO
@@ -354,10 +344,8 @@ try:
                         from mlb_data_fetcher import get_pitcher_stats, get_bullpen_data, get_team_momentum
                         from mlb_engine import MLBEngine
                         from montecarlo_mlb import MonteCarloMLB
-                        idx_mc = game_options_mc[selected_mc]
-                        row_mc = valid_games.loc[idx_mc]
-                        mlb_engine = MLBEngine()
-                        mc = MonteCarloMLB()
+                        idx_mc = game_options_mc[selected_mc]; row_mc = valid_games.loc[idx_mc]
+                        mlb_engine = MLBEngine(); mc = MonteCarloMLB()
                         home_p = get_pitcher_stats(row_mc.get('home_pitcher_id'))
                         away_p = get_pitcher_stats(row_mc.get('away_pitcher_id'))
                         if not home_p: home_p = mlb_engine.smart_pitcher_defaults(row_mc.get('home_pitcher_name', ''))
@@ -376,8 +364,7 @@ try:
                         }
                         results = mc.simulate_game(game_data, n_sims)
                         model_result = mlb_engine.evaluate_mlb_game(game_data, 2.0)
-                        model_prob = model_result.get('probability', 0.5)
-                        mc_prob = results['home_win_pct']
+                        model_prob = model_result.get('probability', 0.5); mc_prob = results['home_win_pct']
                         diff = mc_prob - model_prob
                         if abs(diff) > 0.12: diff_color, diff_label = "#f85149", "LARGE"
                         elif abs(diff) > 0.07: diff_color, diff_label = "#d2991d", "MODERATE"
@@ -387,7 +374,7 @@ try:
                         col_r1, col_r2 = st.columns(2)
                         with col_r1: st.metric(results['home_team'], f"{results['home_win_pct']:.1%}"); st.metric(results['away_team'], f"{results['away_win_pct']:.1%}")
                         with col_r2: st.metric("Over 7.5", f"{results['over_7_5']:.1%}"); st.metric("Over 8.5", f"{results['over_8_5']:.1%}"); st.metric(f"{results['home_team']} -1.5", f"{results['home_runline_minus1_5']:.1%}")
-except: st.info("Monte Carlo data loading...")
+except: st.info("Monte Carlo loading...")
 
 # VALIDATE & RESULTS
 st.markdown('<h2 class="section-title">VALIDATE & RESULTS</h2>', unsafe_allow_html=True)
@@ -397,29 +384,26 @@ with col_v1:
         try:
             from betting_logger import validate_pending_bets
             from prediction_tracker import validate_winner_predictions
-            validate_pending_bets()
-            validate_winner_predictions()
+            validate_pending_bets(); validate_winner_predictions()
             st.success("Done!")
         except: st.error("Validation failed")
 with col_v2:
     if st.button("RESULTS", use_container_width=True):
         log_file = 'data/betting_log.csv'
         if os.path.exists(log_file):
-            df = pd.read_csv(log_file)
-            completed = df[df['result'] != 'PENDING']
+            df = pd.read_csv(log_file); completed = df[df['result'] != 'PENDING']
             if len(completed) > 0:
-                wins = len(completed[completed['result'] == 'WIN'])
-                total = len(completed)
+                wins = len(completed[completed['result'] == 'WIN']); total = len(completed)
                 profit = completed['profit_loss'].sum()
                 st.markdown('<div class="mc-result">', unsafe_allow_html=True)
                 st.markdown("#### BETTING RESULTS")
                 col_r1, col_r2, col_r3, col_r4 = st.columns(4)
-                with col_r1: st.metric("Total Bets", total)
+                with col_r1: st.metric("Total", total)
                 with col_r2: st.metric("Wins", wins)
                 with col_r3: st.metric("Win Rate", f"{wins/total*100:.1f}%" if total > 0 else "N/A")
                 with col_r4: st.metric("Profit", f"${profit:+.2f}")
                 st.markdown('</div>', unsafe_allow_html=True)
-            else: st.info("No validated results yet.")
-        else: st.info("No betting log found.")
+            else: st.info("No validated results.")
+        else: st.info("No betting log.")
 
-st.markdown("""<div class="footer">Sports Quant Engine V8 | Market Inefficiency Detection System<br>MLB + NBA + Monte Carlo + Bayesian + Statcast + Series Momentum</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Sports Quant Engine V8 | Lineups + Series + Statcast + Calendar</div>""", unsafe_allow_html=True)

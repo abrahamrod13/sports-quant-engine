@@ -34,7 +34,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>MLB NBA SPORTS QUANT ENGINE V8</h1>
-    <p>Market Inefficiency Detection System | Monte Carlo + Bayesian + Statcast + Calendar</p>
+    <p>Market Inefficiency Detection System | Monte Carlo + Bayesian + Statcast + Series Momentum</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -152,16 +152,15 @@ try:
                     home = parts[0] if len(parts) > 0 else ''
                     away = parts[1] if len(parts) > 1 else ''
                     if result == 'YES':
-                        status = '✅ WIN'
-                        correct += 1
-                        total_predicted += 1
+                        status = 'WIN'
+                        correct += 1; total_predicted += 1
                     elif result == 'NO':
-                        status = '❌ LOSS'
+                        status = 'LOSS'
                         total_predicted += 1
                     elif result == 'SKIP':
-                        status = '⏭️ SKIP'
+                        status = 'SKIP'
                     else:
-                        status = '⏳ PENDING'
+                        status = 'PENDING'
                         if row['predicted_winner'] != 'TOO CLOSE':
                             total_predicted += 1
                     table_html += f'<tr><td>{home} vs {away}</td><td class="pick-highlight">{pred}</td><td>{actual}</td><td>{status}</td></tr>'
@@ -171,7 +170,7 @@ try:
                     day_acc = correct / total_predicted * 100
                     st.metric(f"Day Accuracy", f"{correct}/{total_predicted} ({day_acc:.1f}%)")
         else:
-            st.info("No predictions yet. Run MLB Today/Tomorrow first.")
+            st.info("No predictions yet.")
     else:
         st.info("Prediction tracker initializing...")
 except Exception as e:
@@ -245,8 +244,9 @@ if st.session_state.mlb_data:
         meta = st.session_state.mlb_metadata.get(f"{g['home']}|{g['away']}", {})
         st.markdown(f"## FULL ANALYSIS: {g['home']} vs {g['away']}")
         winner, winner_prob = get_winner(g['home'], g['away'], g['prob'])
-        if winner == "TOO CLOSE": st.markdown(f"### PREDICTION: TOO CLOSE TO CALL ({g['prob']})")
+        if winner == "TOO CLOSE": st.markdown(f"### TOO CLOSE TO CALL ({g['prob']})")
         else: st.markdown(f"### PREDICTED WINNER: {winner} ({winner_prob:.1f}%)")
+        
         if meta:
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)
             st.markdown("#### PITCHERS")
@@ -273,6 +273,36 @@ if st.session_state.mlb_data:
             with col_i1: st.markdown(f"**{g['home']}:**"); st.write(meta.get('home_injuries', 'None').replace(';', '\n'))
             with col_i2: st.markdown(f"**{g['away']}:**"); st.write(meta.get('away_injuries', 'None').replace(';', '\n'))
             st.markdown('</div>', unsafe_allow_html=True)
+            
+            # SERIES MOMENTUM
+            try:
+                from series_momentum_engine import get_series_momentum
+                sm = get_series_momentum(g['home'], g['away'])
+                if sm:
+                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                    st.markdown("#### SERIES & MOMENTUM")
+                    col_sm1, col_sm2, col_sm3 = st.columns(3)
+                    with col_sm1:
+                        st.metric(f"{g['home']} Last 5", sm['home_last5'])
+                        st.metric(f"{g['home']} Last 10", sm['home_last10'])
+                        st.write(f"Streak: {sm['home_streak']}W")
+                        st.write(f"Run Diff: {sm['home_run_diff_last5']:+d}")
+                    with col_sm2:
+                        st.metric(f"{g['away']} Last 5", sm['away_last5'])
+                        st.metric(f"{g['away']} Last 10", sm['away_last10'])
+                        st.write(f"Streak: {sm['away_streak']}W")
+                        st.write(f"Run Diff: {sm['away_run_diff_last5']:+d}")
+                    with col_sm3:
+                        st.metric("H2H Record", sm['h2h_record'])
+                        st.write(f"Games in series: {sm['h2h_games']}")
+                        if sm['h2h_details']:
+                            st.write("**Recent matchups:**")
+                            for date, detail in sm['h2h_details'][:3]:
+                                st.write(f"{date}: {detail}")
+                    st.markdown('</div>', unsafe_allow_html=True)
+            except:
+                pass
+        
         st.markdown('<div class="mc-result">', unsafe_allow_html=True)
         st.markdown("#### BETTING VALUE")
         col_b1, col_b2, col_b3, col_b4, col_b5 = st.columns(5)
@@ -392,4 +422,4 @@ with col_v2:
             else: st.info("No validated results yet.")
         else: st.info("No betting log found.")
 
-st.markdown("""<div class="footer">Sports Quant Engine V8 | Market Inefficiency Detection System<br>MLB + NBA + Monte Carlo + Bayesian + Statcast + Calendar</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Sports Quant Engine V8 | Market Inefficiency Detection System<br>MLB + NBA + Monte Carlo + Bayesian + Statcast + Series Momentum</div>""", unsafe_allow_html=True)

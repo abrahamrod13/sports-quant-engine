@@ -34,7 +34,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>MLB NBA SPORTS QUANT ENGINE V8</h1>
-    <p>Market Inefficiency Detection System | Lineups + Series + Statcast + Calendar</p>
+    <p>Market Inefficiency Detection | Monte Carlo + Bayesian + Series + Lineups + Calendar</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -77,6 +77,20 @@ def get_winner(home, away, prob_str):
         elif prob_val <= 40: return away, 100 - prob_val
         else: return "TOO CLOSE", prob_val
     except: return "TOO CLOSE", 50
+
+def save_prediction_safe(match, winner, prob):
+    """Guarda predicción solo si no existe duplicado"""
+    tracker_file = 'data/winner_predictions.csv'
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    try:
+        if os.path.exists(tracker_file):
+            existing = pd.read_csv(tracker_file)
+            already = len(existing[(existing['date'] == today_str) & (existing['match'] == match)]) > 0
+            if not already:
+                from prediction_tracker import save_winner_prediction
+                save_winner_prediction(match, winner, prob)
+    except:
+        pass
 
 def bayesian_analysis(home_team, away_team, model_prob, confidence):
     log_file = 'data/betting_log.csv'
@@ -132,6 +146,7 @@ try:
     if os.path.exists(tracker_file):
         df = pd.read_csv(tracker_file)
         if len(df) > 0:
+            df = df.drop_duplicates(subset=['date', 'match', 'predicted_winner'], keep='first')
             dates = sorted(df['date'].unique(), reverse=True)
             selected_date = st.selectbox("Select date:", dates, key="cal_date")
             day_df = df[df['date'] == selected_date]
@@ -176,10 +191,7 @@ with col1:
             for g in games:
                 winner, _ = get_winner(g['home'], g['away'], g['prob'])
                 if winner != "TOO CLOSE":
-                    try:
-                        from prediction_tracker import save_winner_prediction
-                        save_winner_prediction(f"{g['home']} vs {g['away']}", winner, float(g['prob'].rstrip('%')))
-                    except: pass
+                    save_prediction_safe(f"{g['home']} vs {g['away']}", winner, float(g['prob'].rstrip('%')))
 
 with col2:
     if st.button("MLB TOMORROW", use_container_width=True, key="mlb_tomorrow"):
@@ -191,10 +203,7 @@ with col2:
             for g in games:
                 winner, _ = get_winner(g['home'], g['away'], g['prob'])
                 if winner != "TOO CLOSE":
-                    try:
-                        from prediction_tracker import save_winner_prediction
-                        save_winner_prediction(f"{g['home']} vs {g['away']}", winner, float(g['prob'].rstrip('%')))
-                    except: pass
+                    save_prediction_safe(f"{g['home']} vs {g['away']}", winner, float(g['prob'].rstrip('%')))
 
 with col3:
     if st.button("NBA TODAY", use_container_width=True, key="nba_today"): st.info("NBA loading...")
@@ -255,7 +264,6 @@ if st.session_state.mlb_data:
             with col_i2: st.markdown(f"**{g['away']}:**"); st.write(meta.get('away_injuries', 'None').replace(';', '\n'))
             st.markdown('</div>', unsafe_allow_html=True)
             
-            # SERIES MOMENTUM
             try:
                 from series_momentum_engine import get_series_momentum
                 sm = get_series_momentum(g['home'], g['away'])
@@ -263,20 +271,14 @@ if st.session_state.mlb_data:
                     st.markdown('<div class="mc-result">', unsafe_allow_html=True)
                     st.markdown("#### SERIES & MOMENTUM")
                     col_sm1, col_sm2, col_sm3 = st.columns(3)
-                    with col_sm1:
-                        st.metric(f"{g['home']} Last 5", sm['home_last5']); st.metric(f"Last 10", sm['home_last10'])
-                        st.write(f"Streak: {sm['home_streak']}W | Run Diff: {sm['home_run_diff_last5']:+d}")
-                    with col_sm2:
-                        st.metric(f"{g['away']} Last 5", sm['away_last5']); st.metric(f"Last 10", sm['away_last10'])
-                        st.write(f"Streak: {sm['away_streak']}W | Run Diff: {sm['away_run_diff_last5']:+d}")
-                    with col_sm3:
-                        st.metric("H2H", sm['h2h_record']); st.write(f"Games: {sm['h2h_games']}")
-                        if sm['h2h_details']:
-                            for date, detail in sm['h2h_details'][:3]: st.write(f"{date}: {detail}")
+                    with col_sm1: st.metric(f"{g['home']} Last 5", sm['home_last5']); st.metric(f"Last 10", sm['home_last10']); st.write(f"Streak: {sm['home_streak']}W | RD: {sm['home_run_diff_last5']:+d}")
+                    with col_sm2: st.metric(f"{g['away']} Last 5", sm['away_last5']); st.metric(f"Last 10", sm['away_last10']); st.write(f"Streak: {sm['away_streak']}W | RD: {sm['away_run_diff_last5']:+d}")
+                    with col_sm3: st.metric("H2H", sm['h2h_record']); st.write(f"Games: {sm['h2h_games']}")
+                    if sm['h2h_details']:
+                        for date, detail in sm['h2h_details'][:3]: st.write(f"{date}: {detail}")
                     st.markdown('</div>', unsafe_allow_html=True)
             except: pass
             
-            # LINEUPS
             try:
                 from lineup_fetcher import get_lineups_for_match
                 lineups = get_lineups_for_match(g['home'], g['away'])

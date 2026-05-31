@@ -86,6 +86,33 @@ def save_pick_safe(match, pick, edge):
             new_row.to_csv(tracker_file, mode='a', header=False, index=False)
     except: pass
 
+def validate_picks_tracker():
+    """Valida los picks pendientes contra resultados reales"""
+    tracker_file = 'data/picks_tracker.csv'
+    if not os.path.exists(tracker_file):
+        return
+    try:
+        df = pd.read_csv(tracker_file)
+        pending = df[(df['result'].isna()) | (df['result'] == '') | (df['result'] == 'PENDING')]
+        if len(pending) == 0:
+            return
+        import requests
+        for idx, row in pending.iterrows():
+            try:
+                r = requests.get('https://statsapi.mlb.com/api/v1/schedule', params={'sportId': 1, 'date': row['date']}, timeout=10)
+                games = r.json().get('dates', [{}])[0].get('games', [])
+                for g in games:
+                    home = g['teams']['home']['team']['name']
+                    away = g['teams']['away']['team']['name']
+                    if home in row['match'] and away in row['match'] and g.get('status', {}).get('detailedState') == 'Final':
+                        home_score = int(g['teams']['home'].get('score', 0))
+                        away_score = int(g['teams']['away'].get('score', 0))
+                        actual_winner = home if home_score > away_score else away
+                        df.at[idx, 'result'] = 'WIN' if row['pick'].lower() in actual_winner.lower() else 'LOSS'
+            except: pass
+        df.to_csv(tracker_file, index=False)
+    except: pass
+
 def bayesian_analysis(home_team, away_team, model_prob, confidence):
     log_file = 'data/betting_log.csv'
     hist_win_rate, historical_games = None, 0
@@ -121,6 +148,7 @@ with col_m4:
 
 # PICK PERFORMANCE
 st.markdown('<h2 class="section-title">ELITE PICK PERFORMANCE (A/A+)</h2>', unsafe_allow_html=True)
+validate_picks_tracker()
 try:
     tracker_file = 'data/picks_tracker.csv'
     if os.path.exists(tracker_file):
@@ -156,15 +184,16 @@ try:
                 table_html += '</tr></thead><tbody>'
                 wins = 0
                 for _, row in day_df.iterrows():
-                    result = row.get('result', '')
+                    result = str(row.get('result', ''))
                     if result == 'WIN': status = 'WIN'; wins += 1
                     elif result == 'LOSS': status = 'LOSS'
                     else: status = 'PENDING'
                     table_html += f'<tr><td>{row["match"]}</td><td class="pick-highlight">{row["pick"]}</td><td>{row["edge"]}</td><td>{status}</td></tr>'
                 table_html += '</tbody></table>'
                 st.markdown(table_html, unsafe_allow_html=True)
-                if len(day_df[day_df['result'] != '']) > 0:
-                    st.metric("Day", f"{wins}/{len(day_df[day_df['result']!=''])}")
+                validated = day_df[day_df['result'].isin(['WIN', 'LOSS'])]
+                if len(validated) > 0:
+                    st.metric("Day", f"{wins}/{len(validated)}")
 except: st.info("Calendar loading...")
 
 # BOTONES
@@ -183,13 +212,11 @@ with col1:
             for g in games:
                 try:
                     prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
-                except:
-                    prob_val = 0
+                except: prob_val = 0
                 if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
                     try:
                         edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
-                    except:
-                        edge_val = 0
+                    except: edge_val = 0
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col2:
@@ -202,13 +229,11 @@ with col2:
             for g in games:
                 try:
                     prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
-                except:
-                    prob_val = 0
+                except: prob_val = 0
                 if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
                     try:
                         edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
-                    except:
-                        edge_val = 0
+                    except: edge_val = 0
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col3:
@@ -238,11 +263,8 @@ if st.session_state.mlb_data:
         g = st.session_state.mlb_data[idx]
         meta = st.session_state.mlb_metadata.get(f"{g['home']}|{g['away']}", {})
         st.markdown(f"## FULL ANALYSIS: {g['home']} vs {g['away']}")
-        
-        if g['pick'] != 'NO PICK':
-            st.markdown(f"### PICK: {g['pick']} ({g['odds']}) | Edge: {g['edge']} | Conf: {g['conf']}")
-        else:
-            st.markdown(f"### NO PICK | Edge: {g['edge']}")
+        if g['pick'] != 'NO PICK': st.markdown(f"### PICK: {g['pick']} ({g['odds']}) | Edge: {g['edge']} | Conf: {g['conf']}")
+        else: st.markdown(f"### NO PICK | Edge: {g['edge']}")
         
         if meta:
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)
@@ -391,6 +413,7 @@ with col_v1:
         try:
             from betting_logger import validate_pending_bets
             validate_pending_bets()
+            validate_picks_tracker()
             st.success("Done!")
         except: st.error("Validation failed")
 with col_v2:

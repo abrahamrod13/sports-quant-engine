@@ -105,31 +105,27 @@ if len(mlb_games) > 0:
                 if home_power and away_power:
                     result['probability'] = min(0.85, max(0.15, result['probability'] + ((home_power['power_score'] - away_power['power_score']) / 10) * 0.015))
         except: pass
-        
         try:
             from series_momentum_engine import get_series_momentum
             sm = get_series_momentum(home_team, away_team)
             if sm:
-                momentum_bonus = 0
-                home_wins = int(sm['home_last5'].split('-')[0]); away_wins = int(sm['away_last5'].split('-')[0])
-                if home_wins >= 4 and away_wins <= 1: momentum_bonus += 0.03
-                elif home_wins >= 3 and away_wins <= 2: momentum_bonus += 0.015
-                if sm['home_run_diff_last5'] > 15: momentum_bonus += 0.02
-                if sm['h2h_games'] >= 2:
-                    if int(sm['h2h_record'].split('-')[0]) == sm['h2h_games']: momentum_bonus += 0.02
-                result['probability'] = min(0.85, max(0.15, result['probability'] + momentum_bonus))
+                mb = 0
+                hw = int(sm['home_last5'].split('-')[0]); aw = int(sm['away_last5'].split('-')[0])
+                if hw >= 4 and aw <= 1: mb += 0.03
+                elif hw >= 3 and aw <= 2: mb += 0.015
+                if sm['home_run_diff_last5'] > 15: mb += 0.02
+                if sm['h2h_games'] >= 2 and int(sm['h2h_record'].split('-')[0]) == sm['h2h_games']: mb += 0.02
+                result['probability'] = min(0.85, max(0.15, result['probability'] + mb))
         except: pass
-        
         try:
             stars = ['Trout', 'Ohtani', 'Judge', 'Betts', 'Soto', 'Freeman', 'Tatis', 'Harper', 'Turner', 'Devers', 'Ramirez']
-            injury_penalty = 0
+            ip = 0
             for inj in home_injuries:
-                if any(star.lower() in inj.get('player', '').lower() for star in stars): injury_penalty -= 0.04
+                if any(star.lower() in inj.get('player', '').lower() for star in stars): ip -= 0.04
             for inj in away_injuries:
-                if any(star.lower() in inj.get('player', '').lower() for star in stars): injury_penalty += 0.04
-            result['probability'] = min(0.85, max(0.15, result['probability'] + injury_penalty))
+                if any(star.lower() in inj.get('player', '').lower() for star in stars): ip += 0.04
+            result['probability'] = min(0.85, max(0.15, result['probability'] + ip))
         except: pass
-        
         try:
             from lineup_fetcher import get_lineups_for_match, lineup_impact
             lineups = get_lineups_for_match(home_team, away_team)
@@ -140,11 +136,17 @@ if len(mlb_games) > 0:
         result['edge'] = result['probability'] - (1 / fav_odds_dec)
         intel = market_intel.final_decision(game_data, result)
         
-        if result['edge'] > 0:
+        if result['edge'] > 0.02:
             pick = home_team if result['probability'] >= 0.5 else away_team
             odds_str = str(h2h_home if pick == home_team else h2h_away)
+            if row.get('favorite') and pick == row.get('underdog'):
+                pick_label = f"{pick} (UNDERDOG)"
+            elif row.get('favorite') and pick == row.get('favorite'):
+                pick_label = f"{pick} (VALUE)"
+            else:
+                pick_label = pick
         else:
-            pick = "NO PICK"; odds_str = "-"
+            pick = "NO PICK"; pick_label = "NO PICK"; odds_str = "-"
         
         ml_status = "[OK]" if intel['approved'] else ("[SUS]" if result['edge'] > 0.03 else "[X]")
         rl_status = "[X]"
@@ -157,15 +159,12 @@ if len(mlb_games) > 0:
         if home_eff_era > 5.5 and away_eff_era > 5.5: total_prob = 0.62
         elif home_eff_era < 3.0 and away_eff_era < 3.0: total_prob = 0.38
         elif home_eff_era > 5.0 or away_eff_era > 5.0: total_prob = 0.56
-        over_edge = total_prob - 0.45
-        ou_status = "[OK]" if over_edge > 0.02 else ("[OK]U" if (1-total_prob)-0.45 > 0.02 else "[?]")
-        
+        ou_status = "[OK]" if total_prob - 0.45 > 0.02 else ("[OK]U" if (1-total_prob)-0.45 > 0.02 else "[?]")
         home_over_prob = 0.5 + (home_momentum.get('ops_last7', 0.720) - 0.700) * 0.8 + (away_eff_era - 4.0) * 0.05
-        home_over_prob = max(0.25, min(0.85, home_over_prob))
-        team_status = "[OK]" if home_over_prob > 0.55 else "[?]"
+        team_status = "[OK]" if max(0.25, min(0.85, home_over_prob)) > 0.55 else "[?]"
         f5_status = "[OK]" if result['probability'] - 0.45 > 0.02 else "[?]"
         
-        print(f"MLB|{home_team}|{away_team}|{pick}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
+        print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
         if intel['approved']:

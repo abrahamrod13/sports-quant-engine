@@ -22,19 +22,19 @@ st.markdown("""
     .mc-result { background: #0f3460; padding: 1.5rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #30363d; }
     .comparison-box { background: #161b22; padding: 1rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #30363d; }
     .bayesian-box { background: #1a2332; padding: 1rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #58a6ff; }
-    .results-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.9rem; }
+    .results-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
     .results-table th { background: #1a1a2e; color: #e94560; padding: 0.7rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e94560; }
     .results-table td { background: #161b22; color: #c9d1d9; padding: 0.5rem; border-bottom: 1px solid #21262d; text-align: center; }
     .results-table tr:hover td { background: #1a2332; }
     .pick-highlight { color: #58a6ff; font-weight: bold; }
-    .too-close { color: #f0a500; font-style: italic; }
+    .no-pick { color: #f85149; }
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
 <div class="main-header">
     <h1>MLB NBA SPORTS QUANT ENGINE V8</h1>
-    <p>Market Inefficiency Detection | Monte Carlo + Bayesian + Series + Lineups + Calendar</p>
+    <p>Market Inefficiency Detection | Picks + Monte Carlo + Series + Lineups</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -70,27 +70,21 @@ def parse_mlb_output(output_text):
                 }
     return games, metadata
 
-def get_winner(home, away, prob_str):
-    try:
-        prob_val = float(prob_str.rstrip('%'))
-        if prob_val >= 60: return home, prob_val
-        elif prob_val <= 40: return away, 100 - prob_val
-        else: return "TOO CLOSE", prob_val
-    except: return "TOO CLOSE", 50
-
-def save_prediction_safe(match, winner, prob):
-    """Guarda predicción solo si no existe duplicado"""
-    tracker_file = 'data/winner_predictions.csv'
+def save_pick_safe(match, pick, edge):
+    tracker_file = 'data/picks_tracker.csv'
     today_str = datetime.now().strftime('%Y-%m-%d')
     try:
         if os.path.exists(tracker_file):
             existing = pd.read_csv(tracker_file)
-            already = len(existing[(existing['date'] == today_str) & (existing['match'] == match)]) > 0
-            if not already:
-                from prediction_tracker import save_winner_prediction
-                save_winner_prediction(match, winner, prob)
-    except:
-        pass
+            if len(existing[(existing['date'] == today_str) & (existing['match'] == match)]) == 0:
+                new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
+                new_row.to_csv(tracker_file, mode='a', header=False, index=False)
+        else:
+            df = pd.DataFrame(columns=['date', 'match', 'pick', 'edge', 'result'])
+            df.to_csv(tracker_file, index=False)
+            new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
+            new_row.to_csv(tracker_file, mode='a', header=False, index=False)
+    except: pass
 
 def bayesian_analysis(home_team, away_team, model_prob, confidence):
     log_file = 'data/betting_log.csv'
@@ -125,54 +119,52 @@ with col_m3:
 with col_m4:
     st.markdown(f"""<div class="metric-btn"><span class="label">TOTAL BETS</span><span class="value">{mlb_stats['total_bets']}</span></div>""" if mlb_stats else """<div class="metric-btn"><span class="label">TOTAL BETS</span><span class="value">N/A</span></div>""", unsafe_allow_html=True)
 
-# WINNER ACCURACY
-st.markdown('<h2 class="section-title">WINNER PREDICTION ACCURACY</h2>', unsafe_allow_html=True)
+# PICK PERFORMANCE
+st.markdown('<h2 class="section-title">PICK PERFORMANCE</h2>', unsafe_allow_html=True)
 try:
-    from prediction_tracker import get_winner_stats, validate_winner_predictions
-    validate_winner_predictions()
-    winner_stats = get_winner_stats()
-    if winner_stats:
-        col_w1, col_w2, col_w3 = st.columns(3)
-        with col_w1: st.metric("Total", winner_stats['total'])
-        with col_w2: st.metric("Correct", winner_stats['correct'])
-        with col_w3: st.metric("Accuracy", f"{winner_stats['accuracy']}%")
-    else: st.info("No predictions yet.")
-except: st.info("Tracker initializing...")
+    tracker_file = 'data/picks_tracker.csv'
+    if os.path.exists(tracker_file):
+        df = pd.read_csv(tracker_file)
+        completed = df[df['result'].isin(['WIN', 'LOSS'])]
+        if len(completed) > 0:
+            wins = len(completed[completed['result'] == 'WIN'])
+            total = len(completed)
+            col_w1, col_w2, col_w3 = st.columns(3)
+            with col_w1: st.metric("Total Picks", total)
+            with col_w2: st.metric("Wins", wins)
+            with col_w3: st.metric("Accuracy", f"{wins/total*100:.1f}%")
+        else: st.info("No validated picks yet.")
+    else: st.info("Picks tracker initializing...")
+except: st.info("Picks tracker initializing...")
 
-# CALENDAR
-st.markdown('<h2 class="section-title">PREDICTION CALENDAR</h2>', unsafe_allow_html=True)
+# PICKS CALENDAR
+st.markdown('<h2 class="section-title">PICKS CALENDAR</h2>', unsafe_allow_html=True)
 try:
-    tracker_file = 'data/winner_predictions.csv'
+    tracker_file = 'data/picks_tracker.csv'
     if os.path.exists(tracker_file):
         df = pd.read_csv(tracker_file)
         if len(df) > 0:
-            df = df.drop_duplicates(subset=['date', 'match', 'predicted_winner'], keep='first')
+            df = df.drop_duplicates(subset=['date', 'match', 'pick'], keep='first')
             dates = sorted(df['date'].unique(), reverse=True)
             selected_date = st.selectbox("Select date:", dates, key="cal_date")
             day_df = df[df['date'] == selected_date]
             if len(day_df) > 0:
-                st.markdown(f"### {selected_date} - {len(day_df)} predictions")
+                st.markdown(f"### {selected_date} - {len(day_df)} picks")
                 table_html = '<table class="results-table"><thead><tr>'
-                for h in ['GAME', 'PREDICTED', 'RESULT', 'STATUS']:
+                for h in ['GAME', 'PICK', 'EDGE', 'RESULT']:
                     table_html += f'<th>{h}</th>'
                 table_html += '</tr></thead><tbody>'
-                correct, total_predicted = 0, 0
+                wins = 0
                 for _, row in day_df.iterrows():
-                    pred = row['predicted_winner']
-                    actual = row.get('actual_winner', '')
-                    result = row.get('correct', '')
-                    parts = row['match'].split(' vs ')
-                    home = parts[0] if len(parts) > 0 else ''
-                    away = parts[1] if len(parts) > 1 else ''
-                    if result == 'YES': status = 'WIN'; correct += 1; total_predicted += 1
-                    elif result == 'NO': status = 'LOSS'; total_predicted += 1
-                    elif result == 'SKIP': status = 'SKIP'
-                    else: status = 'PENDING'; total_predicted += 1 if pred != 'TOO CLOSE' else 0
-                    table_html += f'<tr><td>{home} vs {away}</td><td class="pick-highlight">{pred}</td><td>{actual}</td><td>{status}</td></tr>'
+                    result = row.get('result', '')
+                    if result == 'WIN': status = 'WIN'; wins += 1
+                    elif result == 'LOSS': status = 'LOSS'
+                    else: status = 'PENDING'
+                    table_html += f'<tr><td>{row["match"]}</td><td class="pick-highlight">{row["pick"]}</td><td>{row["edge"]}</td><td>{status}</td></tr>'
                 table_html += '</tbody></table>'
                 st.markdown(table_html, unsafe_allow_html=True)
-                if total_predicted > 0:
-                    st.metric("Day Accuracy", f"{correct}/{total_predicted} ({correct/total_predicted*100:.1f}%)")
+                if len(day_df[day_df['result'] != '']) > 0:
+                    st.metric("Day", f"{wins}/{len(day_df[day_df['result']!=''])}")
 except: st.info("Calendar loading...")
 
 # BOTONES
@@ -189,9 +181,12 @@ with col1:
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
             for g in games:
-                winner, _ = get_winner(g['home'], g['away'], g['prob'])
-                if winner != "TOO CLOSE":
-                    save_prediction_safe(f"{g['home']} vs {g['away']}", winner, float(g['prob'].rstrip('%')))
+                if g['pick'] != 'NO PICK':
+                    try:
+                        edge_val = float(g['edge'].rstrip('%')) if '%' in g['edge'] else float(g['edge'])
+                    except:
+                        edge_val = 0
+                    save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col2:
     if st.button("MLB TOMORROW", use_container_width=True, key="mlb_tomorrow"):
@@ -201,9 +196,12 @@ with col2:
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
             for g in games:
-                winner, _ = get_winner(g['home'], g['away'], g['prob'])
-                if winner != "TOO CLOSE":
-                    save_prediction_safe(f"{g['home']} vs {g['away']}", winner, float(g['prob'].rstrip('%')))
+                if g['pick'] != 'NO PICK':
+                    try:
+                        edge_val = float(g['edge'].rstrip('%')) if '%' in g['edge'] else float(g['edge'])
+                    except:
+                        edge_val = 0
+                    save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col3:
     if st.button("NBA TODAY", use_container_width=True, key="nba_today"): st.info("NBA loading...")
@@ -215,14 +213,13 @@ if st.session_state.mlb_data:
     st.markdown("---")
     st.markdown(f"### MLB SCAN RESULTS - {len(st.session_state.mlb_data)} games")
     table_html = '<table class="results-table"><thead><tr>'
-    for h in ['HOME', 'AWAY', 'WINNER', 'PROB', 'EDGE', 'CONF']:
+    for h in ['HOME', 'AWAY', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF']:
         table_html += f'<th>{h}</th>'
     table_html += '</tr></thead><tbody>'
     for g in st.session_state.mlb_data:
-        winner, winner_prob = get_winner(g['home'], g['away'], g['prob'])
-        winner_class = 'pick-highlight' if winner != "TOO CLOSE" else 'too-close'
-        prob_display = f"{winner_prob:.1f}%" if winner != "TOO CLOSE" else g['prob']
-        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{winner_class}">{winner}</td><td>{prob_display}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
+        pick_display = g['pick'] if g['pick'] != 'NO PICK' else 'NO PICK'
+        pick_class = 'pick-highlight' if g['pick'] != 'NO PICK' else 'no-pick'
+        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{pick_class}">{pick_display}</td><td>{g["odds"]}</td><td>{g["prob"]}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
     table_html += '</tbody></table>'
     st.markdown(table_html, unsafe_allow_html=True)
     
@@ -233,9 +230,11 @@ if st.session_state.mlb_data:
         g = st.session_state.mlb_data[idx]
         meta = st.session_state.mlb_metadata.get(f"{g['home']}|{g['away']}", {})
         st.markdown(f"## FULL ANALYSIS: {g['home']} vs {g['away']}")
-        winner, winner_prob = get_winner(g['home'], g['away'], g['prob'])
-        if winner == "TOO CLOSE": st.markdown(f"### TOO CLOSE TO CALL ({g['prob']})")
-        else: st.markdown(f"### PREDICTED WINNER: {winner} ({winner_prob:.1f}%)")
+        
+        if g['pick'] != 'NO PICK':
+            st.markdown(f"### PICK: {g['pick']} ({g['odds']}) | Edge: {g['edge']} | Conf: {g['conf']}")
+        else:
+            st.markdown(f"### NO PICK | Edge: {g['edge']}")
         
         if meta:
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)
@@ -263,7 +262,6 @@ if st.session_state.mlb_data:
             with col_i1: st.markdown(f"**{g['home']}:**"); st.write(meta.get('home_injuries', 'None').replace(';', '\n'))
             with col_i2: st.markdown(f"**{g['away']}:**"); st.write(meta.get('away_injuries', 'None').replace(';', '\n'))
             st.markdown('</div>', unsafe_allow_html=True)
-            
             try:
                 from series_momentum_engine import get_series_momentum
                 sm = get_series_momentum(g['home'], g['away'])
@@ -278,7 +276,6 @@ if st.session_state.mlb_data:
                         for date, detail in sm['h2h_details'][:3]: st.write(f"{date}: {detail}")
                     st.markdown('</div>', unsafe_allow_html=True)
             except: pass
-            
             try:
                 from lineup_fetcher import get_lineups_for_match
                 lineups = get_lineups_for_match(g['home'], g['away'])
@@ -385,8 +382,7 @@ with col_v1:
     if st.button("VALIDATE PENDING", use_container_width=True):
         try:
             from betting_logger import validate_pending_bets
-            from prediction_tracker import validate_winner_predictions
-            validate_pending_bets(); validate_winner_predictions()
+            validate_pending_bets()
             st.success("Done!")
         except: st.error("Validation failed")
 with col_v2:
@@ -408,4 +404,4 @@ with col_v2:
             else: st.info("No validated results.")
         else: st.info("No betting log.")
 
-st.markdown("""<div class="footer">Sports Quant Engine V8 | Lineups + Series + Statcast + Calendar</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Sports Quant Engine V8 | Picks + Monte Carlo + Series + Lineups</div>""", unsafe_allow_html=True)

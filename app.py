@@ -34,7 +34,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>MLB NBA SPORTS QUANT ENGINE V8</h1>
-    <p>Market Inefficiency Detection | Picks + Monte Carlo + Series + Lineups</p>
+    <p>Market Inefficiency Detection | Elite Picks A/A+ | Monte Carlo + Series + Lineups</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -120,7 +120,7 @@ with col_m4:
     st.markdown(f"""<div class="metric-btn"><span class="label">TOTAL BETS</span><span class="value">{mlb_stats['total_bets']}</span></div>""" if mlb_stats else """<div class="metric-btn"><span class="label">TOTAL BETS</span><span class="value">N/A</span></div>""", unsafe_allow_html=True)
 
 # PICK PERFORMANCE
-st.markdown('<h2 class="section-title">PICK PERFORMANCE</h2>', unsafe_allow_html=True)
+st.markdown('<h2 class="section-title">ELITE PICK PERFORMANCE (A/A+)</h2>', unsafe_allow_html=True)
 try:
     tracker_file = 'data/picks_tracker.csv'
     if os.path.exists(tracker_file):
@@ -181,9 +181,13 @@ with col1:
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
             for g in games:
-                if g['pick'] != 'NO PICK':
+                try:
+                    prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
+                except:
+                    prob_val = 0
+                if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
                     try:
-                        edge_val = float(g['edge'].rstrip('%')) if '%' in g['edge'] else float(g['edge'])
+                        edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
                     except:
                         edge_val = 0
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
@@ -196,9 +200,13 @@ with col2:
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
             for g in games:
-                if g['pick'] != 'NO PICK':
+                try:
+                    prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
+                except:
+                    prob_val = 0
+                if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
                     try:
-                        edge_val = float(g['edge'].rstrip('%')) if '%' in g['edge'] else float(g['edge'])
+                        edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
                     except:
                         edge_val = 0
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
@@ -404,4 +412,4 @@ with col_v2:
             else: st.info("No validated results.")
         else: st.info("No betting log.")
 
-st.markdown("""<div class="footer">Sports Quant Engine V8 | Picks + Monte Carlo + Series + Lineups</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Sports Quant Engine V8 | Elite Picks A/A+ | Market Inefficiency Detection</div>""", unsafe_allow_html=True)

@@ -12,18 +12,15 @@ import pandas as pd
 import os
 from datetime import datetime
 
-try:
-    from mlb_injury_fetcher import get_out_players_mlb
-except:
-    def get_out_players_mlb(x): return []
+try: from mlb_injury_fetcher import get_out_players_mlb
+except: def get_out_players_mlb(x): return []
 
 try:
     from statcast_engine import StatcastEngine
     statcast_engine = StatcastEngine()
     statcast_engine.fetch_data()
     statcast_engine.calculate_team_rankings()
-except:
-    statcast_engine = None
+except: statcast_engine = None
 
 print("MLB|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|RL|OU|TEAM|F5")
 
@@ -56,8 +53,7 @@ if len(mlb_games) > 0:
         home_p_name = row.get('home_pitcher_name', 'TBD')
         away_p_name = row.get('away_pitcher_name', 'TBD')
         
-        if home_p_name == 'TBD' or away_p_name == 'TBD':
-            continue
+        if home_p_name == 'TBD' or away_p_name == 'TBD': continue
         
         if not home_p_data: home_p_data = mlb_engine.smart_pitcher_defaults(home_p_name)
         if not away_p_data: away_p_data = mlb_engine.smart_pitcher_defaults(away_p_name)
@@ -77,8 +73,7 @@ if len(mlb_games) > 0:
         try:
             home_injuries = get_out_players_mlb(home_team)
             away_injuries = get_out_players_mlb(away_team)
-        except:
-            home_injuries = []; away_injuries = []
+        except: home_injuries = []; away_injuries = []
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
@@ -98,16 +93,13 @@ if len(mlb_games) > 0:
         
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         
-        # STATCAST
+        # BONUS LAYERS
         try:
             if statcast_engine:
-                home_power = statcast_engine.get_team_power(home_team)
-                away_power = statcast_engine.get_team_power(away_team)
-                if home_power and away_power:
-                    result['probability'] = min(0.85, max(0.15, result['probability'] + ((home_power['power_score'] - away_power['power_score']) / 10) * 0.015))
+                hp = statcast_engine.get_team_power(home_team)
+                ap = statcast_engine.get_team_power(away_team)
+                if hp and ap: result['probability'] = min(0.85, max(0.15, result['probability'] + ((hp['power_score']-ap['power_score'])/10)*0.015))
         except: pass
-        
-        # SERIES MOMENTUM
         try:
             from series_momentum_engine import get_series_momentum
             sm = get_series_momentum(home_team, away_team)
@@ -120,27 +112,21 @@ if len(mlb_games) > 0:
                 if sm['h2h_games'] >= 2 and int(sm['h2h_record'].split('-')[0]) == sm['h2h_games']: mb += 0.02
                 result['probability'] = min(0.85, max(0.15, result['probability'] + mb))
         except: pass
-        
-        # LESIONES
         try:
-            stars = ['Trout', 'Ohtani', 'Judge', 'Betts', 'Soto', 'Freeman', 'Tatis', 'Harper', 'Turner', 'Devers', 'Ramirez']
+            stars = ['Trout','Ohtani','Judge','Betts','Soto','Freeman','Tatis','Harper','Turner','Devers','Ramirez']
             ip = 0
             for inj in home_injuries:
-                if any(star.lower() in inj.get('player', '').lower() for star in stars): ip -= 0.04
+                if any(s.lower() in inj.get('player','').lower() for s in stars): ip -= 0.04
             for inj in away_injuries:
-                if any(star.lower() in inj.get('player', '').lower() for star in stars): ip += 0.04
+                if any(s.lower() in inj.get('player','').lower() for s in stars): ip += 0.04
             result['probability'] = min(0.85, max(0.15, result['probability'] + ip))
         except: pass
-        
-        # LINEUPS
         try:
             from lineup_fetcher import get_lineups_for_match, lineup_impact
             lineups = get_lineups_for_match(home_team, away_team)
             if lineups.get('has_lineups'):
                 result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_impact(lineups, home_team, away_team)))
         except: pass
-        
-        # WEATHER
         try:
             from weather_engine import get_weather_for_match, weather_impact
             weather = get_weather_for_match(home_team, away_team)
@@ -148,6 +134,25 @@ if len(mlb_games) > 0:
                 wi = weather_impact(weather)
                 result['probability'] = min(0.85, max(0.15, result['probability'] + wi['home_boost']))
                 result['volatility'] = min(0.80, result.get('volatility', 0.30) + wi['volatility_boost'])
+        except: pass
+        try:
+            from travel_engine import get_travel_distance, travel_impact, get_rest_days
+            stadium = row.get('stadium', '')
+            if stadium:
+                dist = get_travel_distance(stadium, stadium)
+                home_boost, vol_boost = travel_impact(dist)
+                result['probability'] = min(0.85, max(0.15, result['probability'] + home_boost))
+                result['volatility'] = min(0.80, result.get('volatility', 0.30) + vol_boost)
+        except: pass
+        try:
+            from statcast_pitch_engine import pitch_advantage
+            pa = pitch_advantage(home_p_name, away_p_name)
+            result['probability'] = min(0.85, max(0.15, result['probability'] + pa * 0.5))
+        except: pass
+        try:
+            from defense_engine import defense_advantage
+            da = defense_advantage(home_team, away_team)
+            result['probability'] = min(0.85, max(0.15, result['probability'] + da * 0.5))
         except: pass
         
         result['edge'] = result['probability'] - (1 / fav_odds_dec)

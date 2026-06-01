@@ -11,18 +11,15 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-try:
-    from mlb_injury_fetcher import get_out_players_mlb
-except:
-    def get_out_players_mlb(x): return []
+try: from mlb_injury_fetcher import get_out_players_mlb
+except: def get_out_players_mlb(x): return []
 
 try:
     from statcast_engine import StatcastEngine
     statcast_engine = StatcastEngine()
     statcast_engine.fetch_data()
     statcast_engine.calculate_team_rankings()
-except:
-    statcast_engine = None
+except: statcast_engine = None
 
 tomorrow = datetime.now() + timedelta(days=1)
 
@@ -77,8 +74,7 @@ if len(mlb_games) > 0:
         try:
             home_injuries = get_out_players_mlb(home_team)
             away_injuries = get_out_players_mlb(away_team)
-        except:
-            home_injuries = []; away_injuries = []
+        except: home_injuries = []; away_injuries = []
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
@@ -100,10 +96,9 @@ if len(mlb_games) > 0:
         
         try:
             if statcast_engine:
-                home_power = statcast_engine.get_team_power(home_team)
-                away_power = statcast_engine.get_team_power(away_team)
-                if home_power and away_power:
-                    result['probability'] = min(0.85, max(0.15, result['probability'] + ((home_power['power_score'] - away_power['power_score']) / 10) * 0.015))
+                hp = statcast_engine.get_team_power(home_team)
+                ap = statcast_engine.get_team_power(away_team)
+                if hp and ap: result['probability'] = min(0.85, max(0.15, result['probability'] + ((hp['power_score']-ap['power_score'])/10)*0.015))
         except: pass
         try:
             from series_momentum_engine import get_series_momentum
@@ -118,12 +113,12 @@ if len(mlb_games) > 0:
                 result['probability'] = min(0.85, max(0.15, result['probability'] + mb))
         except: pass
         try:
-            stars = ['Trout', 'Ohtani', 'Judge', 'Betts', 'Soto', 'Freeman', 'Tatis', 'Harper', 'Turner', 'Devers', 'Ramirez']
+            stars = ['Trout','Ohtani','Judge','Betts','Soto','Freeman','Tatis','Harper','Turner','Devers','Ramirez']
             ip = 0
             for inj in home_injuries:
-                if any(star.lower() in inj.get('player', '').lower() for star in stars): ip -= 0.04
+                if any(s.lower() in inj.get('player','').lower() for s in stars): ip -= 0.04
             for inj in away_injuries:
-                if any(star.lower() in inj.get('player', '').lower() for star in stars): ip += 0.04
+                if any(s.lower() in inj.get('player','').lower() for s in stars): ip += 0.04
             result['probability'] = min(0.85, max(0.15, result['probability'] + ip))
         except: pass
         try:
@@ -139,6 +134,25 @@ if len(mlb_games) > 0:
                 wi = weather_impact(weather)
                 result['probability'] = min(0.85, max(0.15, result['probability'] + wi['home_boost']))
                 result['volatility'] = min(0.80, result.get('volatility', 0.30) + wi['volatility_boost'])
+        except: pass
+        try:
+            from travel_engine import get_travel_distance, travel_impact
+            stadium = row.get('stadium', '')
+            if stadium:
+                dist = get_travel_distance(stadium, stadium)
+                home_boost, vol_boost = travel_impact(dist)
+                result['probability'] = min(0.85, max(0.15, result['probability'] + home_boost))
+                result['volatility'] = min(0.80, result.get('volatility', 0.30) + vol_boost)
+        except: pass
+        try:
+            from statcast_pitch_engine import pitch_advantage
+            pa = pitch_advantage(home_p_name, away_p_name)
+            result['probability'] = min(0.85, max(0.15, result['probability'] + pa * 0.5))
+        except: pass
+        try:
+            from defense_engine import defense_advantage
+            da = defense_advantage(home_team, away_team)
+            result['probability'] = min(0.85, max(0.15, result['probability'] + da * 0.5))
         except: pass
         
         result['edge'] = result['probability'] - (1 / fav_odds_dec)

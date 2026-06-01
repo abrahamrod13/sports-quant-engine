@@ -33,8 +33,8 @@ st.markdown("""
 
 st.markdown("""
 <div class="main-header">
-    <h1>MLB NBA SPORTS QUANT ENGINE V8</h1>
-    <p>Market Inefficiency Detection | Elite Picks A/A+ | Weather + Series + Lineups</p>
+    <h1>MLB NBA SPORTS QUANT ENGINE V9</h1>
+    <p>Market Inefficiency Detection | Travel + Statcast Pitch + Defense + Weather</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -79,11 +79,6 @@ def save_pick_safe(match, pick, edge):
             if len(existing[(existing['date'] == today_str) & (existing['match'] == match)]) == 0:
                 new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
                 new_row.to_csv(tracker_file, mode='a', header=False, index=False)
-        else:
-            df = pd.DataFrame(columns=['date', 'match', 'pick', 'edge', 'result'])
-            df.to_csv(tracker_file, index=False)
-            new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
-            new_row.to_csv(tracker_file, mode='a', header=False, index=False)
     except: pass
 
 def validate_picks_tracker():
@@ -102,30 +97,13 @@ def validate_picks_tracker():
                     home = g['teams']['home']['team']['name']
                     away = g['teams']['away']['team']['name']
                     if home in row['match'] and away in row['match'] and g.get('status', {}).get('detailedState') == 'Final':
-                        home_score = int(g['teams']['home'].get('score', 0))
-                        away_score = int(g['teams']['away'].get('score', 0))
-                        actual_winner = home if home_score > away_score else away
-                        df.at[idx, 'result'] = 'WIN' if row['pick'].lower() in actual_winner.lower() else 'LOSS'
+                        hs = int(g['teams']['home'].get('score', 0))
+                        aws = int(g['teams']['away'].get('score', 0))
+                        aw = home if hs > aws else away
+                        df.at[idx, 'result'] = 'WIN' if row['pick'].lower() in aw.lower() else 'LOSS'
             except: pass
         df.to_csv(tracker_file, index=False)
     except: pass
-
-def bayesian_analysis(home_team, away_team, model_prob, confidence):
-    log_file = 'data/betting_log.csv'
-    hist_win_rate, historical_games = None, 0
-    if os.path.exists(log_file):
-        try:
-            df = pd.read_csv(log_file)
-            completed = df[(df['result'] != 'PENDING') & (df['sport'] == 'MLB')]
-            matchups = completed[(completed['match'].str.contains(home_team[:10], na=False)) & (completed['match'].str.contains(away_team[:10], na=False))]
-            if len(matchups) > 0:
-                wins = len(matchups[matchups['result'] == 'WIN'])
-                hist_win_rate = wins / len(matchups)
-                historical_games = len(matchups)
-        except: pass
-    if hist_win_rate: posterior = round((float(model_prob.rstrip('%'))/100) * 0.7 + hist_win_rate * 0.3, 4)
-    else: posterior = float(model_prob.rstrip('%'))/100
-    return {'bayesian_prob': posterior, 'model_prob': float(model_prob.rstrip('%'))/100, 'prior_strength': 'HIGH' if historical_games > 5 else ('MEDIUM' if historical_games > 0 else 'LOW'), 'historical_games': historical_games}
 
 # MÉTRICAS
 try:
@@ -284,6 +262,55 @@ if st.session_state.mlb_data:
                     st.markdown('</div>', unsafe_allow_html=True)
             except: pass
             
+            # TRAVEL
+            try:
+                from travel_engine import get_travel_distance
+                dist = get_travel_distance(meta.get('stadium', ''), meta.get('stadium', ''))
+                if dist > 800:
+                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                    st.markdown("#### TRAVEL")
+                    st.write(f"Distance: ~{dist:.0f} miles")
+                    st.markdown('</div>', unsafe_allow_html=True)
+            except: pass
+            
+            # STATCAST PITCH
+            try:
+                from statcast_pitch_engine import get_pitcher_arsenal
+                h_arsenal = get_pitcher_arsenal(meta['home_pitcher'])
+                a_arsenal = get_pitcher_arsenal(meta['away_pitcher'])
+                if h_arsenal is not None and a_arsenal is not None:
+                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                    st.markdown("#### PITCH ARSENAL")
+                    col_a1, col_a2 = st.columns(2)
+                    with col_a1:
+                        st.write(f"**{meta['home_pitcher']}**")
+                        st.dataframe(h_arsenal)
+                    with col_a2:
+                        st.write(f"**{meta['away_pitcher']}**")
+                        st.dataframe(a_arsenal)
+                    st.markdown('</div>', unsafe_allow_html=True)
+            except: pass
+            
+            # DEFENSE
+            try:
+                from defense_engine import get_team_defense
+                h_def = get_team_defense(g['home'])
+                a_def = get_team_defense(g['away'])
+                if h_def and a_def:
+                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                    st.markdown("#### DEFENSE")
+                    col_d1, col_d2 = st.columns(2)
+                    with col_d1:
+                        st.write(f"**{g['home']}**")
+                        st.write(f"Fielding: {h_def['fielding_pct']}")
+                        st.write(f"Errors: {h_def['errors']} | DP: {h_def['double_plays']}")
+                    with col_d2:
+                        st.write(f"**{g['away']}**")
+                        st.write(f"Fielding: {a_def['fielding_pct']}")
+                        st.write(f"Errors: {a_def['errors']} | DP: {a_def['double_plays']}")
+                    st.markdown('</div>', unsafe_allow_html=True)
+            except: pass
+            
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)
             st.markdown("#### MOMENTUM")
             col_mo1, col_mo2 = st.columns(2)
@@ -350,10 +377,6 @@ if st.session_state.mlb_data:
             elif "[?]" in g['f5']: st.warning(f"F5: {g['f5']}")
             else: st.error(f"F5: {g['f5']}")
         st.markdown('</div>', unsafe_allow_html=True)
-        try:
-            bayes = bayesian_analysis(g['home'], g['away'], g['prob'], g['conf'])
-            st.markdown(f"""<div class="bayesian-box"><b>BAYESIAN:</b> {bayes['bayesian_prob']:.1%} | Prior: {bayes['prior_strength']} ({bayes['historical_games']} games)</div>""", unsafe_allow_html=True)
-        except: pass
 
 # MONTE CARLO
 st.markdown('<h2 class="section-title">MONTE CARLO SIMULATION</h2>', unsafe_allow_html=True)
@@ -416,8 +439,7 @@ with col_v1:
     if st.button("VALIDATE PENDING", use_container_width=True):
         try:
             from betting_logger import validate_pending_bets
-            validate_pending_bets()
-            validate_picks_tracker()
+            validate_pending_bets(); validate_picks_tracker()
             st.success("Done!")
         except: st.error("Validation failed")
 with col_v2:
@@ -438,4 +460,4 @@ with col_v2:
             else: st.info("No validated results.")
         else: st.info("No betting log.")
 
-st.markdown("""<div class="footer">Sports Quant Engine V8 | Elite Picks A/A+ | Weather Engine V1</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Sports Quant Engine V9 | Travel + Pitch + Defense + Weather + Series + Lineups</div>""", unsafe_allow_html=True)

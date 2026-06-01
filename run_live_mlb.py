@@ -93,7 +93,7 @@ if len(mlb_games) > 0:
         
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         
-        # BONUS LAYERS
+        # V10 BONUS LAYERS (10 ENGINES)
         try:
             if statcast_engine:
                 hp = statcast_engine.get_team_power(home_team)
@@ -136,13 +136,13 @@ if len(mlb_games) > 0:
                 result['volatility'] = min(0.80, result.get('volatility', 0.30) + wi['volatility_boost'])
         except: pass
         try:
-            from travel_engine import get_travel_distance, travel_impact, get_rest_days
+            from travel_engine import get_travel_distance, travel_impact
             stadium = row.get('stadium', '')
             if stadium:
                 dist = get_travel_distance(stadium, stadium)
-                home_boost, vol_boost = travel_impact(dist)
-                result['probability'] = min(0.85, max(0.15, result['probability'] + home_boost))
-                result['volatility'] = min(0.80, result.get('volatility', 0.30) + vol_boost)
+                hb, vb = travel_impact(dist)
+                result['probability'] = min(0.85, max(0.15, result['probability'] + hb))
+                result['volatility'] = min(0.80, result.get('volatility', 0.30) + vb)
         except: pass
         try:
             from statcast_pitch_engine import pitch_advantage
@@ -153,6 +153,25 @@ if len(mlb_games) > 0:
             from defense_engine import defense_advantage
             da = defense_advantage(home_team, away_team)
             result['probability'] = min(0.85, max(0.15, result['probability'] + da * 0.5))
+        except: pass
+        try:
+            from rest_engine import get_team_rest_days, rest_advantage
+            h_rest = get_team_rest_days(home_team)
+            a_rest = get_team_rest_days(away_team)
+            result['probability'] = min(0.85, max(0.15, result['probability'] + rest_advantage(h_rest, a_rest)))
+        except: pass
+        try:
+            from bullpen_leverage_engine import bullpen_advantage as ba_lev
+            result['probability'] = min(0.85, max(0.15, result['probability'] + ba_lev(home_team, away_team)))
+        except: pass
+        try:
+            from lineup_splits_engine import lineup_split_advantage
+            away_throws = away_p_data.get('throws', 'R') if away_p_data else 'R'
+            result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_split_advantage(home_team, away_team, away_throws)))
+        except: pass
+        try:
+            from statcast_bat_engine import statcast_bat_advantage
+            result['probability'] = min(0.85, max(0.15, result['probability'] + statcast_bat_advantage(home_team, away_team)))
         except: pass
         
         result['edge'] = result['probability'] - (1 / fav_odds_dec)

@@ -5,7 +5,7 @@ import pandas as pd
 import os
 from datetime import datetime
 
-st.set_page_config(page_title="Sports Quant Engine V8", page_icon="MLB", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Sports Quant Engine V10", page_icon="MLB", layout="wide", initial_sidebar_state="collapsed")
 
 st.markdown("""
 <style>
@@ -20,8 +20,6 @@ st.markdown("""
     .section-title { color: #e94560; border-bottom: 2px solid #e94560; padding-bottom: 0.5rem; margin-top: 2rem; text-transform: uppercase; letter-spacing: 2px; font-size: 1.1rem; }
     .footer { text-align: center; color: #484f58; margin-top: 3rem; padding: 1rem; border-top: 1px solid #21262d; }
     .mc-result { background: #0f3460; padding: 1.5rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #30363d; }
-    .comparison-box { background: #161b22; padding: 1rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #30363d; }
-    .bayesian-box { background: #1a2332; padding: 1rem; border-radius: 10px; margin: 1rem 0; border: 1px solid #58a6ff; }
     .results-table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; font-size: 0.85rem; }
     .results-table th { background: #1a1a2e; color: #e94560; padding: 0.7rem; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e94560; }
     .results-table td { background: #161b22; color: #c9d1d9; padding: 0.5rem; border-bottom: 1px solid #21262d; text-align: center; }
@@ -33,8 +31,8 @@ st.markdown("""
 
 st.markdown("""
 <div class="main-header">
-    <h1>MLB NBA SPORTS QUANT ENGINE V9</h1>
-    <p>Market Inefficiency Detection | Travel + Statcast Pitch + Defense + Weather</p>
+    <h1>MLB NBA SPORTS QUANT ENGINE V10</h1>
+    <p>10 Engines | Elite Picks A/A+ | Weather + Travel + Pitch + Defense + Rest + Bullpen + Splits + Statcast</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -130,13 +128,11 @@ try:
         df = pd.read_csv(tracker_file)
         completed = df[df['result'].isin(['WIN', 'LOSS'])]
         if len(completed) > 0:
-            wins = len(completed[completed['result'] == 'WIN'])
-            total = len(completed)
+            wins = len(completed[completed['result'] == 'WIN']); total = len(completed)
             col_w1, col_w2, col_w3 = st.columns(3)
             with col_w1: st.metric("Total Picks", total)
             with col_w2: st.metric("Wins", wins)
             with col_w3: st.metric("Accuracy", f"{wins/total*100:.1f}%")
-        else: st.info("No validated picks yet.")
 except: st.info("Picks tracker initializing...")
 
 # PICKS CALENDAR
@@ -158,9 +154,8 @@ try:
                 wins = 0
                 for _, row in day_df.iterrows():
                     result = str(row.get('result', ''))
-                    if result == 'WIN': status = 'WIN'; wins += 1
-                    elif result == 'LOSS': status = 'LOSS'
-                    else: status = 'PENDING'
+                    status = 'WIN' if result == 'WIN' else ('LOSS' if result == 'LOSS' else 'PENDING')
+                    if result == 'WIN': wins += 1
                     table_html += f'<tr><td>{row["match"]}</td><td class="pick-highlight">{row["pick"]}</td><td>{row["edge"]}</td><td>{status}</td></tr>'
                 table_html += '</tbody></table>'
                 st.markdown(table_html, unsafe_allow_html=True)
@@ -179,8 +174,7 @@ with col1:
         with st.spinner("Scanning MLB..."):
             output = run_script_and_parse("run_live_mlb.py")
             games, metadata = parse_mlb_output(output)
-            st.session_state.mlb_data = games
-            st.session_state.mlb_metadata = metadata
+            st.session_state.mlb_data = games; st.session_state.mlb_metadata = metadata
             for g in games:
                 try: prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
                 except: prob_val = 0
@@ -194,8 +188,7 @@ with col2:
         with st.spinner("Predicting MLB..."):
             output = run_script_and_parse("run_tomorrow_mlb.py")
             games, metadata = parse_mlb_output(output)
-            st.session_state.mlb_data = games
-            st.session_state.mlb_metadata = metadata
+            st.session_state.mlb_data = games; st.session_state.mlb_metadata = metadata
             for g in games:
                 try: prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
                 except: prob_val = 0
@@ -247,8 +240,6 @@ if st.session_state.mlb_data:
             with col_s2: st.metric(f"{g['home']} Record", meta['home_win']); st.metric(f"{g['away']} Record", meta['away_win'])
             with col_s3: st.write(f"Home Bullpen: {meta['home_bullpen_era']} ERA ({meta['home_bullpen_fatigue']})"); st.write(f"Away Bullpen: {meta['away_bullpen_era']} ERA ({meta['away_bullpen_fatigue']})")
             st.markdown('</div>', unsafe_allow_html=True)
-            
-            # WEATHER
             try:
                 from weather_engine import get_weather_for_match, weather_summary, weather_impact
                 weather = get_weather_for_match(g['home'], g['away'])
@@ -258,59 +249,27 @@ if st.session_state.mlb_data:
                     st.markdown("#### WEATHER")
                     st.write(f"**{weather_summary(weather)}**")
                     if wi['total_runs_boost'] != 0: st.write(f"Run Impact: {wi['total_runs_boost']:+.1%}")
-                    if wi['volatility_boost'] > 0: st.write(f"Volatility: +{wi['volatility_boost']:.0%}")
                     st.markdown('</div>', unsafe_allow_html=True)
             except: pass
-            
-            # TRAVEL
             try:
-                from travel_engine import get_travel_distance
-                dist = get_travel_distance(meta.get('stadium', ''), meta.get('stadium', ''))
-                if dist > 800:
-                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
-                    st.markdown("#### TRAVEL")
-                    st.write(f"Distance: ~{dist:.0f} miles")
-                    st.markdown('</div>', unsafe_allow_html=True)
+                from rest_engine import get_team_rest_days
+                h_rest = get_team_rest_days(g['home']); a_rest = get_team_rest_days(g['away'])
+                st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                st.markdown("#### REST DAYS")
+                st.write(f"{g['home']}: {h_rest} day(s) | {g['away']}: {a_rest} day(s)")
+                st.markdown('</div>', unsafe_allow_html=True)
             except: pass
-            
-            # STATCAST PITCH
             try:
-                from statcast_pitch_engine import get_pitcher_arsenal
-                h_arsenal = get_pitcher_arsenal(meta['home_pitcher'])
-                a_arsenal = get_pitcher_arsenal(meta['away_pitcher'])
-                if h_arsenal is not None and a_arsenal is not None:
+                from bullpen_leverage_engine import get_bullpen_stats
+                h_bp = get_bullpen_stats(g['home']); a_bp = get_bullpen_stats(g['away'])
+                if h_bp and a_bp:
                     st.markdown('<div class="mc-result">', unsafe_allow_html=True)
-                    st.markdown("#### PITCH ARSENAL")
-                    col_a1, col_a2 = st.columns(2)
-                    with col_a1:
-                        st.write(f"**{meta['home_pitcher']}**")
-                        st.dataframe(h_arsenal)
-                    with col_a2:
-                        st.write(f"**{meta['away_pitcher']}**")
-                        st.dataframe(a_arsenal)
+                    st.markdown("#### BULLPEN")
+                    col_bp1, col_bp2 = st.columns(2)
+                    with col_bp1: st.write(f"**{g['home']}**"); st.write(f"Saves: {h_bp['saves']}/{h_bp['save_opps']} ({h_bp['save_pct']}%)"); st.write(f"Blown: {h_bp['blown_saves']}")
+                    with col_bp2: st.write(f"**{g['away']}**"); st.write(f"Saves: {a_bp['saves']}/{a_bp['save_opps']} ({a_bp['save_pct']}%)"); st.write(f"Blown: {a_bp['blown_saves']}")
                     st.markdown('</div>', unsafe_allow_html=True)
             except: pass
-            
-            # DEFENSE
-            try:
-                from defense_engine import get_team_defense
-                h_def = get_team_defense(g['home'])
-                a_def = get_team_defense(g['away'])
-                if h_def and a_def:
-                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
-                    st.markdown("#### DEFENSE")
-                    col_d1, col_d2 = st.columns(2)
-                    with col_d1:
-                        st.write(f"**{g['home']}**")
-                        st.write(f"Fielding: {h_def['fielding_pct']}")
-                        st.write(f"Errors: {h_def['errors']} | DP: {h_def['double_plays']}")
-                    with col_d2:
-                        st.write(f"**{g['away']}**")
-                        st.write(f"Fielding: {a_def['fielding_pct']}")
-                        st.write(f"Errors: {a_def['errors']} | DP: {a_def['double_plays']}")
-                    st.markdown('</div>', unsafe_allow_html=True)
-            except: pass
-            
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)
             st.markdown("#### MOMENTUM")
             col_mo1, col_mo2 = st.columns(2)
@@ -460,4 +419,4 @@ with col_v2:
             else: st.info("No validated results.")
         else: st.info("No betting log.")
 
-st.markdown("""<div class="footer">Sports Quant Engine V9 | Travel + Pitch + Defense + Weather + Series + Lineups</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Sports Quant Engine V10 | 10 Engines | Elite Picks A/A+</div>""", unsafe_allow_html=True)

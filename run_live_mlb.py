@@ -98,7 +98,7 @@ if len(mlb_games) > 0:
         
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         
-        # BONUS: Statcast + Series + Lesiones + Lineups
+        # STATCAST
         try:
             if statcast_engine:
                 home_power = statcast_engine.get_team_power(home_team)
@@ -106,6 +106,8 @@ if len(mlb_games) > 0:
                 if home_power and away_power:
                     result['probability'] = min(0.85, max(0.15, result['probability'] + ((home_power['power_score'] - away_power['power_score']) / 10) * 0.015))
         except: pass
+        
+        # SERIES MOMENTUM
         try:
             from series_momentum_engine import get_series_momentum
             sm = get_series_momentum(home_team, away_team)
@@ -118,6 +120,8 @@ if len(mlb_games) > 0:
                 if sm['h2h_games'] >= 2 and int(sm['h2h_record'].split('-')[0]) == sm['h2h_games']: mb += 0.02
                 result['probability'] = min(0.85, max(0.15, result['probability'] + mb))
         except: pass
+        
+        # LESIONES
         try:
             stars = ['Trout', 'Ohtani', 'Judge', 'Betts', 'Soto', 'Freeman', 'Tatis', 'Harper', 'Turner', 'Devers', 'Ramirez']
             ip = 0
@@ -127,6 +131,8 @@ if len(mlb_games) > 0:
                 if any(star.lower() in inj.get('player', '').lower() for star in stars): ip += 0.04
             result['probability'] = min(0.85, max(0.15, result['probability'] + ip))
         except: pass
+        
+        # LINEUPS
         try:
             from lineup_fetcher import get_lineups_for_match, lineup_impact
             lineups = get_lineups_for_match(home_team, away_team)
@@ -134,24 +140,27 @@ if len(mlb_games) > 0:
                 result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_impact(lineups, home_team, away_team)))
         except: pass
         
+        # WEATHER
+        try:
+            from weather_engine import get_weather_for_match, weather_impact
+            weather = get_weather_for_match(home_team, away_team)
+            if weather:
+                wi = weather_impact(weather)
+                result['probability'] = min(0.85, max(0.15, result['probability'] + wi['home_boost']))
+                result['volatility'] = min(0.80, result.get('volatility', 0.30) + wi['volatility_boost'])
+        except: pass
+        
         result['edge'] = result['probability'] - (1 / fav_odds_dec)
         intel = market_intel.final_decision(game_data, result)
         
-        # DETERMINAR PICK (basado en edge, no en winner)
-        if result['edge'] > 0.02:
+        if result['edge'] > 0.02 and result['probability'] >= 0.60 and result['confidence_level'] in ['A+', 'A']:
             pick = home_team if result['probability'] >= 0.5 else away_team
             odds_str = str(h2h_home if pick == home_team else h2h_away)
-            # Etiqueta
-            if row.get('favorite') and pick == row.get('underdog'):
-                pick_label = f"{pick} (UNDERDOG)"
-            elif row.get('favorite') and pick == row.get('favorite'):
-                pick_label = f"{pick} (VALUE)"
-            else:
-                pick_label = pick
+            if row.get('favorite') and pick == row.get('underdog'): pick_label = f"{pick} (UNDERDOG)"
+            elif row.get('favorite') and pick == row.get('favorite'): pick_label = f"{pick} (VALUE)"
+            else: pick_label = pick
         else:
-            pick = "NO PICK"
-            pick_label = "NO PICK"
-            odds_str = "-"
+            pick = "NO PICK"; pick_label = "NO PICK"; odds_str = "-"
         
         ml_status = "[OK]" if intel['approved'] else ("[SUS]" if result['edge'] > 0.03 else "[X]")
         rl_status = "[X]"

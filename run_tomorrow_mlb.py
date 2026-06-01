@@ -132,19 +132,24 @@ if len(mlb_games) > 0:
             if lineups.get('has_lineups'):
                 result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_impact(lineups, home_team, away_team)))
         except: pass
+        try:
+            from weather_engine import get_weather_for_match, weather_impact
+            weather = get_weather_for_match(home_team, away_team)
+            if weather:
+                wi = weather_impact(weather)
+                result['probability'] = min(0.85, max(0.15, result['probability'] + wi['home_boost']))
+                result['volatility'] = min(0.80, result.get('volatility', 0.30) + wi['volatility_boost'])
+        except: pass
         
         result['edge'] = result['probability'] - (1 / fav_odds_dec)
         intel = market_intel.final_decision(game_data, result)
         
-        if result['edge'] > 0.02:
+        if result['edge'] > 0.02 and result['probability'] >= 0.60 and result['confidence_level'] in ['A+', 'A']:
             pick = home_team if result['probability'] >= 0.5 else away_team
             odds_str = str(h2h_home if pick == home_team else h2h_away)
-            if row.get('favorite') and pick == row.get('underdog'):
-                pick_label = f"{pick} (UNDERDOG)"
-            elif row.get('favorite') and pick == row.get('favorite'):
-                pick_label = f"{pick} (VALUE)"
-            else:
-                pick_label = pick
+            if row.get('favorite') and pick == row.get('underdog'): pick_label = f"{pick} (UNDERDOG)"
+            elif row.get('favorite') and pick == row.get('favorite'): pick_label = f"{pick} (VALUE)"
+            else: pick_label = pick
         else:
             pick = "NO PICK"; pick_label = "NO PICK"; odds_str = "-"
         

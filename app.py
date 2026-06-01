@@ -34,7 +34,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>MLB NBA SPORTS QUANT ENGINE V8</h1>
-    <p>Market Inefficiency Detection | Elite Picks A/A+ | Monte Carlo + Series + Lineups</p>
+    <p>Market Inefficiency Detection | Elite Picks A/A+ | Weather + Series + Lineups</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -87,15 +87,12 @@ def save_pick_safe(match, pick, edge):
     except: pass
 
 def validate_picks_tracker():
-    """Valida los picks pendientes contra resultados reales"""
     tracker_file = 'data/picks_tracker.csv'
-    if not os.path.exists(tracker_file):
-        return
+    if not os.path.exists(tracker_file): return
     try:
         df = pd.read_csv(tracker_file)
         pending = df[(df['result'].isna()) | (df['result'] == '') | (df['result'] == 'PENDING')]
-        if len(pending) == 0:
-            return
+        if len(pending) == 0: return
         import requests
         for idx, row in pending.iterrows():
             try:
@@ -162,7 +159,6 @@ try:
             with col_w2: st.metric("Wins", wins)
             with col_w3: st.metric("Accuracy", f"{wins/total*100:.1f}%")
         else: st.info("No validated picks yet.")
-    else: st.info("Picks tracker initializing...")
 except: st.info("Picks tracker initializing...")
 
 # PICKS CALENDAR
@@ -179,8 +175,7 @@ try:
             if len(day_df) > 0:
                 st.markdown(f"### {selected_date} - {len(day_df)} picks")
                 table_html = '<table class="results-table"><thead><tr>'
-                for h in ['GAME', 'PICK', 'EDGE', 'RESULT']:
-                    table_html += f'<th>{h}</th>'
+                for h in ['GAME', 'PICK', 'EDGE', 'RESULT']: table_html += f'<th>{h}</th>'
                 table_html += '</tr></thead><tbody>'
                 wins = 0
                 for _, row in day_df.iterrows():
@@ -192,8 +187,7 @@ try:
                 table_html += '</tbody></table>'
                 st.markdown(table_html, unsafe_allow_html=True)
                 validated = day_df[day_df['result'].isin(['WIN', 'LOSS'])]
-                if len(validated) > 0:
-                    st.metric("Day", f"{wins}/{len(validated)}")
+                if len(validated) > 0: st.metric("Day", f"{wins}/{len(validated)}")
 except: st.info("Calendar loading...")
 
 # BOTONES
@@ -210,12 +204,10 @@ with col1:
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
             for g in games:
-                try:
-                    prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
+                try: prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
                 except: prob_val = 0
                 if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
-                    try:
-                        edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
+                    try: edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
                     except: edge_val = 0
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
@@ -227,12 +219,10 @@ with col2:
             st.session_state.mlb_data = games
             st.session_state.mlb_metadata = metadata
             for g in games:
-                try:
-                    prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
+                try: prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
                 except: prob_val = 0
                 if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
-                    try:
-                        edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
+                    try: edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
                     except: edge_val = 0
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
@@ -246,8 +236,7 @@ if st.session_state.mlb_data:
     st.markdown("---")
     st.markdown(f"### MLB SCAN RESULTS - {len(st.session_state.mlb_data)} games")
     table_html = '<table class="results-table"><thead><tr>'
-    for h in ['HOME', 'AWAY', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF']:
-        table_html += f'<th>{h}</th>'
+    for h in ['HOME', 'AWAY', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF']: table_html += f'<th>{h}</th>'
     table_html += '</tr></thead><tbody>'
     for g in st.session_state.mlb_data:
         pick_display = g['pick'] if g['pick'] != 'NO PICK' else 'NO PICK'
@@ -280,6 +269,21 @@ if st.session_state.mlb_data:
             with col_s2: st.metric(f"{g['home']} Record", meta['home_win']); st.metric(f"{g['away']} Record", meta['away_win'])
             with col_s3: st.write(f"Home Bullpen: {meta['home_bullpen_era']} ERA ({meta['home_bullpen_fatigue']})"); st.write(f"Away Bullpen: {meta['away_bullpen_era']} ERA ({meta['away_bullpen_fatigue']})")
             st.markdown('</div>', unsafe_allow_html=True)
+            
+            # WEATHER
+            try:
+                from weather_engine import get_weather_for_match, weather_summary, weather_impact
+                weather = get_weather_for_match(g['home'], g['away'])
+                if weather:
+                    wi = weather_impact(weather)
+                    st.markdown('<div class="mc-result">', unsafe_allow_html=True)
+                    st.markdown("#### WEATHER")
+                    st.write(f"**{weather_summary(weather)}**")
+                    if wi['total_runs_boost'] != 0: st.write(f"Run Impact: {wi['total_runs_boost']:+.1%}")
+                    if wi['volatility_boost'] > 0: st.write(f"Volatility: +{wi['volatility_boost']:.0%}")
+                    st.markdown('</div>', unsafe_allow_html=True)
+            except: pass
+            
             st.markdown('<div class="mc-result">', unsafe_allow_html=True)
             st.markdown("#### MOMENTUM")
             col_mo1, col_mo2 = st.columns(2)
@@ -427,12 +431,11 @@ with col_v2:
                 st.markdown('<div class="mc-result">', unsafe_allow_html=True)
                 st.markdown("#### BETTING RESULTS")
                 col_r1, col_r2, col_r3, col_r4 = st.columns(4)
-                with col_r1: st.metric("Total", total)
-                with col_r2: st.metric("Wins", wins)
+                with col_r1: st.metric("Total", total); with col_r2: st.metric("Wins", wins)
                 with col_r3: st.metric("Win Rate", f"{wins/total*100:.1f}%" if total > 0 else "N/A")
                 with col_r4: st.metric("Profit", f"${profit:+.2f}")
                 st.markdown('</div>', unsafe_allow_html=True)
             else: st.info("No validated results.")
         else: st.info("No betting log.")
 
-st.markdown("""<div class="footer">Sports Quant Engine V8 | Elite Picks A/A+ | Market Inefficiency Detection</div>""", unsafe_allow_html=True)
+st.markdown("""<div class="footer">Sports Quant Engine V8 | Elite Picks A/A+ | Weather Engine V1</div>""", unsafe_allow_html=True)

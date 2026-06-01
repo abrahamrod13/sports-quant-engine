@@ -12,8 +12,12 @@ import pandas as pd
 import os
 from datetime import datetime
 
-try: from mlb_injury_fetcher import get_out_players_mlb
-except: def get_out_players_mlb(x): return []
+try:
+    from mlb_injury_fetcher import get_out_players_mlb
+except:
+    def get_out_players_mlb(x):
+        return []
+
 
 try:
     from statcast_engine import StatcastEngine

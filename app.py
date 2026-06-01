@@ -412,7 +412,10 @@ with col_v2:
                 st.markdown('<div class="mc-result">', unsafe_allow_html=True)
                 st.markdown("#### BETTING RESULTS")
                 col_r1, col_r2, col_r3, col_r4 = st.columns(4)
-                with col_r1: st.metric("Total", total); with col_r2: st.metric("Wins", wins)
+                with col_r1:
+                st.metric("Total", total)
+                with col_r2:
+                st.metric("Wins", wins)
                 with col_r3: st.metric("Win Rate", f"{wins/total*100:.1f}%" if total > 0 else "N/A")
                 with col_r4: st.metric("Profit", f"${profit:+.2f}")
                 st.markdown('</div>', unsafe_allow_html=True)

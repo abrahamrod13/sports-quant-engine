@@ -42,24 +42,28 @@ all_setups = []
 mlb_games = get_today_mlb_games()
 
 if len(mlb_games) > 0:
+    # LIVE ODDS
     fanduel_mlb = get_fanduel_odds_full('baseball_mlb')
+    
     if len(fanduel_mlb) > 0:
-        # Normalizar para merge
-        mlb_games['match_normalized'] = mlb_games['match'].str.lower().str.strip()
-        fanduel_mlb['match_normalized'] = fanduel_mlb['match'].str.lower().str.strip()
+        odds_dict = {}
+        for _, odd_row in fanduel_mlb.iterrows():
+            odds_dict[odd_row['match']] = odd_row
         
-        mlb_games = mlb_games.merge(
-            fanduel_mlb[['match_normalized', 'h2h_home', 'h2h_away', 'favorite', 
-                         'underdog', 'favorite_odds_decimal', 'underdog_odds_decimal',
-                         'spread_home', 'spread_away', 'spread_point', 
-                         'total_over', 'total_under', 'total_point']], 
-            on='match_normalized', 
-            how='left'
-        )
-        mlb_games = mlb_games.drop(columns=['match_normalized'])
-        
-        has_odds = mlb_games['favorite_odds_decimal'].notna().sum()
-        print(f"DEBUG|Juegos con odds: {has_odds}/{len(mlb_games)}")
+        for idx, game_row in mlb_games.iterrows():
+            match_name = game_row['match']
+            if match_name in odds_dict:
+                odd_row = odds_dict[match_name]
+                mlb_games.at[idx, 'h2h_home'] = odd_row.get('h2h_home')
+                mlb_games.at[idx, 'h2h_away'] = odd_row.get('h2h_away')
+                mlb_games.at[idx, 'favorite'] = odd_row.get('favorite')
+                mlb_games.at[idx, 'underdog'] = odd_row.get('underdog')
+                mlb_games.at[idx, 'favorite_odds_decimal'] = odd_row.get('favorite_odds_decimal')
+                mlb_games.at[idx, 'underdog_odds_decimal'] = odd_row.get('underdog_odds_decimal')
+                mlb_games.at[idx, 'total_point'] = odd_row.get('total_point')
+                mlb_games.at[idx, 'spread_home'] = odd_row.get('spread_home')
+                mlb_games.at[idx, 'spread_away'] = odd_row.get('spread_away')
+                mlb_games.at[idx, 'spread_point'] = odd_row.get('spread_point')
     
     mlb_games = mlb_games.drop_duplicates(subset=['match'], keep='first')
     
@@ -74,7 +78,7 @@ if len(mlb_games) > 0:
         h2h_home = row.get('h2h_home', -110)
         h2h_away = row.get('h2h_away', -110)
         
-        # OBTENER ODDS CORRECTAMENTE
+        # OBTENER ODDS
         if pd.notna(row.get('favorite_odds_decimal')) and row.get('favorite_odds_decimal') > 0:
             fav_odds_dec = row.get('favorite_odds_decimal')
         elif pd.notna(row.get('underdog_odds_decimal')) and row.get('underdog_odds_decimal') > 0:
@@ -89,9 +93,6 @@ if len(mlb_games) > 0:
             fav_odds_dec = 1 + h2h_away/100
         else:
             fav_odds_dec = 2.0
-        
-        opening_line = row.get('spread_open', 0)
-        closing_line = row.get('spread_close', 0)
         
         home_p_data = get_pitcher_stats(row.get('home_pitcher_id'))
         away_p_data = get_pitcher_stats(row.get('away_pitcher_id'))
@@ -151,8 +152,7 @@ if len(mlb_games) > 0:
             'bullpen_home_weak': home_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
             'bullpen_away_weak': away_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
             'hr_heavy_teams': home_win > 0.58 or away_win > 0.58, 'wind_outward': False, 'odds': fav_odds_dec,
-            'home_streak': home_streak, 'away_streak': away_streak,
-            'opening_odds': opening_line, 'closing_odds': closing_line
+            'home_streak': home_streak, 'away_streak': away_streak
         }
         
         # MODELO BASE
@@ -287,32 +287,22 @@ if len(mlb_games) > 0:
         try:
             sentiment_adj = market_sentiment.market_sentiment_adjustment(game_data, result['probability'])
             result['probability'] = sentiment_adj['adjusted_probability']
-            result['market_signal'] = sentiment_adj['market_signal']
-            result['overreaction'] = sentiment_adj['overreaction']['level']
-            result['rlm_detected'] = sentiment_adj['rlm']['rlm_detected']
-        except Exception as e:
-            result['market_signal'] = 'ERROR'
+        except: pass
         
         # UMPIRE ENGINE
         total_line = row.get('total_point', 8.5)
         try:
             umpire_analysis = umpire_engine.full_umpire_analysis(game_data, result['probability'], total_line)
             result['probability'] = umpire_analysis['adjusted_prob']
-            result['umpire_adjustment'] = umpire_analysis['run_impact_adjustment']
-            result['umpire_ou_signal'] = umpire_analysis['over_under_signal']
             result['adjusted_total_line'] = umpire_analysis['total_line_adjusted']
-        except Exception as e:
+        except:
             result['adjusted_total_line'] = total_line
         
         # HISTORICAL SIMILAR SPOTS
         try:
             historical_blend = historical_spots.blend_with_model(game_data, result['probability'], model_weight=0.60)
             result['probability'] = historical_blend['blended_prob']
-            result['historical_similar_games'] = historical_blend['similar_games']
-            result['historical_contribution'] = historical_blend['historical_contribution']
-            result['historical_prob'] = historical_blend.get('historical_prob', 0.5)
-        except Exception as e:
-            result['historical_similar_games'] = 0
+        except: pass
         
         # RECALCULAR EDGE
         market_prob = 1 / fav_odds_dec if fav_odds_dec > 1 else 0.5
@@ -321,14 +311,26 @@ if len(mlb_games) > 0:
         # MARKET INTELLIGENCE
         intel = market_intel.final_decision(game_data, result)
         
-        # DETERMINAR PICK
-        odds_para_mostrar = ""
+        # ============ CORRECCIÓN: ODDS SIEMPRE VISIBLES ============
+        # Asignar odds base (siempre se muestran)
+        if h2h_home is not None and h2h_home != 0:
+            odds_home_str = str(int(h2h_home)) if h2h_home == int(h2h_home) else str(h2h_home)
+        else:
+            odds_home_str = "-"
+        
+        if h2h_away is not None and h2h_away != 0:
+            odds_away_str = str(int(h2h_away)) if h2h_away == int(h2h_away) else str(h2h_away)
+        else:
+            odds_away_str = "-"
+        
+        # Determinar pick y odds a mostrar
         if result['edge'] > 0.02 and result['probability'] >= 0.55 and result['confidence_level'] in ['A+', 'A']:
             pick = home_team if result['probability'] >= 0.5 else away_team
             if pick == home_team:
-                odds_para_mostrar = str(h2h_home)
+                odds_para_mostrar = odds_home_str
             else:
-                odds_para_mostrar = str(h2h_away)
+                odds_para_mostrar = odds_away_str
+            
             if row.get('favorite') and pick == row.get('underdog'):
                 pick_label = f"{pick} (UNDERDOG)"
             elif row.get('favorite') and pick == row.get('favorite'):
@@ -338,7 +340,15 @@ if len(mlb_games) > 0:
         else:
             pick = "NO PICK"
             pick_label = "NO PICK"
-            odds_para_mostrar = "-"
+            # Mostrar odds del favorito aunque no haya pick
+            if row.get('favorite_odds_decimal'):
+                fav_odds_american = row.get('favorite_odds_decimal')
+                if fav_odds_american < 2:
+                    odds_para_mostrar = f"-{int(100/(fav_odds_american-1))}"
+                else:
+                    odds_para_mostrar = f"+{int((fav_odds_american-1)*100)}"
+            else:
+                odds_para_mostrar = "-"
         
         # ESTADOS
         ml_status = "[OK]" if intel['approved'] else ("[SUS]" if result['edge'] > 0.03 else "[X]")
@@ -365,7 +375,6 @@ if len(mlb_games) > 0:
         # OUTPUT
         print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_para_mostrar}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
-        print(f"ADVANCED|{result.get('market_signal', 'N/A')}|{result.get('overreaction', 'N/A')}|{result.get('rlm_detected', False)}|{result.get('umpire_ou_signal', 'NEUTRAL')}|{result.get('adjusted_total_line', total_line)}|{result.get('historical_similar_games', 0)}|{result.get('historical_contribution', 0):.1%}")
         
         # GUARDAR BET
         if intel['approved'] and pick != "NO PICK":

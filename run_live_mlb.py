@@ -44,7 +44,23 @@ mlb_games = get_today_mlb_games()
 if len(mlb_games) > 0:
     fanduel_mlb = get_fanduel_odds_full('baseball_mlb')
     if len(fanduel_mlb) > 0:
-        mlb_games = mlb_games.merge(fanduel_mlb, on='match', how='left', suffixes=('', '_fd'))
+        # Normalizar para merge
+        mlb_games['match_normalized'] = mlb_games['match'].str.lower().str.strip()
+        fanduel_mlb['match_normalized'] = fanduel_mlb['match'].str.lower().str.strip()
+        
+        mlb_games = mlb_games.merge(
+            fanduel_mlb[['match_normalized', 'h2h_home', 'h2h_away', 'favorite', 
+                         'underdog', 'favorite_odds_decimal', 'underdog_odds_decimal',
+                         'spread_home', 'spread_away', 'spread_point', 
+                         'total_over', 'total_under', 'total_point']], 
+            on='match_normalized', 
+            how='left'
+        )
+        mlb_games = mlb_games.drop(columns=['match_normalized'])
+        
+        has_odds = mlb_games['favorite_odds_decimal'].notna().sum()
+        print(f"DEBUG|Juegos con odds: {has_odds}/{len(mlb_games)}")
+    
     mlb_games = mlb_games.drop_duplicates(subset=['match'], keep='first')
     
     for _, row in mlb_games.iterrows():
@@ -58,10 +74,10 @@ if len(mlb_games) > 0:
         h2h_home = row.get('h2h_home', -110)
         h2h_away = row.get('h2h_away', -110)
         
-        # ============ CORRECCIÓN: OBTENER ODDS CORRECTAMENTE ============
-        if row.get('favorite_odds_decimal') and row.get('favorite_odds_decimal') > 0:
+        # OBTENER ODDS CORRECTAMENTE
+        if pd.notna(row.get('favorite_odds_decimal')) and row.get('favorite_odds_decimal') > 0:
             fav_odds_dec = row.get('favorite_odds_decimal')
-        elif row.get('underdog_odds_decimal') and row.get('underdog_odds_decimal') > 0:
+        elif pd.notna(row.get('underdog_odds_decimal')) and row.get('underdog_odds_decimal') > 0:
             fav_odds_dec = row.get('underdog_odds_decimal')
         elif h2h_home < 0:
             fav_odds_dec = 1 + 100/abs(h2h_home)
@@ -298,7 +314,7 @@ if len(mlb_games) > 0:
         except Exception as e:
             result['historical_similar_games'] = 0
         
-        # ============ RECALCULAR EDGE ============
+        # RECALCULAR EDGE
         market_prob = 1 / fav_odds_dec if fav_odds_dec > 1 else 0.5
         result['edge'] = result['probability'] - market_prob
         

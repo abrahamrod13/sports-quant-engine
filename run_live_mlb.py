@@ -158,6 +158,26 @@ if len(mlb_games) > 0:
         # MODELO BASE
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         
+        # Extraer pitcher_diff y momentum_diff del resultado
+        home_pitcher_score = result.get('pitcher_home', 0.5)
+        away_pitcher_score = result.get('pitcher_away', 0.5)
+        pitcher_diff = home_pitcher_score - away_pitcher_score
+        
+        home_momentum_score = result.get('momentum_home', 0.5)
+        away_momentum_score = result.get('momentum_away', 0.5)
+        momentum_diff = home_momentum_score - away_momentum_score
+        
+        # Recalcular confianza con los valores correctos
+        confidence_score, confidence_level = mlb_engine.mlb_confidence(
+            result['probability'], 
+            result['edge'], 
+            result['volatility'], 
+            pitcher_diff, 
+            momentum_diff
+        )
+        result['confidence_score'] = confidence_score
+        result['confidence_level'] = confidence_level
+        
         # STATCAST
         try:
             if statcast_engine:
@@ -304,15 +324,25 @@ if len(mlb_games) > 0:
             result['probability'] = historical_blend['blended_prob']
         except: pass
         
-        # RECALCULAR EDGE
+        # RECALCULAR EDGE Y CONFIANZA FINAL
         market_prob = 1 / fav_odds_dec if fav_odds_dec > 1 else 0.5
         result['edge'] = result['probability'] - market_prob
+        
+        # Recalcular confianza con probabilidad final
+        confidence_score, confidence_level = mlb_engine.mlb_confidence(
+            result['probability'], 
+            result['edge'], 
+            result['volatility'], 
+            pitcher_diff, 
+            momentum_diff
+        )
+        result['confidence_score'] = confidence_score
+        result['confidence_level'] = confidence_level
         
         # MARKET INTELLIGENCE
         intel = market_intel.final_decision(game_data, result)
         
-        # ============ CORRECCIÓN: ODDS SIEMPRE VISIBLES ============
-        # Asignar odds base (siempre se muestran)
+        # DETERMINAR PICK
         if h2h_home is not None and h2h_home != 0:
             odds_home_str = str(int(h2h_home)) if h2h_home == int(h2h_home) else str(h2h_home)
         else:
@@ -323,8 +353,8 @@ if len(mlb_games) > 0:
         else:
             odds_away_str = "-"
         
-        # Determinar pick y odds a mostrar
-        if result['edge'] > 0.02 and result['probability'] >= 0.55 and result['confidence_level'] in ['A+', 'A']:
+        # CONDICION PARA PICK: edge > 2% Y probabilidad > 55%
+        if result['edge'] > 0.02 and result['probability'] >= 0.55:
             pick = home_team if result['probability'] >= 0.5 else away_team
             if pick == home_team:
                 odds_para_mostrar = odds_home_str
@@ -340,7 +370,6 @@ if len(mlb_games) > 0:
         else:
             pick = "NO PICK"
             pick_label = "NO PICK"
-            # Mostrar odds del favorito aunque no haya pick
             if row.get('favorite_odds_decimal'):
                 fav_odds_american = row.get('favorite_odds_decimal')
                 if fav_odds_american < 2:

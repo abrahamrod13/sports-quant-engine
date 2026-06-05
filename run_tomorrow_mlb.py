@@ -11,11 +11,9 @@ import pandas as pd
 import os
 from datetime import datetime, timedelta
 
-# ============ NUEVOS MÓDULOS ============
 from market_sentiment import MarketSentiment
 from umpire_engine import UmpireEngine
 from historical_similar_spots import HistoricalSimilarSpots
-# ========================================
 
 try:
     from mlb_injury_fetcher import get_out_players_mlb
@@ -37,12 +35,9 @@ print("MLB|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|RL|OU|TEAM|F5")
 
 mlb_engine = MLBEngine()
 market_intel = MarketIntelligence()
-
-# ============ INICIALIZAR NUEVOS MÓDULOS ============
 market_sentiment = MarketSentiment()
 umpire_engine = UmpireEngine()
 historical_spots = HistoricalSimilarSpots()
-# ====================================================
 
 all_setups = []
 mlb_games = get_tomorrow_mlb_games()
@@ -63,9 +58,23 @@ if len(mlb_games) > 0:
         
         h2h_home = row.get('h2h_home', -110)
         h2h_away = row.get('h2h_away', -110)
-        fav_odds_dec = row.get('favorite_odds_decimal', 2.0) or 2.0
         
-        # Odds para RLM
+        # ============ CORRECCIÓN: OBTENER ODDS CORRECTAMENTE ============
+        if row.get('favorite_odds_decimal') and row.get('favorite_odds_decimal') > 0:
+            fav_odds_dec = row.get('favorite_odds_decimal')
+        elif row.get('underdog_odds_decimal') and row.get('underdog_odds_decimal') > 0:
+            fav_odds_dec = row.get('underdog_odds_decimal')
+        elif h2h_home < 0:
+            fav_odds_dec = 1 + 100/abs(h2h_home)
+        elif h2h_away < 0:
+            fav_odds_dec = 1 + 100/abs(h2h_away)
+        elif h2h_home > 0:
+            fav_odds_dec = 1 + h2h_home/100
+        elif h2h_away > 0:
+            fav_odds_dec = 1 + h2h_away/100
+        else:
+            fav_odds_dec = 2.0
+        
         opening_line = row.get('spread_open', 0)
         closing_line = row.get('spread_close', 0)
         
@@ -101,7 +110,6 @@ if len(mlb_games) > 0:
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
-        # ============ STREAKS para Market Sentiment ============
         home_streak = home_momentum.get('streak', 0)
         away_streak = away_momentum.get('streak', 0)
         
@@ -128,15 +136,14 @@ if len(mlb_games) > 0:
             'bullpen_home_weak': home_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
             'bullpen_away_weak': away_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
             'hr_heavy_teams': home_win > 0.58 or away_win > 0.58, 'wind_outward': False, 'odds': fav_odds_dec,
-            # Para Market Sentiment
             'home_streak': home_streak, 'away_streak': away_streak,
             'opening_odds': opening_line, 'closing_odds': closing_line
         }
         
-        # ============ PASO 1: MODELO BASE ============
+        # MODELO BASE
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         
-        # ============ PASO 2: STATCAST ============
+        # STATCAST
         try:
             if statcast_engine:
                 hp = statcast_engine.get_team_power(home_team)
@@ -145,7 +152,7 @@ if len(mlb_games) > 0:
                     result['probability'] = min(0.85, max(0.15, result['probability'] + ((hp['power_score']-ap['power_score'])/10)*0.015))
         except: pass
         
-        # ============ PASO 3: SERIES MOMENTUM ============
+        # SERIES MOMENTUM
         try:
             from series_momentum_engine import get_series_momentum
             sm = get_series_momentum(home_team, away_team)
@@ -160,7 +167,7 @@ if len(mlb_games) > 0:
                 result['probability'] = min(0.85, max(0.15, result['probability'] + mb))
         except: pass
         
-        # ============ PASO 4: INJURIAS MEJORADAS ============
+        # INJURIAS
         try:
             stars = {
                 'Aaron Judge': 0.05, 'Juan Soto': 0.05, 'Mike Trout': 0.05,
@@ -191,7 +198,7 @@ if len(mlb_games) > 0:
             result['probability'] = min(0.85, max(0.15, result['probability'] + injury_penalty))
         except: pass
         
-        # ============ PASO 5: LINEUPS ============
+        # LINEUPS
         try:
             from lineup_fetcher import get_lineups_for_match, lineup_impact
             lineups = get_lineups_for_match(home_team, away_team)
@@ -199,7 +206,7 @@ if len(mlb_games) > 0:
                 result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_impact(lineups, home_team, away_team)))
         except: pass
         
-        # ============ PASO 6: WEATHER ============
+        # WEATHER
         try:
             from weather_engine import get_weather_for_match, weather_impact
             weather = get_weather_for_match(home_team, away_team)
@@ -208,7 +215,7 @@ if len(mlb_games) > 0:
                 result['probability'] = min(0.85, max(0.15, result['probability'] + wi['home_boost']))
         except: pass
         
-        # ============ PASO 7: TRAVEL ============
+        # TRAVEL
         try:
             from travel_engine import get_travel_distance, travel_impact
             stadium = row.get('stadium', '')
@@ -217,51 +224,51 @@ if len(mlb_games) > 0:
                 result['probability'] = min(0.85, max(0.15, result['probability'] + hb))
         except: pass
         
-        # ============ PASO 8: STATCAST PITCH ============
+        # STATCAST PITCH
         try:
             from statcast_pitch_engine import pitch_advantage
             result['probability'] = min(0.85, max(0.15, result['probability'] + pitch_advantage(home_p_name, away_p_name) * 0.5))
         except: pass
         
-        # ============ PASO 9: DEFENSE ============
+        # DEFENSE
         try:
             from defense_engine import defense_advantage
             result['probability'] = min(0.85, max(0.15, result['probability'] + defense_advantage(home_team, away_team) * 0.5))
         except: pass
         
-        # ============ PASO 10: REST ============
+        # REST
         try:
             from rest_engine import get_team_rest_days, rest_advantage
             result['probability'] = min(0.85, max(0.15, result['probability'] + rest_advantage(get_team_rest_days(home_team), get_team_rest_days(away_team))))
         except: pass
         
-        # ============ PASO 11: BULLPEN LEVERAGE ============
+        # BULLPEN LEVERAGE
         try:
             from bullpen_leverage_engine import bullpen_advantage as ba_lev
             result['probability'] = min(0.85, max(0.15, result['probability'] + ba_lev(home_team, away_team)))
         except: pass
         
-        # ============ PASO 12: LINEUP SPLITS ============
+        # LINEUP SPLITS
         try:
             from lineup_splits_engine import lineup_split_advantage
             away_throws = away_p_data.get('throws', 'R') if away_p_data else 'R'
             result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_split_advantage(home_team, away_team, away_throws)))
         except: pass
         
-        # ============ PASO 13: STATCAST BAT ============
+        # STATCAST BAT
         try:
             from statcast_bat_engine import statcast_bat_advantage
             result['probability'] = min(0.85, max(0.15, result['probability'] + statcast_bat_advantage(home_team, away_team)))
         except: pass
         
-        # ============ PASO 14: TEAM STATS ============
+        # TEAM STATS
         try:
             from team_stats_engine import team_stats_advantage
             tsa, _ = team_stats_advantage(home_team, away_team)
             result['probability'] = min(0.85, max(0.15, result['probability'] + tsa))
         except: pass
         
-        # ============ NUEVO PASO 15: MARKET SENTIMENT ============
+        # MARKET SENTIMENT
         try:
             sentiment_adj = market_sentiment.market_sentiment_adjustment(game_data, result['probability'])
             result['probability'] = sentiment_adj['adjusted_probability']
@@ -269,10 +276,9 @@ if len(mlb_games) > 0:
             result['overreaction'] = sentiment_adj['overreaction']['level']
             result['rlm_detected'] = sentiment_adj['rlm']['rlm_detected']
         except Exception as e:
-            print(f"⚠️ Market Sentiment error: {e}")
             result['market_signal'] = 'ERROR'
         
-        # ============ NUEVO PASO 16: UMPIRE ENGINE ============
+        # UMPIRE ENGINE
         total_line = row.get('total_point', 8.5)
         try:
             umpire_analysis = umpire_engine.full_umpire_analysis(game_data, result['probability'], total_line)
@@ -281,10 +287,9 @@ if len(mlb_games) > 0:
             result['umpire_ou_signal'] = umpire_analysis['over_under_signal']
             result['adjusted_total_line'] = umpire_analysis['total_line_adjusted']
         except Exception as e:
-            print(f"⚠️ Umpire Engine error: {e}")
             result['adjusted_total_line'] = total_line
         
-        # ============ NUEVO PASO 17: HISTORICAL SIMILAR SPOTS ============
+        # HISTORICAL SIMILAR SPOTS
         try:
             historical_blend = historical_spots.blend_with_model(game_data, result['probability'], model_weight=0.60)
             result['probability'] = historical_blend['blended_prob']
@@ -292,19 +297,23 @@ if len(mlb_games) > 0:
             result['historical_contribution'] = historical_blend['historical_contribution']
             result['historical_prob'] = historical_blend.get('historical_prob', 0.5)
         except Exception as e:
-            print(f"⚠️ Historical Spots error: {e}")
             result['historical_similar_games'] = 0
         
-        # ============ RECALCULAR EDGE DESPUÉS DE TODOS LOS AJUSTES ============
-        result['edge'] = result['probability'] - (1 / fav_odds_dec)
+        # ============ RECALCULAR EDGE ============
+        market_prob = 1 / fav_odds_dec if fav_odds_dec > 1 else 0.5
+        result['edge'] = result['probability'] - market_prob
         
-        # ============ MARKET INTELLIGENCE FINAL ============
+        # MARKET INTELLIGENCE
         intel = market_intel.final_decision(game_data, result)
         
-        # ============ DETERMINAR PICK ============
-        if result['edge'] > 0.02 and result['probability'] >= 0.60 and result['confidence_level'] in ['A+', 'A']:
+        # DETERMINAR PICK
+        odds_para_mostrar = ""
+        if result['edge'] > 0.02 and result['probability'] >= 0.55 and result['confidence_level'] in ['A+', 'A']:
             pick = home_team if result['probability'] >= 0.5 else away_team
-            odds_str = str(h2h_home if pick == home_team else h2h_away)
+            if pick == home_team:
+                odds_para_mostrar = str(h2h_home)
+            else:
+                odds_para_mostrar = str(h2h_away)
             if row.get('favorite') and pick == row.get('underdog'):
                 pick_label = f"{pick} (UNDERDOG)"
             elif row.get('favorite') and pick == row.get('favorite'):
@@ -314,9 +323,9 @@ if len(mlb_games) > 0:
         else:
             pick = "NO PICK"
             pick_label = "NO PICK"
-            odds_str = "-"
+            odds_para_mostrar = "-"
         
-        # ============ ESTADOS DE MERCADO ============
+        # ESTADOS
         ml_status = "[OK]" if intel['approved'] else ("[SUS]" if result['edge'] > 0.03 else "[X]")
         rl_status = "[X]"
         if result['probability'] >= 0.55:
@@ -338,17 +347,13 @@ if len(mlb_games) > 0:
         team_status = "[OK]" if max(0.25, min(0.85, home_over_prob)) > 0.55 else "[?]"
         f5_status = "[OK]" if result['probability'] - 0.45 > 0.02 else "[?]"
         
-        # ============ OUTPUT PRINCIPAL ============
-        print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
-        
-        # ============ OUTPUT DATA COMPLETO CON NUEVAS MÉTRICAS ============
+        # OUTPUT
+        print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_para_mostrar}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
-        
-        # ============ OUTPUT NUEVAS MÉTRICAS ============
         print(f"ADVANCED|{result.get('market_signal', 'N/A')}|{result.get('overreaction', 'N/A')}|{result.get('rlm_detected', False)}|{result.get('umpire_ou_signal', 'NEUTRAL')}|{result.get('adjusted_total_line', total_line)}|{result.get('historical_similar_games', 0)}|{result.get('historical_contribution', 0):.1%}")
         
-        # ============ GUARDAR BET SI APROBADO ============
-        if intel['approved']:
+        # GUARDAR BET
+        if intel['approved'] and pick != "NO PICK":
             result['sport'] = 'MLB'
             result['match'] = row['match']
             result['home_team'] = home_team

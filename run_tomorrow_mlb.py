@@ -17,13 +17,13 @@ except:
     def get_out_players_mlb(x):
         return []
 
-
 try:
     from statcast_engine import StatcastEngine
     statcast_engine = StatcastEngine()
     statcast_engine.fetch_data()
     statcast_engine.calculate_team_rankings()
-except: statcast_engine = None
+except:
+    statcast_engine = None
 
 tomorrow = datetime.now() + timedelta(days=1)
 
@@ -78,7 +78,8 @@ if len(mlb_games) > 0:
         try:
             home_injuries = get_out_players_mlb(home_team)
             away_injuries = get_out_players_mlb(away_team)
-        except: home_injuries = []; away_injuries = []
+        except:
+            home_injuries = []; away_injuries = []
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
@@ -88,8 +89,18 @@ if len(mlb_games) > 0:
             'home_pitcher': home_p_data, 'away_pitcher': away_p_data,
             'home_momentum': home_momentum, 'away_momentum': away_momentum,
             'home_bullpen': home_bullpen, 'away_bullpen': away_bullpen,
-            'home_matchup': {'avg': home_vs_away.get('avg', 0.250) if home_vs_away else 0.250, 'ops': home_vs_away.get('ops', 0.720) if home_vs_away else 0.720, 'hr': home_vs_away.get('hr', 0) if home_vs_away else 0, 'pa': home_vs_away.get('plate_appearances', 0) if home_vs_away else 0, 'k_rate': 0.22},
-            'away_matchup': {'avg': away_vs_home.get('avg', 0.250) if away_vs_home else 0.250, 'ops': away_vs_home.get('ops', 0.720) if away_vs_home else 0.720, 'hr': away_vs_home.get('hr', 0) if away_vs_home else 0, 'pa': away_vs_home.get('plate_appearances', 0) if away_vs_home else 0, 'k_rate': 0.22},
+            'home_matchup': {
+                'avg': home_vs_away.get('avg', 0.250) if home_vs_away else 0.250,
+                'ops': home_vs_away.get('ops', 0.720) if home_vs_away else 0.720,
+                'hr': home_vs_away.get('hr', 0) if home_vs_away else 0,
+                'pa': home_vs_away.get('plate_appearances', 0) if home_vs_away else 0, 'k_rate': 0.22
+            },
+            'away_matchup': {
+                'avg': away_vs_home.get('avg', 0.250) if away_vs_home else 0.250,
+                'ops': away_vs_home.get('ops', 0.720) if away_vs_home else 0.720,
+                'hr': away_vs_home.get('hr', 0) if away_vs_home else 0,
+                'pa': away_vs_home.get('plate_appearances', 0) if away_vs_home else 0, 'k_rate': 0.22
+            },
             'stadium': row.get('stadium', ''), 'divisional_game': row.get('is_divisional', False),
             'bullpen_home_weak': home_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
             'bullpen_away_weak': away_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
@@ -98,12 +109,12 @@ if len(mlb_games) > 0:
         
         result = mlb_engine.evaluate_mlb_game(game_data, fav_odds_dec)
         
-        # V10 BONUS
         try:
             if statcast_engine:
                 hp = statcast_engine.get_team_power(home_team)
                 ap = statcast_engine.get_team_power(away_team)
-                if hp and ap: result['probability'] = min(0.85, max(0.15, result['probability'] + ((hp['power_score']-ap['power_score'])/10)*0.015))
+                if hp and ap:
+                    result['probability'] = min(0.85, max(0.15, result['probability'] + ((hp['power_score']-ap['power_score'])/10)*0.015))
         except: pass
         try:
             from series_momentum_engine import get_series_momentum
@@ -118,12 +129,14 @@ if len(mlb_games) > 0:
                 result['probability'] = min(0.85, max(0.15, result['probability'] + mb))
         except: pass
         try:
-            stars = ['Trout','Ohtani','Judge','Betts','Soto','Freeman','Tatis','Harper','Turner','Devers','Ramirez']
+            stars = {'Aaron Judge':0.05,'Juan Soto':0.05,'Mike Trout':0.05,'Shohei Ohtani':0.06,'Mookie Betts':0.04,'Freddie Freeman':0.04,'Ronald Acuna':0.04,'Fernando Tatis':0.04,'Bryce Harper':0.04,'Trea Turner':0.03,'Rafael Devers':0.03,'Jose Ramirez':0.03,'Corey Seager':0.03,'Yordan Alvarez':0.04,'Vladimir Guerrero':0.04,'Manny Machado':0.03,'Bo Bichette':0.03,'Julio Rodriguez':0.03,'Pete Alonso':0.03,'Kyle Tucker':0.03,'Corbin Carroll':0.03}
             ip = 0
             for inj in home_injuries:
-                if any(s.lower() in inj.get('player','').lower() for s in stars): ip -= 0.04
+                for star, pen in stars.items():
+                    if star.lower() in inj.get('player','').lower(): ip -= pen; break
             for inj in away_injuries:
-                if any(s.lower() in inj.get('player','').lower() for s in stars): ip += 0.04
+                for star, pen in stars.items():
+                    if star.lower() in inj.get('player','').lower(): ip += pen; break
             result['probability'] = min(0.85, max(0.15, result['probability'] + ip))
         except: pass
         try:
@@ -138,23 +151,21 @@ if len(mlb_games) > 0:
             if weather:
                 wi = weather_impact(weather)
                 result['probability'] = min(0.85, max(0.15, result['probability'] + wi['home_boost']))
-                result['volatility'] = min(0.80, result.get('volatility', 0.30) + wi['volatility_boost'])
         except: pass
         try:
             from travel_engine import get_travel_distance, travel_impact
             stadium = row.get('stadium', '')
             if stadium:
-                dist = get_travel_distance(stadium, stadium)
-                hb, vb = travel_impact(dist)
+                hb, _ = travel_impact(get_travel_distance(stadium, stadium))
                 result['probability'] = min(0.85, max(0.15, result['probability'] + hb))
         except: pass
         try:
             from statcast_pitch_engine import pitch_advantage
-            result['probability'] = min(0.85, max(0.15, result['probability'] + pitch_advantage(home_p_name, away_p_name) * 0.5))
+            result['probability'] = min(0.85, max(0.15, result['probability'] + pitch_advantage(home_p_name, away_p_name)*0.5))
         except: pass
         try:
             from defense_engine import defense_advantage
-            result['probability'] = min(0.85, max(0.15, result['probability'] + defense_advantage(home_team, away_team) * 0.5))
+            result['probability'] = min(0.85, max(0.15, result['probability'] + defense_advantage(home_team, away_team)*0.5))
         except: pass
         try:
             from rest_engine import get_team_rest_days, rest_advantage
@@ -166,12 +177,17 @@ if len(mlb_games) > 0:
         except: pass
         try:
             from lineup_splits_engine import lineup_split_advantage
-            away_throws = away_p_data.get('throws', 'R') if away_p_data else 'R'
+            away_throws = away_p_data.get('throws','R') if away_p_data else 'R'
             result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_split_advantage(home_team, away_team, away_throws)))
         except: pass
         try:
             from statcast_bat_engine import statcast_bat_advantage
             result['probability'] = min(0.85, max(0.15, result['probability'] + statcast_bat_advantage(home_team, away_team)))
+        except: pass
+        try:
+            from team_stats_engine import team_stats_advantage
+            tsa, _ = team_stats_advantage(home_team, away_team)
+            result['probability'] = min(0.85, max(0.15, result['probability'] + tsa))
         except: pass
         
         result['edge'] = result['probability'] - (1 / fav_odds_dec)

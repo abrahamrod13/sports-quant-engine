@@ -92,21 +92,32 @@ class MLBEngine:
         hr9 = pitcher_data.get('hr9', 1.2)
         whip = pitcher_data.get('whip', 1.35)
         babip = pitcher_data.get('babip', 0.290)
+        innings = pitcher_data.get('innings', 50)
+        
         luck_factor = (babip - 0.290) / 0.030
         
+        # V11 - SAMPLE SIZE ADJUSTMENT
+        if innings < 20:
+            era_weight = (innings / 20) * 0.15
+            fip_weight = 0.25 + (1 - innings/20) * 0.10
+            whip_weight = (innings / 20) * 0.15
+            k9_weight = 0.15 + (1 - innings/20) * 0.05
+        else:
+            era_weight = 0.15
+            fip_weight = 0.25
+            whip_weight = 0.15
+            k9_weight = 0.15
+        
         whip_penalty = 0
-        if whip > 2.20:
-            whip_penalty = 0.10
-        elif whip > 1.90:
-            whip_penalty = 0.06
-        elif whip > 1.60:
-            whip_penalty = 0.03
+        if whip > 2.00: whip_penalty = 0.15
+        elif whip > 1.80: whip_penalty = 0.10
+        elif whip > 1.60: whip_penalty = 0.05
         
         score = (
-            (4.50 / max(fip, 0.5)) * 0.25 +
-            (4.50 / max(era, 0.5)) * 0.15 +
-            (1.30 / max(whip, 0.5)) * 0.15 +
-            (k9 / 9.0) * 0.15 +
+            (4.50 / max(fip, 0.5)) * fip_weight +
+            (4.50 / max(era, 0.5)) * era_weight +
+            (1.30 / max(whip, 0.5)) * whip_weight +
+            (k9 / 9.0) * k9_weight +
             (2.5 / max(bb9, 0.5)) * 0.10 +
             (1.0 / max(hr9, 0.2)) * 0.10 +
             (1.0 - luck_factor * 0.3) * 0.10 -
@@ -152,10 +163,8 @@ class MLBEngine:
         save_pct = bullpen_data.get('save_pct', 0.60)
         fatigue = bullpen_data.get('fatigue', 'NORMAL')
         fatigue_penalty = 0
-        if fatigue == 'HIGH':
-            fatigue_penalty = 0.10
-        elif fatigue == 'CRITICAL':
-            fatigue_penalty = 0.20
+        if fatigue == 'HIGH': fatigue_penalty = 0.10
+        elif fatigue == 'CRITICAL': fatigue_penalty = 0.20
         score = (
             (4.50 / max(era, 0.5)) * 0.35 + (1.30 / max(whip, 0.5)) * 0.25 +
             save_pct * 0.20 - fatigue_penalty * 0.20
@@ -183,120 +192,71 @@ class MLBEngine:
     def mlb_volatility(self, row):
         base_vol = 0.28
         boosts = 0
-        if row.get('divisional_game', False):
-            boosts += 0.08
-        if row.get('bullpen_home_weak', False):
-            boosts += 0.06
-        if row.get('bullpen_away_weak', False):
-            boosts += 0.06
-        if row.get('hr_heavy_teams', False):
-            boosts += 0.07
-        if row.get('wind_outward', False):
-            boosts += 0.05
+        if row.get('divisional_game', False): boosts += 0.08
+        if row.get('bullpen_home_weak', False): boosts += 0.06
+        if row.get('bullpen_away_weak', False): boosts += 0.06
+        if row.get('hr_heavy_teams', False): boosts += 0.07
+        if row.get('wind_outward', False): boosts += 0.05
         park = self.park_adjustment(row.get('stadium', ''))
         boosts += park.get('volatility', 0)
         home_p = self.pitcher_score(row.get('home_pitcher', {}))
         away_p = self.pitcher_score(row.get('away_pitcher', {}))
-        if home_p < 0.55 and away_p < 0.55:
-            boosts += 0.10
-        if home_p > 0.75 and away_p > 0.75:
-            boosts -= 0.08
-        final_vol = base_vol + boosts
-        return min(0.82, max(0.20, final_vol))
+        if home_p < 0.55 and away_p < 0.55: boosts += 0.10
+        if home_p > 0.75 and away_p > 0.75: boosts -= 0.08
+        return min(0.82, max(0.20, base_vol + boosts))
     
     def calculate_mlb_probability(self, game_data):
-        WEIGHTS = {
-            'pitcher_season': 0.28,
-            'momentum': 0.12,
-            'bullpen': 0.10,
-            'matchup': 0.05,
-            'offensive': 0.10,
-            'park': 0.05,
-            'base': 0.20
-        }
+        WEIGHTS = {'pitcher_season': 0.28, 'momentum': 0.12, 'bullpen': 0.10, 'matchup': 0.05, 'offensive': 0.10, 'park': 0.05, 'base': 0.20}
         
-        # Pitcher season
         home_pitcher_season = self.pitcher_score(game_data.get('home_pitcher', {}))
         away_pitcher_season = self.pitcher_score(game_data.get('away_pitcher', {}))
         
-        # Pitcher Last3 (si hay datos y son válidos)
         home_last3 = game_data.get('home_pitcher', {}).get('last3_era')
         away_last3 = game_data.get('away_pitcher', {}).get('last3_era')
+        home_pitcher_last3 = 4.50 / max(home_last3, 0.5) if home_last3 and home_last3 < 15 else home_pitcher_season
+        away_pitcher_last3 = 4.50 / max(away_last3, 0.5) if away_last3 and away_last3 < 15 else away_pitcher_season
         
-        if home_last3 and home_last3 < 15:
-            home_pitcher_last3 = 4.50 / max(home_last3, 0.5)
-        else:
-            home_pitcher_last3 = home_pitcher_season
-        
-        if away_last3 and away_last3 < 15:
-            away_pitcher_last3 = 4.50 / max(away_last3, 0.5)
-        else:
-            away_pitcher_last3 = away_pitcher_season
-        
-        # Combinado: 70% season, 30% last3
         home_pitcher_combined = home_pitcher_season * 0.70 + home_pitcher_last3 * 0.30
         away_pitcher_combined = away_pitcher_season * 0.70 + away_pitcher_last3 * 0.30
         
-        # Momentum
         home_momentum = self.momentum_score(game_data.get('home_momentum', {}))
         away_momentum = self.momentum_score(game_data.get('away_momentum', {}))
-        
-        # Bullpen
         home_bullpen = self.bullpen_score(game_data.get('home_bullpen', {}))
         away_bullpen = self.bullpen_score(game_data.get('away_bullpen', {}))
-        
-        # Matchup con SAMPLE CONTROL estricto
         home_matchup_raw = self.matchup_factor(game_data.get('home_matchup', {}))
         away_matchup_raw = self.matchup_factor(game_data.get('away_matchup', {}))
         
-        # Si PA < 30, reducir peso
         home_matchup_pa = game_data.get('home_matchup', {}).get('pa', 0)
         away_matchup_pa = game_data.get('away_matchup', {}).get('pa', 0)
-        if home_matchup_pa < 30:
-            home_matchup_raw *= (home_matchup_pa / 30)
-        if away_matchup_pa < 30:
-            away_matchup_raw *= (away_matchup_pa / 30)
+        if home_matchup_pa < 30: home_matchup_raw *= (home_matchup_pa / 30)
+        if away_matchup_pa < 30: away_matchup_raw *= (away_matchup_pa / 30)
         
         home_win_pct = game_data.get('home_win_pct', 0.5)
         away_win_pct = game_data.get('away_win_pct', 0.5)
-        
-        # Ofensiva contextual
-        home_offensive = self.offensive_context_score(
-            game_data.get('home_momentum', {}), game_data.get('away_pitcher', {}))
-        away_offensive = self.offensive_context_score(
-            game_data.get('away_momentum', {}), game_data.get('home_pitcher', {}))
+        home_offensive = self.offensive_context_score(game_data.get('home_momentum', {}), game_data.get('away_pitcher', {}))
+        away_offensive = self.offensive_context_score(game_data.get('away_momentum', {}), game_data.get('home_pitcher', {}))
         
         park = self.park_adjustment(game_data.get('stadium', ''))
         park_runs_factor = park.get('runs', 1.0)
-        
         pitcher_diff = home_pitcher_combined - away_pitcher_combined
         pitcher_amplified = 1.0 + pitcher_diff * 0.4
         
         home_score = (
             home_pitcher_combined * WEIGHTS['pitcher_season'] * pitcher_amplified +
-            home_momentum * WEIGHTS['momentum'] +
-            home_bullpen * WEIGHTS['bullpen'] +
+            home_momentum * WEIGHTS['momentum'] + home_bullpen * WEIGHTS['bullpen'] +
             (0.5 + home_matchup_raw) * WEIGHTS['matchup'] +
-            (0.5 + home_offensive * 0.25) * WEIGHTS['offensive'] +
-            home_win_pct * WEIGHTS['base']
+            (0.5 + home_offensive * 0.25) * WEIGHTS['offensive'] + home_win_pct * WEIGHTS['base']
         )
-        
         away_score = (
             away_pitcher_combined * WEIGHTS['pitcher_season'] * (2 - pitcher_amplified) +
-            away_momentum * WEIGHTS['momentum'] +
-            away_bullpen * WEIGHTS['bullpen'] +
+            away_momentum * WEIGHTS['momentum'] + away_bullpen * WEIGHTS['bullpen'] +
             (0.5 + away_matchup_raw) * WEIGHTS['matchup'] +
-            (0.5 + away_offensive * 0.25) * WEIGHTS['offensive'] +
-            away_win_pct * WEIGHTS['base']
+            (0.5 + away_offensive * 0.25) * WEIGHTS['offensive'] + away_win_pct * WEIGHTS['base']
         )
-        
         home_score *= (1.04 + (park_runs_factor - 1.0) * 0.3)
-        
         total = home_score + away_score
         probability = home_score / total if total > 0 else 0.5
-        probability = 0.5 + (probability - 0.5) * 1.6
-        
-        return min(0.80, max(0.20, probability))
+        return min(0.80, max(0.20, 0.5 + (probability - 0.5) * 1.6))
     
     def mlb_confidence(self, probability, edge, volatility, pitcher_diff, momentum_diff):
         confidence = (
@@ -308,20 +268,12 @@ class MLBEngine:
     def detect_underdog_value(self, probability, odds, home_team, away_team):
         market_prob = 1 / odds if odds > 1 else 0.5
         if market_prob < 0.5:
-            underdog = home_team
-            underdog_market_prob = market_prob
+            underdog = home_team; underdog_market_prob = market_prob
         else:
-            underdog = away_team
-            underdog_market_prob = 1 - market_prob
+            underdog = away_team; underdog_market_prob = 1 - market_prob
         model_underdog_prob = probability if underdog == home_team else (1 - probability)
         if model_underdog_prob > underdog_market_prob + 0.04:
-            return {
-                'underdog': underdog,
-                'market_prob': round(underdog_market_prob, 3),
-                'model_prob': round(model_underdog_prob, 3),
-                'value_detected': True,
-                'edge': round(model_underdog_prob - underdog_market_prob, 4)
-            }
+            return {'underdog': underdog, 'market_prob': round(underdog_market_prob, 3), 'model_prob': round(model_underdog_prob, 3), 'value_detected': True, 'edge': round(model_underdog_prob - underdog_market_prob, 4)}
         return {'value_detected': False}
     
     def evaluate_mlb_game(self, game_data, odds=2.0):
@@ -338,43 +290,26 @@ class MLBEngine:
         home_p = self.pitcher_score(game_data.get('home_pitcher', {}))
         away_p = self.pitcher_score(game_data.get('away_pitcher', {}))
         pitcher_diff = home_p - away_p
-        
         home_m = self.momentum_score(game_data.get('home_momentum', {}))
         away_m = self.momentum_score(game_data.get('away_momentum', {}))
         momentum_diff = home_m - away_m
         
         confidence = self.mlb_confidence(probability, edge, volatility, pitcher_diff, momentum_diff)
+        if edge <= 0: confidence = min(confidence, 0.45)
         
-        if edge <= 0:
-            confidence = min(confidence, 0.45)
+        if confidence >= 0.65 and edge > 0.03: level = 'A+'
+        elif confidence >= 0.50 and edge > 0.02: level = 'A'
+        elif confidence >= 0.35 and edge > 0: level = 'B'
+        else: level = 'C'
         
-        if confidence >= 0.65 and edge > 0.03:
-            level = 'A+'
-        elif confidence >= 0.50 and edge > 0.02:
-            level = 'A'
-        elif confidence >= 0.35 and edge > 0:
-            level = 'B'
-        else:
-            level = 'C'
-        
-        underdog_check = self.detect_underdog_value(probability, odds, 
-            game_data.get('home_team', ''), game_data.get('away_team', ''))
-        
-        pick = game_data.get('home_team', '') if (edge > 0 and probability >= 0.5) else (
-            game_data.get('away_team', '') if (edge > 0 and probability < 0.5) else 'NO PICK')
+        underdog_check = self.detect_underdog_value(probability, odds, game_data.get('home_team', ''), game_data.get('away_team', ''))
+        pick = game_data.get('home_team', '') if (edge > 0 and probability >= 0.5) else (game_data.get('away_team', '') if (edge > 0 and probability < 0.5) else 'NO PICK')
         
         return {
-            'probability': round(probability, 4),
-            'volatility': round(volatility, 2),
-            'edge': round(edge, 4),
-            'confidence_score': confidence,
-            'confidence_level': level,
-            'pick': pick,
-            'pitcher_home': round(home_p, 3),
-            'pitcher_away': round(away_p, 3),
-            'momentum_home': round(home_m, 3),
-            'momentum_away': round(away_m, 3),
-            'market_prob': round(market_prob, 4),
-            'underdog_value': underdog_check['value_detected'],
+            'probability': round(probability, 4), 'volatility': round(volatility, 2),
+            'edge': round(edge, 4), 'confidence_score': confidence, 'confidence_level': level,
+            'pick': pick, 'pitcher_home': round(home_p, 3), 'pitcher_away': round(away_p, 3),
+            'momentum_home': round(home_m, 3), 'momentum_away': round(away_m, 3),
+            'market_prob': round(market_prob, 4), 'underdog_value': underdog_check['value_detected'],
             'underdog_info': underdog_check if underdog_check['value_detected'] else None
         }

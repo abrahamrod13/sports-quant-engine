@@ -126,15 +126,11 @@ if len(mlb_games) > 0:
         home_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in home_injuries]) if home_injuries else 'None'
         away_inj_str = ';'.join([f"{i['player']}({i['injury']})" for i in away_injuries]) if away_injuries else 'None'
         
-        home_streak = home_momentum.get('streak', 0)
-        away_streak = away_momentum.get('streak', 0)
-        
         game_data = {
             'home_team': home_team, 'away_team': away_team,
             'home_win_pct': home_win, 'away_win_pct': away_win,
             'home_pitcher': home_p_data, 'away_pitcher': away_p_data,
             'home_pitcher_name': home_p_name, 'away_pitcher_name': away_p_name,
-            'home_momentum': home_momentum, 'away_momentum': away_momentum,
             'home_bullpen': home_bullpen, 'away_bullpen': away_bullpen,
             'home_matchup': {
                 'avg': home_vs_away.get('avg', 0.250) if home_vs_away else 0.250,
@@ -148,11 +144,10 @@ if len(mlb_games) > 0:
                 'hr': away_vs_home.get('hr', 0) if away_vs_home else 0,
                 'pa': away_vs_home.get('plate_appearances', 0) if away_vs_home else 0, 'k_rate': 0.22
             },
-            'stadium': row.get('stadium', ''), 'divisional_game': row.get('is_divisional', False),
-            'bullpen_home_weak': home_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
-            'bullpen_away_weak': away_bullpen.get('fatigue', 'NORMAL') in ['HIGH', 'CRITICAL'],
-            'hr_heavy_teams': home_win > 0.58 or away_win > 0.58, 'wind_outward': False, 'odds': fav_odds_dec,
-            'home_streak': home_streak, 'away_streak': away_streak
+            'stadium': row.get('stadium', ''),
+            'odds': fav_odds_dec,
+            'home_injuries': home_injuries,
+            'away_injuries': away_injuries
         }
         
         # MODELO BASE
@@ -165,21 +160,6 @@ if len(mlb_games) > 0:
                 ap = statcast_engine.get_team_power(away_team)
                 if hp and ap:
                     result['probability'] = min(0.85, max(0.15, result['probability'] + ((hp['power_score']-ap['power_score'])/10)*0.015))
-        except: pass
-        
-        # SERIES MOMENTUM
-        try:
-            from series_momentum_engine import get_series_momentum
-            sm = get_series_momentum(home_team, away_team)
-            if sm:
-                mb = 0
-                hw = int(sm['home_last5'].split('-')[0])
-                aw = int(sm['away_last5'].split('-')[0])
-                if hw >= 4 and aw <= 1: mb += 0.03
-                elif hw >= 3 and aw <= 2: mb += 0.015
-                if sm['home_run_diff_last5'] > 15: mb += 0.02
-                if sm['h2h_games'] >= 2 and int(sm['h2h_record'].split('-')[0]) == sm['h2h_games']: mb += 0.02
-                result['probability'] = min(0.85, max(0.15, result['probability'] + mb))
         except: pass
         
         # INJURIAS
@@ -276,11 +256,11 @@ if len(mlb_games) > 0:
             result['probability'] = min(0.85, max(0.15, result['probability'] + statcast_bat_advantage(home_team, away_team)))
         except: pass
         
-        # TEAM STATS
+        # PARK FACTOR
         try:
-            from team_stats_engine import team_stats_advantage
-            tsa, _ = team_stats_advantage(home_team, away_team)
-            result['probability'] = min(0.85, max(0.15, result['probability'] + tsa))
+            park = mlb_engine.park_adjustment(row.get('stadium', ''))
+            park_runs_factor = park.get('runs', 1.0)
+            result['probability'] = min(0.85, max(0.15, result['probability'] + (park_runs_factor - 1.0) * 0.05))
         except: pass
         
         # MARKET SENTIMENT
@@ -311,25 +291,11 @@ if len(mlb_games) > 0:
         # MARKET INTELLIGENCE
         intel = market_intel.final_decision(game_data, result)
         
-        # ============ CORRECCIÓN: ODDS SIEMPRE VISIBLES ============
-        if h2h_home is not None and h2h_home != 0:
-            odds_home_str = str(int(h2h_home)) if h2h_home == int(h2h_home) else str(h2h_home)
-        else:
-            odds_home_str = "-"
-        
-        if h2h_away is not None and h2h_away != 0:
-            odds_away_str = str(int(h2h_away)) if h2h_away == int(h2h_away) else str(h2h_away)
-        else:
-            odds_away_str = "-"
-        
-        # ============ CONDICION ARREGLADA ============
-        if result['edge'] > 0.02 and result['probability'] >= 0.55:
+        # ============ CONFIGURACIÓN OPTIMIZADA ============
+        # Edge > 1% y Prob > 50% (basado en backtest 2009-2025)
+        if result['edge'] > 0.01 and result['probability'] >= 0.50:
             pick = home_team if result['probability'] >= 0.5 else away_team
-            if pick == home_team:
-                odds_para_mostrar = odds_home_str
-            else:
-                odds_para_mostrar = odds_away_str
-            
+            odds_str = str(h2h_home if pick == home_team else h2h_away)
             if row.get('favorite') and pick == row.get('underdog'):
                 pick_label = f"{pick} (UNDERDOG)"
             elif row.get('favorite') and pick == row.get('favorite'):
@@ -339,14 +305,7 @@ if len(mlb_games) > 0:
         else:
             pick = "NO PICK"
             pick_label = "NO PICK"
-            if row.get('favorite_odds_decimal'):
-                fav_odds_american = row.get('favorite_odds_decimal')
-                if fav_odds_american < 2:
-                    odds_para_mostrar = f"-{int(100/(fav_odds_american-1))}"
-                else:
-                    odds_para_mostrar = f"+{int((fav_odds_american-1)*100)}"
-            else:
-                odds_para_mostrar = "-"
+            odds_str = "-"
         
         # ESTADOS
         ml_status = "[OK]" if intel['approved'] else ("[SUS]" if result['edge'] > 0.03 else "[X]")
@@ -371,7 +330,7 @@ if len(mlb_games) > 0:
         f5_status = "[OK]" if result['probability'] - 0.45 > 0.02 else "[?]"
         
         # OUTPUT
-        print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_para_mostrar}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
+        print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
         # GUARDAR BET

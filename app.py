@@ -74,12 +74,16 @@ def save_pick_safe(match, pick, edge):
     tracker_file = 'data/picks_tracker.csv'
     today_str = datetime.now().strftime('%Y-%m-%d')
     try:
+        os.makedirs('data', exist_ok=True)
         if os.path.exists(tracker_file):
             existing = pd.read_csv(tracker_file)
             if len(existing[(existing['date'] == today_str) & (existing['match'] == match)]) == 0:
                 new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
                 new_row.to_csv(tracker_file, mode='a', header=False, index=False)
-    except:
+        else:
+            new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
+            new_row.to_csv(tracker_file, index=False)
+    except Exception as e:
         pass
 
 def validate_picks_tracker():
@@ -207,11 +211,12 @@ with col1:
                     prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
                 except:
                     prob_val = 0
-                if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
-                    try:
-                        edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
-                    except:
-                        edge_val = 0
+                try:
+                    edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
+                except:
+                    edge_val = 0
+                # CONDICION OPTIMIZADA: pick valido, prob >= 50%, edge >= 1%
+                if g['pick'] != 'NO PICK' and prob_val >= 50 and edge_val >= 1:
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col2:
@@ -226,11 +231,12 @@ with col2:
                     prob_val = float(g['prob'].rstrip('%')) if '%' in str(g['prob']) else float(g['prob'])
                 except:
                     prob_val = 0
-                if g['pick'] != 'NO PICK' and prob_val >= 60 and g['conf'] in ['A+', 'A']:
-                    try:
-                        edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
-                    except:
-                        edge_val = 0
+                try:
+                    edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
+                except:
+                    edge_val = 0
+                # CONDICION OPTIMIZADA: pick valido, prob >= 50%, edge >= 1%
+                if g['pick'] != 'NO PICK' and prob_val >= 50 and edge_val >= 1:
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col3:

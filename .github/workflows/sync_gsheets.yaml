@@ -1,0 +1,33 @@
+name: Sync Google Sheets to GitHub
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # Cada 30 minutos
+  workflow_dispatch:  # Permitir ejecución manual
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+    
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+    
+    - name: Install dependencies
+      run: pip install gspread oauth2client
+    
+    - name: Sync from Google Sheets
+      env:
+        GOOGLE_CREDENTIALS: ${{ secrets.GOOGLE_CREDENTIALS }}
+      run: python .github/scripts/sync_gsheets.py
+    
+    - name: Commit and push changes
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        commit_message: "🔄 Auto-sync: picks from Google Sheets"
+        file_pattern: "data/picks_tracker.csv"

@@ -1,7 +1,10 @@
-date,match,pick,edge,result
-2026-05-31,Pittsburgh Pirates vs Minnesota Twins,Pittsburgh Pirates,25.4,WIN
-2026-05-31,Chicago White Sox vs Detroit Tigers,Chicago White Sox,27.8,WIN
-2026-06-05,Atlanta Braves vs Pittsburgh Pirates,Atlanta Braves (VALUE),25.9,WIN
-2026-06-05,Houston Astros vs Athletics,Houston Astros (UNDERDOG),18.2,WIN
-2026-06-05,St. Louis Cardinals vs Cincinnati Reds,St. Louis Cardinals (VALUE),17.2,WIN
-2026-06-05,Arizona Diamondbacks vs Washington Nationals,Arizona Diamondbacks (VALUE),10.7,LOSS
+2026-05-31,Pittsburgh Pirates vs Minnesota Twins,Pirates,25.4,WIN,,,,
+2026-05-31,Chicago White Sox vs Detroit Tigers,White Sox,27.8,WIN,,,,
+2026-06-05,Atlanta Braves vs Pittsburgh Pirates,Braves,25.9,WIN,,,,
+2026-06-05,Houston Astros vs Athletics,Astros,18.2,WIN,,,,
+2026-06-05,St. Louis Cardinals vs Cincinnati Reds,Cardinals,17.2,WIN,,,,
+2026-06-05,Arizona Diamondbacks vs Washington Nationals,Dbacks,10.7,LOSS,,,,
+2026-06-06,Minnesota Twins vs Kansas City Royals,Minnesota Twins,"0,2381647059",PENDING,"0,8264","1,7",Minnesota Twins,Kansas City Royals
+2026-06-06,St. Louis Cardinals vs Cincinnati Reds,St. Louis Cardinals,"0,1065407821",PENDING,"0,6652","1,79",St. Louis Cardinals,Cincinnati Reds
+2026-06-06,Arizona Diamondbacks vs Washington Nationals,Arizona Diamondbacks,"0,09409036145",PENDING,"0,6965","1,66",Arizona Diamondbacks,Washington Nationals
+2026-06-06,Houston Astros vs Athletics,Houston Astros,"0,05675191257",PENDING,"0,6032","1,83",Houston Astros,Athletics

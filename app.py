@@ -43,16 +43,22 @@ def guardar_pick_en_gsheets(match, pick, edge, prob, odds):
     try:
         import gspread
         from oauth2client.service_account import ServiceAccountCredentials
+        import json
         
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-        client = gspread.authorize(creds)
         
+        # Intentar usar secretos de Streamlit Cloud, si no, usar archivo local
+        try:
+            creds_dict = json.loads(st.secrets["gcp"]["service_account"])
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        except:
+            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+        
+        client = gspread.authorize(creds)
         sheet = client.open('Sports Quant Picks').worksheet('Picks')
         today = datetime.now().strftime('%Y-%m-%d')
         
-        # Verificar si ya existe
         existing = sheet.get_all_values()
         existe = False
         for row in existing:
@@ -62,7 +68,6 @@ def guardar_pick_en_gsheets(match, pick, edge, prob, odds):
         
         if not existe:
             sheet.append_row([today, match, pick, edge, 'PENDING', prob, odds])
-            print(f"✅ Pick guardado en Google Sheets: {pick}")
             return True
         return False
     except Exception as e:
@@ -74,12 +79,18 @@ def cargar_picks_desde_gsheets():
     try:
         import gspread
         from oauth2client.service_account import ServiceAccountCredentials
+        import json
         
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
-        creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-        client = gspread.authorize(creds)
         
+        try:
+            creds_dict = json.loads(st.secrets["gcp"]["service_account"])
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        except:
+            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+        
+        client = gspread.authorize(creds)
         sheet = client.open('Sports Quant Picks').worksheet('Picks')
         data = sheet.get_all_values()
         
@@ -243,7 +254,6 @@ with col_m4:
 st.markdown('<h2 class="section-title">ELITE PICK PERFORMANCE (A/A+)</h2>', unsafe_allow_html=True)
 validate_picks_tracker()
 
-# Intentar cargar desde Google Sheets primero, luego CSV
 df_picks = cargar_picks_desde_gsheets()
 if df_picks.empty:
     df_picks = load_picks_from_csv()
@@ -314,7 +324,6 @@ with col1:
                     edge_val = 0
                 
                 if g['pick'] != 'NO PICK' and prob_val >= 50 and edge_val >= 1:
-                    # Guardar en Google Sheets
                     guardar_pick_en_gsheets(
                         f"{g['home']} vs {g['away']}",
                         g['pick'],
@@ -322,7 +331,6 @@ with col1:
                         prob_val,
                         g['odds']
                     )
-                    # También guardar en CSV local como respaldo
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col2:
@@ -370,7 +378,7 @@ if st.session_state.mlb_data:
     for g in st.session_state.mlb_data:
         pick_display = g['pick'] if g['pick'] != 'NO PICK' else 'NO PICK'
         pick_class = 'pick-highlight' if g['pick'] != 'NO PICK' else 'no-pick'
-        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{pick_class}">{pick_display}</td><td>{g["odds"]}</td><td>{g["prob"]}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
+        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{pick_class}">{pick_display}</td><td>{g["odds"]}2央<td>{g["prob"]}2央<td>{g["edge"]}2央<td>{g["conf"]}2央</tr>'
     table_html += '</tbody></table>'
     st.markdown(table_html, unsafe_allow_html=True)
 
@@ -640,10 +648,9 @@ with col_v1:
     if st.button("VALIDATE PENDING", use_container_width=True):
         try:
             from betting_logger import validate_pending_bets
-            from datetime import datetime
             import gspread
             from oauth2client.service_account import ServiceAccountCredentials
-            import pandas as pd
+            import json
             
             # 1. Validar bets locales (CSV)
             validate_pending_bets()
@@ -651,25 +658,25 @@ with col_v1:
             
             # 2. Leer CSV local actualizado
             df = pd.read_csv('data/picks_tracker.csv')
-            pending = df[df['result'].isin(['WIN', 'LOSS'])]
             
-            # 3. Conectar a Google Sheets
-            import json
-            import streamlit as st
-
+            # 3. Conectar a Google Sheets usando secretos de Streamlit Cloud
             scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-
-            # Leer credenciales desde secretos de Streamlit Cloud
-            creds_dict = json.loads(st.secrets["gcp"]["service_account"])
-            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+            
+            try:
+                creds_dict = json.loads(st.secrets["gcp"]["service_account"])
+                creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+            except:
+                creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+            
             client = gspread.authorize(creds)
+            sheet = client.open('Sports Quant Picks').worksheet('Picks')
             
             # 4. Actualizar resultados en Google Sheets
             data = sheet.get_all_values()
             updated = 0
             
             for i, row in enumerate(data):
-                if i == 0: continue  # Saltar encabezado
+                if i == 0: continue
                 if len(row) < 5: continue
                 
                 date_val = row[0]
@@ -677,19 +684,18 @@ with col_v1:
                 current_result = row[4] if len(row) > 4 else 'PENDING'
                 
                 if current_result == 'PENDING':
-                    # Buscar en el CSV local
                     match_row = df[(df['date'] == date_val) & (df['match'] == match_val)]
                     if len(match_row) > 0:
                         new_result = match_row.iloc[0]['result']
                         if new_result in ['WIN', 'LOSS']:
                             sheet.update_cell(i+1, 5, new_result)
                             updated += 1
-                            print(f"✅ Actualizado: {match_val} → {new_result}")
             
             st.success(f"✅ Validación completada. {updated} picks actualizados en Google Sheets")
             
         except Exception as e:
             st.error(f"Validation failed: {e}")
+
 with col_v2:
     if st.button("RESULTS", use_container_width=True):
         log_file = 'data/betting_log.csv'

@@ -87,33 +87,81 @@ def save_pick_safe(match, pick, edge):
         pass
 
 def validate_picks_tracker():
+    """
+    Valida resultados pendientes usando MLB API
+    """
     tracker_file = 'data/picks_tracker.csv'
     if not os.path.exists(tracker_file):
         return
+    
     try:
+        import requests
+        from difflib import SequenceMatcher
+        
         df = pd.read_csv(tracker_file)
+        
+        # Asegurar que las columnas existen
+        for col in ['result', 'actual_winner']:
+            if col not in df.columns:
+                df[col] = ''
+        
+        # Encontrar picks pendientes
         pending = df[(df['result'].isna()) | (df['result'] == '') | (df['result'] == 'PENDING')]
+        
         if len(pending) == 0:
             return
-        import requests
+        
         for idx, row in pending.iterrows():
+            game_date = row['date']
+            match_str = row['match']
+            pick_str = row['pick']
+            
+            # Limpiar el nombre del pick (quitar (VALUE) o (UNDERDOG))
+            pick_clean = pick_str.split(' (')[0] if ' (' in pick_str else pick_str
+            
             try:
-                r = requests.get('https://statsapi.mlb.com/api/v1/schedule', params={'sportId': 1, 'date': row['date']}, timeout=10)
-                games = r.json().get('dates', [{}])[0].get('games', [])
-                for g in games:
-                    home = g['teams']['home']['team']['name']
-                    away = g['teams']['away']['team']['name']
-                    if home in row['match'] and away in row['match'] and g.get('status', {}).get('detailedState') == 'Final':
-                        hs = int(g['teams']['home'].get('score', 0))
-                        aws = int(g['teams']['away'].get('score', 0))
-                        aw = home if hs > aws else away
-                        df.at[idx, 'result'] = 'WIN' if row['pick'].lower() in aw.lower() else 'LOSS'
+                url = f"https://statsapi.mlb.com/api/v1/schedule"
+                params = {'sportId': 1, 'date': game_date}
+                response = requests.get(url, params=params, timeout=15)
+                data = response.json()
+                
+                for date_data in data.get('dates', []):
+                    for game in date_data.get('games', []):
+                        home = game['teams']['home']['team']['name']
+                        away = game['teams']['away']['team']['name']
+                        status = game.get('status', {}).get('detailedState', '')
+                        
+                        match_found = False
+                        
+                        if f"{home} vs {away}" == match_str:
+                            match_found = True
+                        elif home in match_str and away in match_str:
+                            match_found = True
+                        elif SequenceMatcher(None, f"{home} vs {away}", match_str).ratio() > 0.85:
+                            match_found = True
+                        
+                        if match_found and status == 'Final':
+                            home_score = int(game['teams']['home'].get('score', 0))
+                            away_score = int(game['teams']['away'].get('score', 0))
+                            actual_winner = home if home_score > away_score else away
+                            
+                            if pick_clean.lower() in actual_winner.lower() or actual_winner.lower() in pick_clean.lower():
+                                df.at[idx, 'result'] = 'WIN'
+                            else:
+                                df.at[idx, 'result'] = 'LOSS'
+                            
+                            df.at[idx, 'actual_winner'] = actual_winner
+                            break
+                    else:
+                        continue
+                    break
             except:
                 pass
+        
         df.to_csv(tracker_file, index=False)
+        
     except:
         pass
-
 # MÉTRICAS
 try:
     from betting_logger import get_betting_stats

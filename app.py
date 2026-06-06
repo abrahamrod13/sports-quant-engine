@@ -217,25 +217,30 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Embeder el dashboard con iframe
-st.components.v1.iframe(
-    src="https://abrahamrod13.github.io/sports-quant-engine/",
-    height=850,
-    scrolling=True,
-    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
-)
+# Embeder el dashboard con iframe HTML puro
+st.markdown(f'''
+<div style="border: 1px solid #30363d; border-radius: 15px; overflow: hidden; background: white;">
+    <iframe 
+        src="https://abrahamrod13.github.io/sports-quant-engine/" 
+        width="100%" 
+        height="800" 
+        style="border: none; display: block;"
+        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-top-navigation"
+    ></iframe>
+</div>
+''', unsafe_allow_html=True)
 
-# Opcional: Botón para forzar actualización de caché
+# Botón para forzar actualización
 col1, col2, col3 = st.columns([1, 2, 1])
 with col2:
-    if st.button("🔄 FORZAR ACTUALIZACIÓN DEL DASHBOARD", use_container_width=True):
+    if st.button("🔄 FORZAR ACTUALIZACIÓN", use_container_width=True):
         st.cache_data.clear()
-        st.markdown("""
-        <script>
-            window.open('https://abrahamrod13.github.io/sports-quant-engine/?refresh=' + Date.now(), '_blank');
-        </script>
-        """, unsafe_allow_html=True)
-        st.success("✅ Dashboard recargado. Si no ves los datos nuevos, limpia la caché del navegador (Ctrl+Shift+Delete).")
+        st.success("""
+        ✅ Para ver los datos más recientes:
+        1. Limpia la caché del navegador (Ctrl+Shift+Delete)
+        2. O abre el dashboard en modo incógnito
+        3. O haz clic en 'Abrir en nueva ventana'
+        """)
 
 # BOTONES
 st.markdown('<h2 class="section-title">QUICK SCAN</h2>', unsafe_allow_html=True)

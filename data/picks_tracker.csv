@@ -1,3 +1,7 @@
 date,match,pick,edge,result
 2026-05-31,Pittsburgh Pirates vs Minnesota Twins,Pittsburgh Pirates,25.4,WIN
 2026-05-31,Chicago White Sox vs Detroit Tigers,Chicago White Sox,27.8,WIN
+2026-06-05,Atlanta Braves vs Pittsburgh Pirates,Atlanta Braves (VALUE),25.9,WIN
+2026-06-05,Houston Astros vs Athletics,Houston Astros (UNDERDOG),18.2,WIN
+2026-06-05,St. Louis Cardinals vs Cincinnati Reds,St. Louis Cardinals (VALUE),17.2,WIN
+2026-06-05,Arizona Diamondbacks vs Washington Nationals,Arizona Diamondbacks (VALUE),10.7,LOSS

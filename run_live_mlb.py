@@ -10,7 +10,6 @@ from odds_fetcher import get_fanduel_odds_full
 from betting_logger import save_bet
 import pandas as pd
 import os
-import csv
 from datetime import datetime
 
 from market_sentiment import MarketSentiment
@@ -31,7 +30,6 @@ try:
 except:
     statcast_engine = None
 
-# FORMATO CORRECTO: 13 columnas (MLB + 12 datos)
 print("MLB|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|RL|OU|TEAM|F5")
 
 mlb_engine = MLBEngine()
@@ -330,35 +328,30 @@ if len(mlb_games) > 0:
         team_status = "[OK]" if max(0.25, min(0.85, home_over_prob)) > 0.55 else "[?]"
         f5_status = "[OK]" if result['probability'] - 0.45 > 0.02 else "[?]"
         
-        # ============ OUTPUT CORRECTO (13 columnas) ============
+        # OUTPUT
         print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
-        # ============ GUARDADO EN CSV LOCAL ============
-        if pick != "NO PICK":
-            csv_file = 'data/picks_tracker.csv'
-            os.makedirs('data', exist_ok=True)
-            today = datetime.now().strftime('%Y-%m-%d')
-            match_name = f"{home_team} vs {away_team}"
-            
-            existing_picks = []
-            if os.path.exists(csv_file):
-                with open(csv_file, 'r') as f:
-                    reader = csv.reader(f)
-                    existing_picks = list(reader)
-            
-            existe = False
-            for row_data in existing_picks:
-                if len(row_data) >= 2 and row_data[0] == today and row_data[1] == match_name:
-                    existe = True
-                    break
-            
-            if not existe:
-                with open(csv_file, 'a', newline='') as f:
-                    writer = csv.writer(f)
-                    if len(existing_picks) == 0:
-                        writer.writerow(['date', 'match', 'pick', 'edge', 'result'])
-                    writer.writerow([today, match_name, pick, result['edge'], 'PENDING'])
-                print(f"💾 LOCAL: Guardado {pick} en CSV")
+        # GUARDAR BET
+        if intel['approved'] and pick != "NO PICK":
+            result['sport'] = 'MLB'
+            result['match'] = row['match']
+            result['home_team'] = home_team
+            result['away_team'] = away_team
+            result['pick'] = pick
+            result['bet_type'] = 'Moneyline'
+            result['odds_american'] = h2h_home if pick == home_team else h2h_away
+            all_setups.append(result)
+            try:
+                log_file = 'data/betting_log.csv'
+                if os.path.exists(log_file):
+                    existing = pd.read_csv(log_file)
+                    if len(existing[(existing['date'] == datetime.now().strftime('%Y-%m-%d')) & (existing['match'] == result.get('match', ''))]) == 0:
+                        save_bet('MLB', result.get('match', ''), 'Moneyline', pick, 
+                                h2h_home if pick == home_team else h2h_away, 
+                                result.get('probability', 0), result.get('edge', 0), 
+                                result.get('volatility', 0), result.get('confidence_score', 0))
+            except:
+                pass
 
 print(f"SUMMARY|{len(all_setups)}")

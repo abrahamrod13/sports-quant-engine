@@ -210,29 +210,29 @@ tracker_file = 'data/picks_tracker.csv'
 if os.path.exists(tracker_file):
     try:
         df = pd.read_csv(tracker_file)
+        
+        # Limpiar y convertir fechas
+        df['date'] = df['date'].astype(str).str.strip()
+        
         if len(df) > 0:
-            # Asegurar que la columna result existe
-            if 'result' not in df.columns:
-                df['result'] = ''
-            
-            # Eliminar duplicados
-            df = df.drop_duplicates(subset=['date', 'match', 'pick'], keep='first')
-            
             # Obtener fechas únicas ordenadas
             dates = sorted(df['date'].unique(), reverse=True)
             
-            # Debug (opcional, puede quitarse después)
-            st.write(f"📅 Fechas disponibles: {', '.join(dates)}")
+            # Mostrar debug (después puedes quitar esta línea)
+            st.write(f"📅 Debug - Fechas en CSV: {dates}")
             
             selected_date = st.selectbox("Select date:", dates, key="cal_date")
             day_df = df[df['date'] == selected_date]
             
             if len(day_df) > 0:
                 st.markdown(f"### {selected_date} - {len(day_df)} picks")
+                
+                # Crear tabla HTML
                 table_html = '<table class="results-table"><thead><tr>'
                 for h in ['GAME', 'PICK', 'EDGE', 'RESULT']:
                     table_html += f'<th>{h}</th>'
                 table_html += '</tr></thead><tbody>'
+                
                 wins = 0
                 for _, row in day_df.iterrows():
                     result = str(row.get('result', ''))
@@ -243,9 +243,13 @@ if os.path.exists(tracker_file):
                         status = 'LOSS'
                     else:
                         status = 'PENDING'
+                    
                     table_html += f'<tr><td>{row["match"]}</td><td class="pick-highlight">{row["pick"]}</td><td>{row["edge"]}</td><td>{status}</td></tr>'
+                
                 table_html += '</tbody></table>'
                 st.markdown(table_html, unsafe_allow_html=True)
+                
+                # Resumen
                 validated = day_df[day_df['result'].isin(['WIN', 'LOSS'])]
                 if len(validated) > 0:
                     st.metric("Day Record", f"{wins}-{len(validated)-wins}")
@@ -254,7 +258,7 @@ if os.path.exists(tracker_file):
         else:
             st.info("No picks yet. Run MLB scan first.")
     except Exception as e:
-        st.error(f"Error loading calendar: {e}")
+        st.error(f"Calendar error: {e}")
 else:
     st.info("No picks tracker found. Run MLB scan first.")
 

@@ -203,64 +203,39 @@ try:
 except:
     st.info("Picks tracker initializing...")
 
-# PICKS CALENDAR
-st.markdown('<h2 class="section-title">PICKS CALENDAR</h2>', unsafe_allow_html=True)
+# DASHBOARD PROFESIONAL EMBEBIDO
+st.markdown('<h2 class="section-title">📊 DASHBOARD DE RENDIMIENTO</h2>', unsafe_allow_html=True)
 
-tracker_file = 'data/picks_tracker.csv'
-if os.path.exists(tracker_file):
-    try:
-        df = pd.read_csv(tracker_file)
-        
-        # Limpiar y convertir fechas
-        df['date'] = df['date'].astype(str).str.strip()
-        
-        if len(df) > 0:
-            # Obtener fechas únicas ordenadas
-            dates = sorted(df['date'].unique(), reverse=True)
-            
-            # Mostrar debug (después puedes quitar esta línea)
-            st.write(f"📅 Debug - Fechas en CSV: {dates}")
-            
-            selected_date = st.selectbox("Select date:", dates, key="cal_date")
-            day_df = df[df['date'] == selected_date]
-            
-            if len(day_df) > 0:
-                st.markdown(f"### {selected_date} - {len(day_df)} picks")
-                
-                # Crear tabla HTML
-                table_html = '<table class="results-table"><thead><tr>'
-                for h in ['GAME', 'PICK', 'EDGE', 'RESULT']:
-                    table_html += f'<th>{h}</th>'
-                table_html += '</tr></thead><tbody>'
-                
-                wins = 0
-                for _, row in day_df.iterrows():
-                    result = str(row.get('result', ''))
-                    if result == 'WIN':
-                        status = 'WIN'
-                        wins += 1
-                    elif result == 'LOSS':
-                        status = 'LOSS'
-                    else:
-                        status = 'PENDING'
-                    
-                    table_html += f'<tr><td>{row["match"]}</td><td class="pick-highlight">{row["pick"]}</td><td>{row["edge"]}</td><td>{status}</td></tr>'
-                
-                table_html += '</tbody></table>'
-                st.markdown(table_html, unsafe_allow_html=True)
-                
-                # Resumen
-                validated = day_df[day_df['result'].isin(['WIN', 'LOSS'])]
-                if len(validated) > 0:
-                    st.metric("Day Record", f"{wins}-{len(validated)-wins}")
-            else:
-                st.info(f"No picks for {selected_date}")
-        else:
-            st.info("No picks yet. Run MLB scan first.")
-    except Exception as e:
-        st.error(f"Calendar error: {e}")
-else:
-    st.info("No picks tracker found. Run MLB scan first.")
+st.markdown("""
+<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 1rem; margin-bottom: 1rem; text-align: center;">
+    <p style="color: #8b949e; margin-bottom: 0.5rem;">
+        📈 Dashboard actualizado automáticamente después de cada scan. 
+        <a href="https://abrahamrod13.github.io/sports-quant-engine/" target="_blank" style="color: #e94560;">
+            Abrir en nueva ventana ↗
+        </a>
+    </p>
+</div>
+""", unsafe_allow_html=True)
+
+# Embeder el dashboard con iframe
+st.components.v1.iframe(
+    src="https://abrahamrod13.github.io/sports-quant-engine/",
+    height=850,
+    scrolling=True,
+    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"
+)
+
+# Opcional: Botón para forzar actualización de caché
+col1, col2, col3 = st.columns([1, 2, 1])
+with col2:
+    if st.button("🔄 FORZAR ACTUALIZACIÓN DEL DASHBOARD", use_container_width=True):
+        st.cache_data.clear()
+        st.markdown("""
+        <script>
+            window.open('https://abrahamrod13.github.io/sports-quant-engine/?refresh=' + Date.now(), '_blank');
+        </script>
+        """, unsafe_allow_html=True)
+        st.success("✅ Dashboard recargado. Si no ves los datos nuevos, limpia la caché del navegador (Ctrl+Shift+Delete).")
 
 # BOTONES
 st.markdown('<h2 class="section-title">QUICK SCAN</h2>', unsafe_allow_html=True)

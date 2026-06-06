@@ -2,573 +2,105 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sports Quant Engine - MLB Tracker</title>
+    <title>MLB Picks Tracker</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-            color: #c9d1d9;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .header {
-            background: linear-gradient(135deg, #0d1117 0%, #0f3460 100%);
-            border: 1px solid #e94560;
-            border-radius: 15px;
-            padding: 2rem;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .header h1 {
-            color: #e94560;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .header p {
-            color: #8b949e;
-            font-size: 0.9rem;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 15px;
-            padding: 1.5rem;
-            text-align: center;
-            transition: transform 0.2s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-3px);
-            border-color: #e94560;
-        }
-
-        .stat-card .label {
-            color: #8b949e;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-card .value {
-            color: #e94560;
-            font-size: 2.5rem;
-            font-weight: bold;
-        }
-
-        .filters {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 15px;
-            padding: 1rem;
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .filters label {
-            color: #8b949e;
-        }
-
-        .filters select, .filters input {
-            background: #0d1117;
-            border: 1px solid #30363d;
-            color: #c9d1d9;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        .table-container {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 15px;
-            overflow-x: auto;
-            margin-bottom: 2rem;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: #1a1a2e;
-            color: #e94560;
-            padding: 1rem;
-            text-align: left;
-            font-weight: bold;
-            border-bottom: 2px solid #e94560;
-        }
-
-        td {
-            padding: 0.8rem 1rem;
-            border-bottom: 1px solid #21262d;
-        }
-
-        tr:hover td {
-            background: #1a2332;
-        }
-
-        .win {
-            color: #3fb950;
-            font-weight: bold;
-        }
-
-        .loss {
-            color: #f85149;
-            font-weight: bold;
-        }
-
-        .pending {
-            color: #d2991d;
-            font-weight: bold;
-        }
-
-        .chart-container {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 15px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .chart-container h3 {
-            color: #e94560;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-
-        canvas {
-            max-height: 300px;
-        }
-
-        .footer {
-            text-align: center;
-            color: #484f58;
-            padding: 1rem;
-            border-top: 1px solid #21262d;
-            margin-top: 2rem;
-            font-size: 0.8rem;
-        }
-
-        .badge {
-            display: inline-block;
-            padding: 0.2rem 0.5rem;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: bold;
-        }
-
-        .badge-win {
-            background: rgba(63, 185, 80, 0.2);
-            color: #3fb950;
-        }
-
-        .badge-loss {
-            background: rgba(248, 81, 73, 0.2);
-            color: #f85149;
-        }
-
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .stat-card .value {
-                font-size: 1.5rem;
-            }
-        }
+        body { background: #0d1117; color: #c9d1d9; font-family: Arial; padding: 20px; }
+        .stats { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+        .card { background: #161b22; border: 1px solid #e94560; border-radius: 15px; padding: 20px; text-align: center; min-width: 150px; }
+        .card h3 { color: #8b949e; font-size: 0.8rem; margin-bottom: 10px; }
+        .card .value { color: #e94560; font-size: 2rem; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; background: #161b22; border-radius: 15px; overflow: hidden; }
+        th { background: #1a1a2e; color: #e94560; padding: 12px; text-align: left; }
+        td { padding: 10px; border-bottom: 1px solid #30363d; }
+        .win { color: #3fb950; }
+        .loss { color: #f85149; }
+        .pending { color: #d2991d; }
+        button { background: #e94560; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; margin-bottom: 20px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>⚾ SPORTS QUANT ENGINE - MLB TRACKER</h1>
-            <p>10 Engines | Elite Picks | Weather + Travel + Pitch + Defense + Rest + Bullpen + Splits + Statcast</p>
-        </div>
-
-        <div class="stats-grid" id="statsGrid">
-            <div class="stat-card">
-                <div class="label">TOTAL PICKS</div>
-                <div class="value" id="totalPicks">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">WINS</div>
-                <div class="value" id="totalWins">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">LOSSES</div>
-                <div class="value" id="totalLosses">0</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">WIN RATE</div>
-                <div class="value" id="winRate">0%</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">AVG EDGE</div>
-                <div class="value" id="avgEdge">0%</div>
-            </div>
-            <div class="stat-card">
-                <div class="label">BANKROLL</div>
-                <div class="value" id="bankroll">$1,000</div>
-            </div>
-        </div>
-
-        <div class="filters">
-            <label>📅 FILTRAR POR FECHA:</label>
-            <select id="dateFilter">
-                <option value="all">TODAS LAS FECHAS</option>
-            </select>
-            <label>🏆 FILTRAR POR RESULTADO:</label>
-            <select id="resultFilter">
-                <option value="all">TODOS</option>
-                <option value="WIN">SOLO WIN</option>
-                <option value="LOSS">SOLO LOSS</option>
-                <option value="PENDING">SOLO PENDING</option>
-            </select>
-            <span id="updateTime" style="margin-left: auto; font-size: 0.8rem; color: #8b949e;"></span>
-        </div>
-
-        <div class="table-container">
-            <table id="picksTable">
-                <thead>
-                    <tr>
-                        <th>FECHA</th>
-                        <th>JUEGO</th>
-                        <th>PICK</th>
-                        <th>EDGE</th>
-                        <th>RESULTADO</th>
-                    </tr>
-                </thead>
-                <tbody id="picksTableBody">
-                    <tr><td colspan="5" style="text-align: center;">Cargando datos...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="chart-container">
-            <h3>📊 EVOLUCIÓN DEL WIN RATE</h3>
-            <canvas id="winRateChart"></canvas>
-        </div>
-
-        <div class="chart-container">
-            <h3>💰 EVOLUCIÓN DEL BANKROLL</h3>
-            <canvas id="bankrollChart"></canvas>
-        </div>
-
-        <div class="chart-container">
-            <h3>🏆 TOP EQUIPOS MÁS RENTABLES</h3>
-            <canvas id="teamsChart"></canvas>
-        </div>
-
-        <div class="footer">
-            <p>Actualización automática desde Google Sheets | Datos en tiempo real | Edge 1% + Prob 50%</p>
-        </div>
-    </div>
+    <h1>⚾ MLB PICKS TRACKER</h1>
+    
+    <div class="stats" id="stats"></div>
+    
+    <button onclick="cargarDatos()">🔄 ACTUALIZAR AHORA</button>
+    
+    <table id="tabla">
+        <thead><tr><th>Fecha</th><th>Juego</th><th>Pick</th><th>Edge</th><th>Resultado</th></tr></thead>
+        <tbody id="cuerpo"></tbody>
+    </table>
 
     <script>
-        // CONFIGURACIÓN: URL del CSV de Google Sheets (pública)
-        const CSV_URL = 'https://api.allorigins.win/raw?url=' + encodeURIComponent('https://docs.google.com/spreadsheets/d/e/2PACX-1vTGjYruLi1eQRwKI0t06UA6zpIzS1ufZC4gJkibPqhn6J3sa1_kieCGfy8KIi1XlZVALztgt89uUf1t/pub?output=csv');
-        
-        let allPicks = [];
-        let winRateChart = null;
-        let bankrollChart = null;
-        let teamsChart = null;
+        const SHEET_ID = '2PACX-1vTGjYruLi1eQRwKI0t06UA6zpIzS1ufZC4gJkibPqhn6J3sa1_kieCGfy8KIi1XlZVALztgt89uUf1t';
+        let datos = [];
 
-        async function loadData() {
+        async function cargarDatos() {
+            document.getElementById('cuerpo').innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            
+            // Usar Google Sheets API (pública)
+            const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
+            
             try {
-                const response = await fetch(CSV_URL);
-                const text = await response.text();
+                const response = await fetch('https://api.allorigins.win/raw?url=' + encodeURIComponent(url));
+                const csvText = await response.text();
                 
-                const lines = text.split('\n');
-                if (lines.length < 2) {
-                    throw new Error('CSV vacío');
-                }
-                
+                const lines = csvText.split('\n');
                 const headers = lines[0].split(',');
-                allPicks = [];
                 
+                datos = [];
                 for (let i = 1; i < lines.length; i++) {
-                    if (lines[i].trim() === '') continue;
-                    
+                    if (!lines[i].trim()) continue;
                     const values = lines[i].split(',');
                     if (values.length >= 5) {
-                        allPicks.push({
-                            date: values[0].replace(/"/g, '').trim(),
-                            match: values[1].replace(/"/g, '').trim(),
-                            pick: values[2].replace(/"/g, '').trim(),
+                        datos.push({
+                            date: values[0],
+                            match: values[1],
+                            pick: values[2],
                             edge: parseFloat(values[3]),
-                            result: values[4].replace(/"/g, '').trim(),
-                            prob: values[5] ? parseFloat(values[5]) : 0,
-                            odds: values[6] ? values[6].replace(/"/g, '').trim() : '2.0'
+                            result: values[4]
                         });
                     }
                 }
                 
-                updateFilters();
-                updateStats();
-                renderTable();
-                updateCharts();
-                
-                document.getElementById('updateTime').innerHTML = `🕒 Última actualización: ${new Date().toLocaleString()}`;
-                
+                actualizarTabla();
+                actualizarStats();
             } catch (error) {
-                console.error('Error cargando datos:', error);
-                document.getElementById('picksTableBody').innerHTML = '<tr><td colspan="5" style="text-align: center;">❌ Error cargando datos. Verifica la conexión a Google Sheets.</td></tr>';
+                console.error('Error:', error);
+                document.getElementById('cuerpo').innerHTML = '<tr><td colspan="5">Error cargando datos. Click en "ACTUALIZAR AHORA"</td></tr>';
             }
         }
 
-        function updateFilters() {
-            const dates = [...new Set(allPicks.map(p => p.date))].sort().reverse();
-            const dateSelect = document.getElementById('dateFilter');
-            dateSelect.innerHTML = '<option value="all">TODAS LAS FECHAS</option>';
-            dates.forEach(date => {
-                const option = document.createElement('option');
-                option.value = date;
-                option.textContent = date;
-                dateSelect.appendChild(option);
-            });
-        }
-
-        function getFilteredData() {
-            const dateFilter = document.getElementById('dateFilter').value;
-            const resultFilter = document.getElementById('resultFilter').value;
-            
-            let filtered = [...allPicks];
-            
-            if (dateFilter !== 'all') {
-                filtered = filtered.filter(p => p.date === dateFilter);
-            }
-            
-            if (resultFilter !== 'all') {
-                filtered = filtered.filter(p => p.result === resultFilter);
-            }
-            
-            return filtered;
-        }
-
-        function updateStats() {
-            const completed = allPicks.filter(p => p.result === 'WIN' || p.result === 'LOSS');
-            const wins = completed.filter(p => p.result === 'WIN').length;
-            const losses = completed.filter(p => p.result === 'LOSS').length;
-            const total = completed.length;
-            const winRate = total > 0 ? (wins / total * 100).toFixed(1) : 0;
-            const avgEdge = total > 0 ? (completed.reduce((sum, p) => sum + p.edge, 0) / total).toFixed(1) : 0;
-            
-            let bankroll = 1000;
-            for (let pick of completed) {
-                const stake = bankroll * 0.02;
-                let odds = 1.8;
-                if (pick.odds && pick.odds !== '-') {
-                    const oddsNum = parseFloat(pick.odds);
-                    if (!isNaN(oddsNum) && oddsNum > 0) {
-                        odds = oddsNum;
-                    }
-                }
-                if (pick.result === 'WIN') {
-                    bankroll += stake * (odds - 1);
-                } else {
-                    bankroll -= stake;
-                }
-            }
-            
-            document.getElementById('totalPicks').innerText = total;
-            document.getElementById('totalWins').innerText = wins;
-            document.getElementById('totalLosses').innerText = losses;
-            document.getElementById('winRate').innerText = winRate + '%';
-            document.getElementById('avgEdge').innerText = avgEdge + '%';
-            document.getElementById('bankroll').innerHTML = `$${bankroll.toFixed(0)}`;
-        }
-
-        function renderTable() {
-            const filtered = getFilteredData();
-            const tbody = document.getElementById('picksTableBody');
-            
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay picks para mostrar</td></tr>';
-                return;
-            }
-            
+        function actualizarTabla() {
+            const tbody = document.getElementById('cuerpo');
             tbody.innerHTML = '';
-            filtered.sort((a, b) => b.date.localeCompare(a.date)).forEach(pick => {
+            
+            datos.slice().reverse().forEach(p => {
                 const row = tbody.insertRow();
-                row.insertCell(0).innerHTML = pick.date;
-                row.insertCell(1).innerHTML = pick.match;
-                row.insertCell(2).innerHTML = pick.pick;
-                row.insertCell(3).innerHTML = pick.edge + '%';
-                
-                const resultCell = row.insertCell(4);
-                if (pick.result === 'WIN') {
-                    resultCell.innerHTML = '<span class="badge badge-win">🟢 WIN</span>';
-                } else if (pick.result === 'LOSS') {
-                    resultCell.innerHTML = '<span class="badge badge-loss">🔴 LOSS</span>';
-                } else {
-                    resultCell.innerHTML = '<span class="pending">🟡 PENDING</span>';
-                }
+                row.insertCell(0).innerHTML = p.date;
+                row.insertCell(1).innerHTML = p.match;
+                row.insertCell(2).innerHTML = p.pick;
+                row.insertCell(3).innerHTML = p.edge + '%';
+                row.insertCell(4).innerHTML = `<span class="${p.result.toLowerCase()}">${p.result || 'PENDING'}</span>`;
             });
         }
 
-        function updateCharts() {
-            const completed = allPicks.filter(p => p.result === 'WIN' || p.result === 'LOSS');
+        function actualizarStats() {
+            const completados = datos.filter(p => p.result === 'WIN' || p.result === 'LOSS');
+            const wins = completados.filter(p => p.result === 'WIN').length;
+            const total = completados.length;
+            const winRate = total > 0 ? (wins / total * 100).toFixed(1) : 0;
             
-            const byDate = {};
-            completed.forEach(pick => {
-                if (!byDate[pick.date]) {
-                    byDate[pick.date] = { wins: 0, total: 0 };
-                }
-                byDate[pick.date].total++;
-                if (pick.result === 'WIN') byDate[pick.date].wins++;
-            });
-            
-            const dates = Object.keys(byDate).sort();
-            const winRates = dates.map(d => (byDate[d].wins / byDate[d].total * 100).toFixed(1));
-            
-            if (winRateChart) winRateChart.destroy();
-            const ctx1 = document.getElementById('winRateChart').getContext('2d');
-            winRateChart = new Chart(ctx1, {
-                type: 'line',
-                data: {
-                    labels: dates,
-                    datasets: [{
-                        label: 'Win Rate %',
-                        data: winRates,
-                        borderColor: '#e94560',
-                        backgroundColor: 'rgba(233, 69, 96, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: { legend: { labels: { color: '#c9d1d9' } } },
-                    scales: {
-                        y: { beginAtZero: true, max: 100, grid: { color: '#21262d' }, ticks: { color: '#c9d1d9' } },
-                        x: { ticks: { color: '#c9d1d9' } }
-                    }
-                }
-            });
-            
-            let bankroll = 1000;
-            const bankrollHistory = [{ date: 'Inicio', bankroll: 1000 }];
-            for (let pick of completed) {
-                const stake = bankroll * 0.02;
-                let odds = 1.8;
-                if (pick.odds && pick.odds !== '-') {
-                    const oddsNum = parseFloat(pick.odds);
-                    if (!isNaN(oddsNum) && oddsNum > 0) {
-                        odds = oddsNum;
-                    }
-                }
-                if (pick.result === 'WIN') {
-                    bankroll += stake * (odds - 1);
-                } else {
-                    bankroll -= stake;
-                }
-                bankrollHistory.push({ date: pick.date, bankroll: bankroll });
-            }
-            
-            if (bankrollChart) bankrollChart.destroy();
-            const ctx2 = document.getElementById('bankrollChart').getContext('2d');
-            bankrollChart = new Chart(ctx2, {
-                type: 'line',
-                data: {
-                    labels: bankrollHistory.map(h => h.date),
-                    datasets: [{
-                        label: 'Bankroll ($)',
-                        data: bankrollHistory.map(h => h.bankroll),
-                        borderColor: '#3fb950',
-                        backgroundColor: 'rgba(63, 185, 80, 0.1)',
-                        tension: 0.3,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: { legend: { labels: { color: '#c9d1d9' } } },
-                    scales: {
-                        y: { beginAtZero: false, grid: { color: '#21262d' }, ticks: { color: '#c9d1d9' } },
-                        x: { ticks: { color: '#c9d1d9' } }
-                    }
-                }
-            });
-            
-            const teams = {};
-            completed.forEach(pick => {
-                const teamName = pick.pick.split(' (')[0];
-                if (!teams[teamName]) {
-                    teams[teamName] = { wins: 0, total: 0 };
-                }
-                teams[teamName].total++;
-                if (pick.result === 'WIN') teams[teamName].wins++;
-            });
-            
-            const topTeams = Object.entries(teams)
-                .map(([name, data]) => ({ name, winRate: data.total > 0 ? (data.wins / data.total * 100) : 0, total: data.total }))
-                .sort((a, b) => b.winRate - a.winRate)
-                .slice(0, 8);
-            
-            if (teamsChart) teamsChart.destroy();
-            const ctx3 = document.getElementById('teamsChart').getContext('2d');
-            teamsChart = new Chart(ctx3, {
-                type: 'bar',
-                data: {
-                    labels: topTeams.map(t => t.name),
-                    datasets: [{
-                        label: 'Win Rate %',
-                        data: topTeams.map(t => t.winRate),
-                        backgroundColor: '#e94560',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: { legend: { labels: { color: '#c9d1d9' } } },
-                    scales: {
-                        y: { beginAtZero: true, max: 100, grid: { color: '#21262d' }, ticks: { color: '#c9d1d9' } },
-                        x: { ticks: { color: '#c9d1d9', rotation: 45 } }
-                    }
-                }
-            });
+            document.getElementById('stats').innerHTML = `
+                <div class="card"><h3>TOTAL PICKS</h3><div class="value">${total}</div></div>
+                <div class="card"><h3>WINS</h3><div class="value">${wins}</div></div>
+                <div class="card"><h3>LOSSES</h3><div class="value">${total - wins}</div></div>
+                <div class="card"><h3>WIN RATE</h3><div class="value">${winRate}%</div></div>
+            `;
         }
 
-        document.getElementById('dateFilter').addEventListener('change', () => {
-            renderTable();
-            updateStats();
-        });
-        document.getElementById('resultFilter').addEventListener('change', () => {
-            renderTable();
-        });
-
-        loadData();
-        setInterval(loadData, 60000);
+        cargarDatos();
+        setInterval(cargarDatos, 30000);
     </script>
 </body>
 </html>

@@ -9,6 +9,7 @@ from odds_fetcher import get_fanduel_odds_full
 from betting_logger import save_bet
 import pandas as pd
 import os
+import csv
 from datetime import datetime, timedelta
 
 from market_sentiment import MarketSentiment
@@ -198,8 +199,7 @@ if len(mlb_games) > 0:
             lineups = get_lineups_for_match(home_team, away_team)
             if lineups.get('has_lineups'):
                 result['probability'] = min(0.85, max(0.15, result['probability'] + lineup_impact(lineups, home_team, away_team)))
-        except: pass
-        
+        except: pass        
         # WEATHER
         try:
             from weather_engine import get_weather_for_match, weather_impact
@@ -291,7 +291,6 @@ if len(mlb_games) > 0:
         intel = market_intel.final_decision(game_data, result)
         
         # ============ CONFIGURACIÓN OPTIMIZADA ============
-        # Edge > 1% y Prob > 50% (basado en backtest 2009-2025)
         if result['edge'] > 0.01 and result['probability'] >= 0.50:
             pick = home_team if result['probability'] >= 0.5 else away_team
             odds_str = str(h2h_home if pick == home_team else h2h_away)
@@ -332,22 +331,38 @@ if len(mlb_games) > 0:
         print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
-        # ============ GUARDAR BET EN GOOGLE SHEETS ============
-        if pick != "NO PICK":   # GUARDA TODOS LOS PICKS
-            result['sport'] = 'MLB'
-            result['match'] = row['match']
-            result['home_team'] = home_team
-            result['away_team'] = away_team
-            result['pick'] = pick
-            result['bet_type'] = 'Moneyline'
-            result['odds_american'] = h2h_home if pick == home_team else h2h_away
-            all_setups.append(result)
+        # ============ GUARDADO EN CSV LOCAL ============
+        if pick != "NO PICK":
+            csv_file = 'data/picks_tracker.csv'
+            os.makedirs('data', exist_ok=True)
+            today = datetime.now().strftime('%Y-%m-%d')
+            match_name = f"{home_team} vs {away_team}"
             
-            # Guardar en Google Sheets
+            existing_picks = []
+            if os.path.exists(csv_file):
+                with open(csv_file, 'r') as f:
+                    reader = csv.reader(f)
+                    existing_picks = list(reader)
+            
+            existe = False
+            for row_data in existing_picks:
+                if len(row_data) >= 2 and row_data[0] == today and row_data[1] == match_name:
+                    existe = True
+                    break
+            
+            if not existe:
+                with open(csv_file, 'a', newline='') as f:
+                    writer = csv.writer(f)
+                    if len(existing_picks) == 0:
+                        writer.writerow(['date', 'match', 'pick', 'edge', 'result'])
+                    writer.writerow([today, match_name, pick, result['edge'], 'PENDING'])
+                print(f"💾 LOCAL: Guardado {pick} en CSV")
+        
+        # ============ GUARDADO EN GOOGLE SHEETS ============
+        if pick != "NO PICK":
             try:
                 import gspread
                 from oauth2client.service_account import ServiceAccountCredentials
-                from datetime import datetime
                 
                 scope = ['https://spreadsheets.google.com/feeds',
                          'https://www.googleapis.com/auth/drive']
@@ -355,21 +370,20 @@ if len(mlb_games) > 0:
                 client = gspread.authorize(creds)
                 
                 sheet = client.open('Sports Quant Picks').worksheet('Picks')
-                
                 today = datetime.now().strftime('%Y-%m-%d')
+                match_name = f"{home_team} vs {away_team}"
                 
-                # Verificar si ya existe
                 existing_rows = sheet.get_all_values()
-                found = False
+                existe = False
                 for existing_row in existing_rows:
-                    if len(existing_row) >= 2 and existing_row[0] == today and existing_row[1] == result['match']:
-                        found = True
+                    if len(existing_row) >= 2 and existing_row[0] == today and existing_row[1] == match_name:
+                        existe = True
                         break
                 
-                if not found:
+                if not existe:
                     sheet.append_row([
                         today,
-                        result['match'],
+                        match_name,
                         pick,
                         result['edge'],
                         'PENDING',
@@ -378,8 +392,8 @@ if len(mlb_games) > 0:
                         home_team,
                         away_team
                     ])
-                    print(f"✅ Pick guardado en Google Sheets: {pick} - {result['match']}")
+                    print(f"☁️ GOOGLE: Guardado {pick} en Google Sheets")
             except Exception as e:
-                print(f"⚠️ Error guardando en Google Sheets: {e}")
+                print(f"⚠️ Google Sheets error: {e}")
 
 print(f"SUMMARY|{len(all_setups)}")

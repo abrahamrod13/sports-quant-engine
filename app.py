@@ -134,8 +134,23 @@ def parse_mlb_output(output_text):
     for line in output_text.strip().split('\n'):
         if line.startswith('MLB|') and 'HOME' not in line:
             parts = line.split('|')
+            # Asegurar que tenemos suficientes partes
             if len(parts) >= 13:
-                games.append({'home': parts[1], 'away': parts[2], 'pick': parts[3], 'odds': parts[4], 'prob': parts[5], 'edge': parts[6], 'conf': parts[7], 'ml': parts[8], 'rl': parts[9], 'ou': parts[10], 'team': parts[11], 'f5': parts[12]})
+                # Extraer solo las primeras 13 columnas
+                games.append({
+                    'home': parts[1] if len(parts) > 1 else '?',
+                    'away': parts[2] if len(parts) > 2 else '?',
+                    'pick': parts[3] if len(parts) > 3 else '?',
+                    'odds': parts[4] if len(parts) > 4 else '-',
+                    'prob': parts[5] if len(parts) > 5 else '0%',
+                    'edge': parts[6] if len(parts) > 6 else '0%',
+                    'conf': parts[7] if len(parts) > 7 else 'C',
+                    'ml': parts[8] if len(parts) > 8 else '[X]',
+                    'rl': parts[9] if len(parts) > 9 else '[X]',
+                    'ou': parts[10] if len(parts) > 10 else '[?]',
+                    'team': parts[11] if len(parts) > 11 else '[?]',
+                    'f5': parts[12] if len(parts) > 12 else '[?]'
+                })
         elif line.startswith('DATA|'):
             parts = line.split('|')
             if len(parts) >= 22:

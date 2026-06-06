@@ -333,7 +333,7 @@ if len(mlb_games) > 0:
         print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
-        # GUARDAR BET
+        # ============ GUARDAR BET EN GOOGLE SHEETS ============
         if intel['approved'] and pick != "NO PICK":
             result['sport'] = 'MLB'
             result['match'] = row['match']
@@ -343,16 +343,44 @@ if len(mlb_games) > 0:
             result['bet_type'] = 'Moneyline'
             result['odds_american'] = h2h_home if pick == home_team else h2h_away
             all_setups.append(result)
+            
+            # Guardar en Google Sheets
             try:
-                log_file = 'data/betting_log.csv'
-                if os.path.exists(log_file):
-                    existing = pd.read_csv(log_file)
-                    if len(existing[(existing['date'] == datetime.now().strftime('%Y-%m-%d')) & (existing['match'] == result.get('match', ''))]) == 0:
-                        save_bet('MLB', result.get('match', ''), 'Moneyline', pick, 
-                                h2h_home if pick == home_team else h2h_away, 
-                                result.get('probability', 0), result.get('edge', 0), 
-                                result.get('volatility', 0), result.get('confidence_score', 0))
-            except:
-                pass
+                import gspread
+                from oauth2client.service_account import ServiceAccountCredentials
+                from datetime import datetime
+                
+                scope = ['https://spreadsheets.google.com/feeds',
+                         'https://www.googleapis.com/auth/drive']
+                creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+                client = gspread.authorize(creds)
+                
+                sheet = client.open('Sports Quant Picks').worksheet('Picks')
+                
+                today = datetime.now().strftime('%Y-%m-%d')
+                
+                # Verificar si ya existe
+                existing_rows = sheet.get_all_values()
+                found = False
+                for existing_row in existing_rows:
+                    if len(existing_row) >= 2 and existing_row[0] == today and existing_row[1] == result['match']:
+                        found = True
+                        break
+                
+                if not found:
+                    sheet.append_row([
+                        today,
+                        result['match'],
+                        pick,
+                        result['edge'],
+                        'PENDING',
+                        result['probability'],
+                        fav_odds_dec,
+                        home_team,
+                        away_team
+                    ])
+                    print(f"✅ Pick guardado en Google Sheets: {pick} - {result['match']}")
+            except Exception as e:
+                print(f"⚠️ Error guardando en Google Sheets: {e}")
 
 print(f"SUMMARY|{len(all_setups)}")

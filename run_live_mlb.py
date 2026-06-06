@@ -334,7 +334,7 @@ if len(mlb_games) > 0:
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
         # ============ GUARDAR BET EN GOOGLE SHEETS ============
-        if intel['approved'] and pick != "NO PICK":
+        if pick != "NO PICK":   # GUARDA TODOS LOS PICKS
             result['sport'] = 'MLB'
             result['match'] = row['match']
             result['home_team'] = home_team

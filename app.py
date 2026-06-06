@@ -37,6 +37,86 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# ==================== FUNCIONES PARA GOOGLE SHEETS ====================
+def guardar_pick_en_gsheets(match, pick, edge, prob, odds):
+    """Guarda un pick directamente en Google Sheets"""
+    try:
+        import gspread
+        from oauth2client.service_account import ServiceAccountCredentials
+        
+        scope = ['https://spreadsheets.google.com/feeds',
+                 'https://www.googleapis.com/auth/drive']
+        creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+        client = gspread.authorize(creds)
+        
+        sheet = client.open('Sports Quant Picks').worksheet('Picks')
+        today = datetime.now().strftime('%Y-%m-%d')
+        
+        # Verificar si ya existe
+        existing = sheet.get_all_values()
+        existe = False
+        for row in existing:
+            if len(row) >= 2 and row[0] == today and row[1] == match:
+                existe = True
+                break
+        
+        if not existe:
+            sheet.append_row([today, match, pick, edge, 'PENDING', prob, odds])
+            print(f"✅ Pick guardado en Google Sheets: {pick}")
+            return True
+        return False
+    except Exception as e:
+        print(f"⚠️ Error guardando en Google Sheets: {e}")
+        return False
+
+def cargar_picks_desde_gsheets():
+    """Carga los picks desde Google Sheets"""
+    try:
+        import gspread
+        from oauth2client.service_account import ServiceAccountCredentials
+        
+        scope = ['https://spreadsheets.google.com/feeds',
+                 'https://www.googleapis.com/auth/drive']
+        creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+        client = gspread.authorize(creds)
+        
+        sheet = client.open('Sports Quant Picks').worksheet('Picks')
+        data = sheet.get_all_values()
+        
+        if len(data) <= 1:
+            return pd.DataFrame(columns=['date', 'match', 'pick', 'edge', 'result', 'prob', 'odds'])
+        
+        df = pd.DataFrame(data[1:], columns=data[0])
+        df['edge'] = pd.to_numeric(df['edge'], errors='coerce')
+        df['prob'] = pd.to_numeric(df['prob'], errors='coerce')
+        return df
+    except Exception as e:
+        print(f"⚠️ Error cargando desde Google Sheets: {e}")
+        return pd.DataFrame()
+
+# ==================== FUNCIONES LEGACY (CSV local como respaldo) ====================
+def save_pick_safe(match, pick, edge):
+    tracker_file = 'data/picks_tracker.csv'
+    today_str = datetime.now().strftime('%Y-%m-%d')
+    try:
+        os.makedirs('data', exist_ok=True)
+        if os.path.exists(tracker_file):
+            existing = pd.read_csv(tracker_file)
+            if len(existing[(existing['date'] == today_str) & (existing['match'] == match)]) == 0:
+                new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
+                new_row.to_csv(tracker_file, mode='a', header=False, index=False)
+        else:
+            new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
+            new_row.to_csv(tracker_file, index=False)
+    except Exception as e:
+        pass
+
+def load_picks_from_csv():
+    tracker_file = 'data/picks_tracker.csv'
+    if os.path.exists(tracker_file):
+        return pd.read_csv(tracker_file)
+    return pd.DataFrame(columns=['date', 'match', 'pick', 'edge', 'result'])
+
 def run_script_and_parse(script_name):
     output_text = ""
     process = subprocess.Popen([sys.executable, script_name], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
@@ -70,26 +150,7 @@ def parse_mlb_output(output_text):
                 }
     return games, metadata
 
-def save_pick_safe(match, pick, edge):
-    tracker_file = 'data/picks_tracker.csv'
-    today_str = datetime.now().strftime('%Y-%m-%d')
-    try:
-        os.makedirs('data', exist_ok=True)
-        if os.path.exists(tracker_file):
-            existing = pd.read_csv(tracker_file)
-            if len(existing[(existing['date'] == today_str) & (existing['match'] == match)]) == 0:
-                new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
-                new_row.to_csv(tracker_file, mode='a', header=False, index=False)
-        else:
-            new_row = pd.DataFrame([{'date': today_str, 'match': match, 'pick': pick, 'edge': edge, 'result': ''}])
-            new_row.to_csv(tracker_file, index=False)
-    except Exception as e:
-        pass
-
 def validate_picks_tracker():
-    """
-    Valida resultados pendientes usando MLB API
-    """
     tracker_file = 'data/picks_tracker.csv'
     if not os.path.exists(tracker_file):
         return
@@ -100,12 +161,10 @@ def validate_picks_tracker():
         
         df = pd.read_csv(tracker_file)
         
-        # Asegurar que las columnas existen
         for col in ['result', 'actual_winner']:
             if col not in df.columns:
                 df[col] = ''
         
-        # Encontrar picks pendientes
         pending = df[(df['result'].isna()) | (df['result'] == '') | (df['result'] == 'PENDING')]
         
         if len(pending) == 0:
@@ -115,8 +174,6 @@ def validate_picks_tracker():
             game_date = row['date']
             match_str = row['match']
             pick_str = row['pick']
-            
-            # Limpiar el nombre del pick (quitar (VALUE) o (UNDERDOG))
             pick_clean = pick_str.split(' (')[0] if ' (' in pick_str else pick_str
             
             try:
@@ -132,7 +189,6 @@ def validate_picks_tracker():
                         status = game.get('status', {}).get('detailedState', '')
                         
                         match_found = False
-                        
                         if f"{home} vs {away}" == match_str:
                             match_found = True
                         elif home in match_str and away in match_str:
@@ -159,10 +215,10 @@ def validate_picks_tracker():
                 pass
         
         df.to_csv(tracker_file, index=False)
-        
     except:
         pass
-# MÉTRICAS
+
+# ==================== MÉTRICAS ====================
 try:
     from betting_logger import get_betting_stats
     mlb_stats = get_betting_stats('MLB')
@@ -183,29 +239,31 @@ with col_m4:
     val = str(mlb_stats['total_bets']) if mlb_stats else "N/A"
     st.markdown(f"""<div class="metric-btn"><span class="label">TOTAL BETS</span><span class="value">{val}</span></div>""", unsafe_allow_html=True)
 
-# PICK PERFORMANCE
+# ==================== PICK PERFORMANCE ====================
 st.markdown('<h2 class="section-title">ELITE PICK PERFORMANCE (A/A+)</h2>', unsafe_allow_html=True)
 validate_picks_tracker()
-try:
-    tracker_file = 'data/picks_tracker.csv'
-    if os.path.exists(tracker_file):
-        df = pd.read_csv(tracker_file)
-        completed = df[df['result'].isin(['WIN', 'LOSS'])]
-        if len(completed) > 0:
-            wins = len(completed[completed['result'] == 'WIN'])
-            total = len(completed)
-            col_w1, col_w2, col_w3 = st.columns(3)
-            col_w1.metric("Total Picks", total)
-            col_w2.metric("Wins", wins)
-            col_w3.metric("Accuracy", f"{wins/total*100:.1f}%")
-        else:
-            st.info("No validated picks yet.")
-except:
+
+# Intentar cargar desde Google Sheets primero, luego CSV
+df_picks = cargar_picks_desde_gsheets()
+if df_picks.empty:
+    df_picks = load_picks_from_csv()
+
+if not df_picks.empty and 'result' in df_picks.columns:
+    completed = df_picks[df_picks['result'].isin(['WIN', 'LOSS'])]
+    if len(completed) > 0:
+        wins = len(completed[completed['result'] == 'WIN'])
+        total = len(completed)
+        col_w1, col_w2, col_w3 = st.columns(3)
+        col_w1.metric("Total Picks", total)
+        col_w2.metric("Wins", wins)
+        col_w3.metric("Accuracy", f"{wins/total*100:.1f}%")
+    else:
+        st.info("No validated picks yet.")
+else:
     st.info("Picks tracker initializing...")
 
-# DASHBOARD PROFESIONAL - Link externo
+# ==================== DASHBOARD LINK ====================
 st.markdown('<h2 class="section-title">📊 DASHBOARD DE RENDIMIENTO</h2>', unsafe_allow_html=True)
-
 st.markdown("""
 <div style="background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 1.5rem; text-align: center;">
     <p style="color: #8b949e; margin-bottom: 1rem;">
@@ -230,7 +288,7 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# BOTONES
+# ==================== BOTONES ====================
 st.markdown('<h2 class="section-title">QUICK SCAN</h2>', unsafe_allow_html=True)
 col1, col2, col3, col4 = st.columns(4)
 if 'mlb_data' not in st.session_state:
@@ -254,8 +312,17 @@ with col1:
                     edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
                 except:
                     edge_val = 0
-                # CONDICION OPTIMIZADA: pick valido, prob >= 50%, edge >= 1%
+                
                 if g['pick'] != 'NO PICK' and prob_val >= 50 and edge_val >= 1:
+                    # Guardar en Google Sheets
+                    guardar_pick_en_gsheets(
+                        f"{g['home']} vs {g['away']}",
+                        g['pick'],
+                        edge_val,
+                        prob_val,
+                        g['odds']
+                    )
+                    # También guardar en CSV local como respaldo
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col2:
@@ -274,8 +341,15 @@ with col2:
                     edge_val = float(g['edge'].rstrip('%')) if '%' in str(g['edge']) else float(g['edge'])
                 except:
                     edge_val = 0
-                # CONDICION OPTIMIZADA: pick valido, prob >= 50%, edge >= 1%
+                
                 if g['pick'] != 'NO PICK' and prob_val >= 50 and edge_val >= 1:
+                    guardar_pick_en_gsheets(
+                        f"{g['home']} vs {g['away']}",
+                        g['pick'],
+                        edge_val,
+                        prob_val,
+                        g['odds']
+                    )
                     save_pick_safe(f"{g['home']} vs {g['away']}", g['pick'], edge_val)
 
 with col3:
@@ -285,14 +359,14 @@ with col4:
     if st.button("NBA TOMORROW", use_container_width=True, key="nba_tomorrow"):
         st.info("NBA loading...")
 
-# TABLA MLB
+# ==================== TABLA MLB ====================
 if st.session_state.mlb_data:
     st.markdown("---")
     st.markdown(f"### MLB SCAN RESULTS - {len(st.session_state.mlb_data)} games")
-    table_html = '<table class="results-table"><thead><tr>'
+    table_html = '<table class="results-table"><thead>发展'
     for h in ['HOME', 'AWAY', 'PICK', 'ODDS', 'PROB', 'EDGE', 'CONF']:
         table_html += f'<th>{h}</th>'
-    table_html += '</tr></thead><tbody>'
+    table_html += '</thead><tbody>'
     for g in st.session_state.mlb_data:
         pick_display = g['pick'] if g['pick'] != 'NO PICK' else 'NO PICK'
         pick_class = 'pick-highlight' if g['pick'] != 'NO PICK' else 'no-pick'
@@ -487,7 +561,7 @@ if st.session_state.mlb_data:
                 st.error(f"F5: {g['f5']}")
         st.markdown('</div>', unsafe_allow_html=True)
 
-# MONTE CARLO
+# ==================== MONTE CARLO ====================
 st.markdown('<h2 class="section-title">MONTE CARLO SIMULATION</h2>', unsafe_allow_html=True)
 try:
     from mlb_data_fetcher import get_today_mlb_games
@@ -559,7 +633,7 @@ try:
 except:
     st.info("Monte Carlo loading...")
 
-# VALIDATE & RESULTS
+# ==================== VALIDATE & RESULTS ====================
 st.markdown('<h2 class="section-title">VALIDATE & RESULTS</h2>', unsafe_allow_html=True)
 col_v1, col_v2 = st.columns(2)
 with col_v1:

@@ -39,7 +39,7 @@ st.markdown("""
 
 # ==================== FUNCIONES PARA GOOGLE SHEETS ====================
 def guardar_pick_en_gsheets(match, pick, edge, prob, odds):
-    """Guarda un pick directamente en Google Sheets"""
+    """Guarda un pick directamente en Google Sheets usando secretos de Streamlit Cloud"""
     try:
         import gspread
         from oauth2client.service_account import ServiceAccountCredentials
@@ -48,13 +48,9 @@ def guardar_pick_en_gsheets(match, pick, edge, prob, odds):
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
         
-        # Intentar usar secretos de Streamlit Cloud, si no, usar archivo local
-        try:
-            creds_dict = json.loads(st.secrets["gcp"]["service_account"])
-            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-        except:
-            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-        
+        # Usar secretos de Streamlit Cloud
+        creds_dict = json.loads(st.secrets["gcp"]["service_account"])
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
         sheet = client.open('Sports Quant Picks').worksheet('Picks')
         today = datetime.now().strftime('%Y-%m-%d')
@@ -75,7 +71,7 @@ def guardar_pick_en_gsheets(match, pick, edge, prob, odds):
         return False
 
 def cargar_picks_desde_gsheets():
-    """Carga los picks desde Google Sheets"""
+    """Carga los picks desde Google Sheets usando secretos de Streamlit Cloud"""
     try:
         import gspread
         from oauth2client.service_account import ServiceAccountCredentials
@@ -84,12 +80,9 @@ def cargar_picks_desde_gsheets():
         scope = ['https://spreadsheets.google.com/feeds',
                  'https://www.googleapis.com/auth/drive']
         
-        try:
-            creds_dict = json.loads(st.secrets["gcp"]["service_account"])
-            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-        except:
-            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-        
+        # Usar secretos de Streamlit Cloud
+        creds_dict = json.loads(st.secrets["gcp"]["service_account"])
+        creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
         client = gspread.authorize(creds)
         sheet = client.open('Sports Quant Picks').worksheet('Picks')
         data = sheet.get_all_values()
@@ -378,7 +371,7 @@ if st.session_state.mlb_data:
     for g in st.session_state.mlb_data:
         pick_display = g['pick'] if g['pick'] != 'NO PICK' else 'NO PICK'
         pick_class = 'pick-highlight' if g['pick'] != 'NO PICK' else 'no-pick'
-        table_html += f'<tr><td>{g["home"]}</td><td>{g["away"]}</td><td class="{pick_class}">{pick_display}</td><td>{g["odds"]}2央<td>{g["prob"]}2央<td>{g["edge"]}2央<td>{g["conf"]}2央</tr>'
+        table_html += f'<tr><td class="{pick_class}">{pick_display}</td><td>{g["odds"]}</td><td>{g["prob"]}</td><td>{g["edge"]}</td><td>{g["conf"]}</td></tr>'
     table_html += '</tbody></table>'
     st.markdown(table_html, unsafe_allow_html=True)
 
@@ -662,12 +655,8 @@ with col_v1:
             # 3. Conectar a Google Sheets usando secretos de Streamlit Cloud
             scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
             
-            try:
-                creds_dict = json.loads(st.secrets["gcp"]["service_account"])
-                creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-            except:
-                creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-            
+            creds_dict = json.loads(st.secrets["gcp"]["service_account"])
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
             client = gspread.authorize(creds)
             sheet = client.open('Sports Quant Picks').worksheet('Picks')
             

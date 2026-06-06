@@ -402,3 +402,14 @@ if len(mlb_games) > 0:
                 print(f"⚠️ Google Sheets error: {e}")
 
 print(f"SUMMARY|{len(all_setups)}")
+
+# ============ AUTO PUSH A GITHUB ============
+if len(all_setups) > 0:
+    import subprocess
+    try:
+        subprocess.run(["git", "add", "data/picks_tracker.csv"], check=True, capture_output=True)
+        subprocess.run(["git", "commit", "-m", f"Auto: {datetime.now().strftime('%Y-%m-%d')} - {len(all_setups)} picks"], check=True, capture_output=True)
+        subprocess.run(["git", "push"], check=True, capture_output=True)
+        print(f"📤 AUTO PUSH: {len(all_setups)} picks subidos a GitHub")
+    except Exception as e:
+        print(f"⚠️ Auto push falló: {e}")

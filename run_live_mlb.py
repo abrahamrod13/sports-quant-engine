@@ -31,6 +31,7 @@ try:
 except:
     statcast_engine = None
 
+# FORMATO CORRECTO: 13 columnas (MLB + 12 datos)
 print("MLB|HOME|AWAY|PICK|ODDS|PROB|EDGE|CONF|ML|RL|OU|TEAM|F5")
 
 mlb_engine = MLBEngine()
@@ -329,7 +330,7 @@ if len(mlb_games) > 0:
         team_status = "[OK]" if max(0.25, min(0.85, home_over_prob)) > 0.55 else "[?]"
         f5_status = "[OK]" if result['probability'] - 0.45 > 0.02 else "[?]"
         
-        # OUTPUT
+        # ============ OUTPUT CORRECTO (13 columnas) ============
         print(f"MLB|{home_team}|{away_team}|{pick_label}|{odds_str}|{result['probability']:.1%}|{result['edge']:+.1%}|{result['confidence_level']}|{ml_status}|{rl_status}|{ou_status}|{team_status}|{f5_status}")
         print(f"DATA|{home_team}|{away_team}|{home_p_name}|{home_p_data.get('era','?')}|{home_p_data.get('whip','?')}|{home_p_data.get('k9','?')}|{away_p_name}|{away_p_data.get('era','?')}|{away_p_data.get('whip','?')}|{away_p_data.get('k9','?')}|{row.get('stadium','Unknown')}|{row.get('is_divisional',False)}|{home_win}|{away_win}|{home_bullpen.get('era','?')}|{away_bullpen.get('era','?')}|{home_bullpen.get('fatigue','NORMAL')}|{away_bullpen.get('fatigue','NORMAL')}|{home_momentum.get('ops_last7','?')}|{away_momentum.get('ops_last7','?')}|{home_momentum.get('run_diff_last10','?')}|{away_momentum.get('run_diff_last10','?')}|{home_inj_str}|{away_inj_str}")
         
@@ -340,14 +341,12 @@ if len(mlb_games) > 0:
             today = datetime.now().strftime('%Y-%m-%d')
             match_name = f"{home_team} vs {away_team}"
             
-            # Leer existente
             existing_picks = []
             if os.path.exists(csv_file):
                 with open(csv_file, 'r') as f:
                     reader = csv.reader(f)
                     existing_picks = list(reader)
             
-            # Verificar duplicado
             existe = False
             for row_data in existing_picks:
                 if len(row_data) >= 2 and row_data[0] == today and row_data[1] == match_name:
@@ -361,55 +360,5 @@ if len(mlb_games) > 0:
                         writer.writerow(['date', 'match', 'pick', 'edge', 'result'])
                     writer.writerow([today, match_name, pick, result['edge'], 'PENDING'])
                 print(f"💾 LOCAL: Guardado {pick} en CSV")
-        
-        # ============ GUARDADO EN GOOGLE SHEETS ============
-        if pick != "NO PICK":
-            try:
-                import gspread
-                from oauth2client.service_account import ServiceAccountCredentials
-                
-                scope = ['https://spreadsheets.google.com/feeds',
-                         'https://www.googleapis.com/auth/drive']
-                creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
-                client = gspread.authorize(creds)
-                
-                sheet = client.open('Sports Quant Picks').worksheet('Picks')
-                today = datetime.now().strftime('%Y-%m-%d')
-                match_name = f"{home_team} vs {away_team}"
-                
-                # Verificar duplicado
-                existing_rows = sheet.get_all_values()
-                existe = False
-                for existing_row in existing_rows:
-                    if len(existing_row) >= 2 and existing_row[0] == today and existing_row[1] == match_name:
-                        existe = True
-                        break
-                
-                if not existe:
-                    sheet.append_row([
-                        today,
-                        match_name,
-                        pick,
-                        result['edge'],
-                        'PENDING',
-                        result['probability'],
-                        fav_odds_dec,
-                        home_team,
-                        away_team
-                    ])
-                    print(f"☁️ GOOGLE: Guardado {pick} en Google Sheets")
-            except Exception as e:
-                print(f"⚠️ Google Sheets error: {e}")
 
 print(f"SUMMARY|{len(all_setups)}")
-
-# ============ AUTO PUSH A GITHUB ============
-if len(all_setups) > 0:
-    import subprocess
-    try:
-        subprocess.run(["git", "add", "data/picks_tracker.csv"], check=True, capture_output=True)
-        subprocess.run(["git", "commit", "-m", f"Auto: {datetime.now().strftime('%Y-%m-%d')} - {len(all_setups)} picks"], check=True, capture_output=True)
-        subprocess.run(["git", "push"], check=True, capture_output=True)
-        print(f"📤 AUTO PUSH: {len(all_setups)} picks subidos a GitHub")
-    except Exception as e:
-        print(f"⚠️ Auto push falló: {e}")

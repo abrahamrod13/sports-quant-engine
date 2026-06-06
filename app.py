@@ -203,44 +203,32 @@ try:
 except:
     st.info("Picks tracker initializing...")
 
-# DASHBOARD PROFESIONAL EMBEBIDO
+# DASHBOARD PROFESIONAL - Link externo
 st.markdown('<h2 class="section-title">📊 DASHBOARD DE RENDIMIENTO</h2>', unsafe_allow_html=True)
 
 st.markdown("""
-<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 1rem; margin-bottom: 1rem; text-align: center;">
-    <p style="color: #8b949e; margin-bottom: 0.5rem;">
-        📈 Dashboard actualizado automáticamente después de cada scan. 
-        <a href="https://abrahamrod13.github.io/sports-quant-engine/" target="_blank" style="color: #e94560;">
-            Abrir en nueva ventana ↗
-        </a>
+<div style="background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 1.5rem; text-align: center;">
+    <p style="color: #8b949e; margin-bottom: 1rem;">
+        📈 Accede al dashboard completo con métricas detalladas, gráficos y filtros.
+    </p>
+    <a href="https://abrahamrod13.github.io/sports-quant-engine/" target="_blank">
+        <button style="background: linear-gradient(135deg, #e94560 0%, #c23152 100%); 
+                       color: white; 
+                       border: none; 
+                       padding: 0.8rem 2rem; 
+                       font-size: 1rem; 
+                       font-weight: bold; 
+                       border-radius: 10px; 
+                       cursor: pointer;
+                       transition: transform 0.2s;">
+            📊 VER DASHBOARD COMPLETO ↗
+        </button>
+    </a>
+    <p style="color: #484f58; font-size: 0.7rem; margin-top: 1rem;">
+        Se abrirá en una nueva ventana
     </p>
 </div>
 """, unsafe_allow_html=True)
-
-# Embeder el dashboard con iframe HTML puro
-st.markdown(f'''
-<div style="border: 1px solid #30363d; border-radius: 15px; overflow: hidden; background: white;">
-    <iframe 
-        src="https://abrahamrod13.github.io/sports-quant-engine/" 
-        width="100%" 
-        height="800" 
-        style="border: none; display: block;"
-        sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-top-navigation"
-    ></iframe>
-</div>
-''', unsafe_allow_html=True)
-
-# Botón para forzar actualización
-col1, col2, col3 = st.columns([1, 2, 1])
-with col2:
-    if st.button("🔄 FORZAR ACTUALIZACIÓN", use_container_width=True):
-        st.cache_data.clear()
-        st.success("""
-        ✅ Para ver los datos más recientes:
-        1. Limpia la caché del navegador (Ctrl+Shift+Delete)
-        2. O abre el dashboard en modo incógnito
-        3. O haz clic en 'Abrir en nueva ventana'
-        """)
 
 # BOTONES
 st.markdown('<h2 class="section-title">QUICK SCAN</h2>', unsafe_allow_html=True)

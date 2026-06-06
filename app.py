@@ -640,11 +640,51 @@ with col_v1:
     if st.button("VALIDATE PENDING", use_container_width=True):
         try:
             from betting_logger import validate_pending_bets
+            from datetime import datetime
+            import gspread
+            from oauth2client.service_account import ServiceAccountCredentials
+            import pandas as pd
+            
+            # 1. Validar bets locales (CSV)
             validate_pending_bets()
             validate_picks_tracker()
-            st.success("Done!")
-        except:
-            st.error("Validation failed")
+            
+            # 2. Leer CSV local actualizado
+            df = pd.read_csv('data/picks_tracker.csv')
+            pending = df[df['result'].isin(['WIN', 'LOSS'])]
+            
+            # 3. Conectar a Google Sheets
+            scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
+            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+            client = gspread.authorize(creds)
+            sheet = client.open('Sports Quant Picks').worksheet('Picks')
+            
+            # 4. Actualizar resultados en Google Sheets
+            data = sheet.get_all_values()
+            updated = 0
+            
+            for i, row in enumerate(data):
+                if i == 0: continue  # Saltar encabezado
+                if len(row) < 5: continue
+                
+                date_val = row[0]
+                match_val = row[1]
+                current_result = row[4] if len(row) > 4 else 'PENDING'
+                
+                if current_result == 'PENDING':
+                    # Buscar en el CSV local
+                    match_row = df[(df['date'] == date_val) & (df['match'] == match_val)]
+                    if len(match_row) > 0:
+                        new_result = match_row.iloc[0]['result']
+                        if new_result in ['WIN', 'LOSS']:
+                            sheet.update_cell(i+1, 5, new_result)
+                            updated += 1
+                            print(f"✅ Actualizado: {match_val} → {new_result}")
+            
+            st.success(f"✅ Validación completada. {updated} picks actualizados en Google Sheets")
+            
+        except Exception as e:
+            st.error(f"Validation failed: {e}")
 with col_v2:
     if st.button("RESULTS", use_container_width=True):
         log_file = 'data/betting_log.csv'

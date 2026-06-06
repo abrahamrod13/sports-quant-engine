@@ -205,15 +205,28 @@ except:
 
 # PICKS CALENDAR
 st.markdown('<h2 class="section-title">PICKS CALENDAR</h2>', unsafe_allow_html=True)
-try:
-    tracker_file = 'data/picks_tracker.csv'
-    if os.path.exists(tracker_file):
+
+tracker_file = 'data/picks_tracker.csv'
+if os.path.exists(tracker_file):
+    try:
         df = pd.read_csv(tracker_file)
         if len(df) > 0:
+            # Asegurar que la columna result existe
+            if 'result' not in df.columns:
+                df['result'] = ''
+            
+            # Eliminar duplicados
             df = df.drop_duplicates(subset=['date', 'match', 'pick'], keep='first')
+            
+            # Obtener fechas únicas ordenadas
             dates = sorted(df['date'].unique(), reverse=True)
+            
+            # Debug (opcional, puede quitarse después)
+            st.write(f"📅 Fechas disponibles: {', '.join(dates)}")
+            
             selected_date = st.selectbox("Select date:", dates, key="cal_date")
             day_df = df[df['date'] == selected_date]
+            
             if len(day_df) > 0:
                 st.markdown(f"### {selected_date} - {len(day_df)} picks")
                 table_html = '<table class="results-table"><thead><tr>'
@@ -235,9 +248,15 @@ try:
                 st.markdown(table_html, unsafe_allow_html=True)
                 validated = day_df[day_df['result'].isin(['WIN', 'LOSS'])]
                 if len(validated) > 0:
-                    st.metric("Day", f"{wins}/{len(validated)}")
-except:
-    st.info("Calendar loading...")
+                    st.metric("Day Record", f"{wins}-{len(validated)-wins}")
+            else:
+                st.info(f"No picks for {selected_date}")
+        else:
+            st.info("No picks yet. Run MLB scan first.")
+    except Exception as e:
+        st.error(f"Error loading calendar: {e}")
+else:
+    st.info("No picks tracker found. Run MLB scan first.")
 
 # BOTONES
 st.markdown('<h2 class="section-title">QUICK SCAN</h2>', unsafe_allow_html=True)

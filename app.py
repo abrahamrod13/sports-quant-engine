@@ -654,10 +654,15 @@ with col_v1:
             pending = df[df['result'].isin(['WIN', 'LOSS'])]
             
             # 3. Conectar a Google Sheets
+            import json
+            import streamlit as st
+
             scope = ['https://spreadsheets.google.com/feeds', 'https://www.googleapis.com/auth/drive']
-            creds = ServiceAccountCredentials.from_json_keyfile_name('credentials.json', scope)
+
+            # Leer credenciales desde secretos de Streamlit Cloud
+            creds_dict = json.loads(st.secrets["gcp"]["service_account"])
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
             client = gspread.authorize(creds)
-            sheet = client.open('Sports Quant Picks').worksheet('Picks')
             
             # 4. Actualizar resultados en Google Sheets
             data = sheet.get_all_values()

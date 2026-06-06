@@ -36,9 +36,8 @@
         let datos = [];
 
         async function cargarDatos() {
-            document.getElementById('cuerpo').innerHTML = '<tr><td colspan="5">Cargando...</td></tr>';
+            document.getElementById('cuerpo').innerHTML = '<tr><td colspan="5">Cargando......</td></tr>';
             
-            // Usar Google Sheets API (pública)
             const url = `https://docs.google.com/spreadsheets/d/e/${SHEET_ID}/pub?output=csv`;
             
             try {
@@ -46,19 +45,22 @@
                 const csvText = await response.text();
                 
                 const lines = csvText.split('\n');
-                const headers = lines[0].split(',');
-                
-                datos = [];
+                // Saltar línea de encabezado (asumimos que la primera línea son los títulos)
                 for (let i = 1; i < lines.length; i++) {
                     if (!lines[i].trim()) continue;
                     const values = lines[i].split(',');
                     if (values.length >= 5) {
+                        // Limpiar comillas de los campos de texto y el edge
+                        let cleanEdge = values[3].replace(/["']/g, '').replace(',', '.').trim();
+                        let edgeValue = parseFloat(cleanEdge);
+                        if (isNaN(edgeValue)) edgeValue = 0;
+                        
                         datos.push({
-                            date: values[0],
-                            match: values[1],
-                            pick: values[2],
-                            edge: parseFloat(values[3]),
-                            result: values[4]
+                            date: values[0].replace(/["']/g, '').trim(),
+                            match: values[1].replace(/["']/g, '').trim(),
+                            pick: values[2].replace(/["']/g, '').trim(),
+                            edge: edgeValue,
+                            result: values[4].replace(/["']/g, '').trim()
                         });
                     }
                 }
@@ -75,13 +77,18 @@
             const tbody = document.getElementById('cuerpo');
             tbody.innerHTML = '';
             
-            datos.slice().reverse().forEach(p => {
+            // Mostrar más recientes primero
+            [...datos].reverse().forEach(p => {
                 const row = tbody.insertRow();
                 row.insertCell(0).innerHTML = p.date;
                 row.insertCell(1).innerHTML = p.match;
                 row.insertCell(2).innerHTML = p.pick;
-                row.insertCell(3).innerHTML = p.edge + '%';
-                row.insertCell(4).innerHTML = `<span class="${p.result.toLowerCase()}">${p.result || 'PENDING'}</span>`;
+                row.insertCell(3).innerHTML = (p.edge > 0 ? p.edge : '0') + '%';
+                let resultClass = 'pending';
+                let resultText = p.result || 'PENDING';
+                if (p.result === 'WIN') resultClass = 'win';
+                if (p.result === 'LOSS') resultClass = 'loss';
+                row.insertCell(4).innerHTML = `<span class="${resultClass}">${resultText}</span>`;
             });
         }
 
@@ -99,6 +106,7 @@
             `;
         }
 
+        // Cargar datos al iniciar y luego cada 30 segundos
         cargarDatos();
         setInterval(cargarDatos, 30000);
     </script>

@@ -1,7 +1,0 @@
-streamlit
-pandas
-numpy
-requests
-sqlalchemy
-beautifulsoup4
-lxml

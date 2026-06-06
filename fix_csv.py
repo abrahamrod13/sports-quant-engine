@@ -1,0 +1,28 @@
+import csv
+import os
+
+csv_path = 'data/picks_tracker.csv'
+
+# Los datos que tienes (con formato corregido)
+data = [
+    ['2026-05-31', 'Pittsburgh Pirates vs Minnesota Twins', 'Pittsburgh Pirates', 25.4, 'WIN'],
+    ['2026-05-31', 'Chicago White Sox vs Detroit Tigers', 'Chicago White Sox', 27.8, 'WIN'],
+    ['2026-06-05', 'Atlanta Braves vs Pittsburgh Pirates', 'Atlanta Braves (VALUE)', 25.9, 'WIN'],
+    ['2026-06-05', 'Houston Astros vs Athletics', 'Houston Astros (UNDERDOG)', 18.2, 'WIN'],
+    ['2026-06-05', 'St. Louis Cardinals vs Cincinnati Reds', 'St. Louis Cardinals (VALUE)', 17.2, 'WIN'],
+    ['2026-06-05', 'Arizona Diamondbacks vs Washington Nationals', 'Arizona Diamondbacks (VALUE)', 10.7, 'LOSS'],
+    ['2026-06-06', 'Minnesota Twins vs Kansas City Royals', 'Minnesota Twins (VALUE)', 19.1, 'PENDING'],
+    ['2026-06-06', 'St. Louis Cardinals vs Cincinnati Reds', 'St. Louis Cardinals (VALUE)', 4.4, 'PENDING'],
+    ['2026-06-06', 'Arizona Diamondbacks vs Washington Nationals', 'Arizona Diamondbacks (VALUE)', 17.6, 'PENDING'],
+    ['2026-06-06', 'Houston Astros vs Athletics', 'Houston Astros (VALUE)', 13.5, 'PENDING'],
+    ['2026-06-06', 'Atlanta Braves vs Pittsburgh Pirates', 'Atlanta Braves (VALUE)', 9.4, 'PENDING'],
+]
+
+os.makedirs('data', exist_ok=True)
+
+with open(csv_path, 'w', newline='') as f:
+    writer = csv.writer(f)
+    writer.writerow(['date', 'match', 'pick', 'edge', 'result'])
+    writer.writerows(data)
+
+print("✅ CSV regenerado correctamente")

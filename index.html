@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports Quant Engine - MLB Tracker</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            color: #c9d1d9;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d1117 0%, #0f3460 100%);
+            border: 1px solid #e94560;
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            color: #e94560;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+
+        /* Tarjetas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            border-color: #e94560;
+        }
+
+        .stat-card .label {
+            color: #8b949e;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .value {
+            color: #e94560;
+            font-size: 2.5rem;
+            font-weight: bold;
+        }
+
+        /* Filtros */
+        .filters {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filters label {
+            color: #8b949e;
+        }
+
+        .filters select, .filters input {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Tabla */
+        .table-container {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 15px;
+            overflow-x: auto;
+            margin-bottom: 2rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1a1a2e;
+            color: #e94560;
+            padding: 1rem;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #e94560;
+        }
+
+        td {
+            padding: 0.8rem 1rem;
+            border-bottom: 1px solid #21262d;
+        }
+
+        tr:hover td {
+            background: #1a2332;
+        }
+
+        .win {
+            color: #3fb950;
+            font-weight: bold;
+        }
+
+        .loss {
+            color: #f85149;
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #d2991d;
+            font-weight: bold;
+        }
+
+        /* Gráficos */
+        .chart-container {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container h3 {
+            color: #e94560;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            color: #484f58;
+            padding: 1rem;
+            border-top: 1px solid #21262d;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: bold;
+        }
+
+        .badge-win {
+            background: rgba(63, 185, 80, 0.2);
+            color: #3fb950;
+        }
+
+        .badge-loss {
+            background: rgba(248, 81, 73, 0.2);
+            color: #f85149;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .stat-card .value {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>⚾ SPORTS QUANT ENGINE - MLB TRACKER</h1>
+            <p>10 Engines | Elite Picks | Weather + Travel + Pitch + Defense + Rest + Bullpen + Splits + Statcast</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="label">TOTAL PICKS</div>
+                <div class="value" id="totalPicks">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">WINS</div>
+                <div class="value" id="totalWins">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">LOSSES</div>
+                <div class="value" id="totalLosses">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">WIN RATE</div>
+                <div class="value" id="winRate">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">AVG EDGE</div>
+                <div class="value" id="avgEdge">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">BANKROLL</div>
+                <div class="value" id="bankroll">$1,000</div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <label>📅 FILTRAR POR FECHA:</label>
+            <select id="dateFilter">
+                <option value="all">TODAS LAS FECHAS</option>
+            </select>
+            <label>🏆 FILTRAR POR RESULTADO:</label>
+            <select id="resultFilter">
+                <option value="all">TODOS</option>
+                <option value="WIN">SOLO WIN</option>
+                <option value="LOSS">SOLO LOSS</option>
+                <option value="PENDING">SOLO PENDING</option>
+            </select>
+            <span id="updateTime" style="margin-left: auto; font-size: 0.8rem; color: #8b949e;"></span>
+        </div>
+
+        <!-- Tabla de Picks -->
+        <div class="table-container">
+            <table id="picksTable">
+                <thead>
+                    <tr>
+                        <th>FECHA</th>
+                        <th>JUEGO</th>
+                        <th>PICK</th>
+                        <th>EDGE</th>
+                        <th>RESULTADO</th>
+                    </tr>
+                </thead>
+                <tbody id="picksTableBody">
+                    <tr><td colspan="5" style="text-align: center;">Cargando datos...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="chart-container">
+            <h3>📊 EVOLUCIÓN DEL WIN RATE</h3>
+            <canvas id="winRateChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h3>💰 EVOLUCIÓN DEL BANKROLL</h3>
+            <canvas id="bankrollChart"></canvas>
+        </div>
+
+        <div class="chart-container">
+            <h3>🏆 TOP EQUIPOS MÁS RENTABLES</h3>
+            <canvas id="teamsChart"></canvas>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Actualización automática desde GitHub | Datos en tiempo real | Sistema Optimizado Edge 1% + Prob 50%</p>
+        </div>
+    </div>
+
+    <script>
+        // Configuración
+        const CSV_URL = 'data/picks_tracker.csv';
+        let allPicks = [];
+        let winRateChart = null;
+        let bankrollChart = null;
+        let teamsChart = null;
+
+        // Función para parsear CSV
+        async function loadData() {
+            try {
+                const response = await fetch(CSV_URL);
+                const text = await response.text();
+                
+                // Parsear CSV manualmente
+                const lines = text.split('\n');
+                const headers = lines[0].split(',');
+                
+                allPicks = [];
+                for (let i = 1; i < lines.length; i++) {
+                    if (lines[i].trim() === '') continue;
+                    
+                    const values = lines[i].split(',');
+                    if (values.length >= 5) {
+                        allPicks.push({
+                            date: values[0].replace(/"/g, ''),
+                            match: values[1].replace(/"/g, ''),
+                            pick: values[2].replace(/"/g, ''),
+                            edge: parseFloat(values[3]),
+                            result: values[4].replace(/"/g, '')
+                        });
+                    }
+                }
+                
+                // Actualizar filtros
+                updateFilters();
+                updateStats();
+                renderTable();
+                updateCharts();
+                
+                // Actualizar hora
+                document.getElementById('updateTime').innerHTML = `🕒 Última actualización: ${new Date().toLocaleString()}`;
+                
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+                document.getElementById('picksTableBody').innerHTML = '<tr><td colspan="5" style="text-align: center;">❌ Error cargando datos. Asegúrate de que el archivo CSV existe.</td></tr>';
+            }
+        }
+
+        // Actualizar filtros de fecha
+        function updateFilters() {
+            const dates = [...new Set(allPicks.map(p => p.date))].sort().reverse();
+            const dateSelect = document.getElementById('dateFilter');
+            dateSelect.innerHTML = '<option value="all">TODAS LAS FECHAS</option>';
+            dates.forEach(date => {
+                const option = document.createElement('option');
+                option.value = date;
+                option.textContent = date;
+                dateSelect.appendChild(option);
+            });
+        }
+
+        // Obtener datos filtrados
+        function getFilteredData() {
+            const dateFilter = document.getElementById('dateFilter').value;
+            const resultFilter = document.getElementById('resultFilter').value;
+            
+            let filtered = [...allPicks];
+            
+            if (dateFilter !== 'all') {
+                filtered = filtered.filter(p => p.date === dateFilter);
+            }
+            
+            if (resultFilter !== 'all') {
+                filtered = filtered.filter(p => p.result === resultFilter);
+            }
+            
+            return filtered;
+        }
+
+        // Actualizar estadísticas
+        function updateStats() {
+            const completed = allPicks.filter(p => p.result === 'WIN' || p.result === 'LOSS');
+            const wins = completed.filter(p => p.result === 'WIN').length;
+            const losses = completed.filter(p => p.result === 'LOSS').length;
+            const total = completed.length;
+            const winRate = total > 0 ? (wins / total * 100).toFixed(1) : 0;
+            const avgEdge = total > 0 ? (completed.reduce((sum, p) => sum + p.edge, 0) / total).toFixed(1) : 0;
+            
+            // Simular bankroll (stake 2% por pick)
+            let bankroll = 1000;
+            for (let pick of completed) {
+                const stake = bankroll * 0.02;
+                if (pick.result === 'WIN') {
+                    bankroll += stake * 1.8; // odds promedio 1.8
+                } else {
+                    bankroll -= stake;
+                }
+            }
+            
+            document.getElementById('totalPicks').innerText = total;
+            document.getElementById('totalWins').innerText = wins;
+            document.getElementById('totalLosses').innerText = losses;
+            document.getElementById('winRate').innerText = winRate + '%';
+            document.getElementById('avgEdge').innerText = avgEdge + '%';
+            document.getElementById('bankroll').innerHTML = `$${bankroll.toFixed(0)}`;
+        }
+
+        // Renderizar tabla
+        function renderTable() {
+            const filtered = getFilteredData();
+            const tbody = document.getElementById('picksTableBody');
+            
+            if (filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No hay picks para mostrar</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = '';
+            filtered.sort((a, b) => b.date.localeCompare(a.date)).forEach(pick => {
+                const row = tbody.insertRow();
+                row.insertCell(0).innerHTML = pick.date;
+                row.insertCell(1).innerHTML = pick.match;
+                row.insertCell(2).innerHTML = pick.pick;
+                row.insertCell(3).innerHTML = pick.edge + '%';
+                
+                const resultCell = row.insertCell(4);
+                if (pick.result === 'WIN') {
+                    resultCell.innerHTML = '<span class="badge badge-win">🟢 WIN</span>';
+                } else if (pick.result === 'LOSS') {
+                    resultCell.innerHTML = '<span class="badge badge-loss">🔴 LOSS</span>';
+                } else {
+                    resultCell.innerHTML = '<span class="pending">🟡 PENDING</span>';
+                }
+            });
+        }
+
+        // Actualizar gráficos
+        function updateCharts() {
+            const completed = allPicks.filter(p => p.result === 'WIN' || p.result === 'LOSS');
+            
+            // Agrupar por fecha
+            const byDate = {};
+            completed.forEach(pick => {
+                if (!byDate[pick.date]) {
+                    byDate[pick.date] = { wins: 0, total: 0 };
+                }
+                byDate[pick.date].total++;
+                if (pick.result === 'WIN') byDate[pick.date].wins++;
+            });
+            
+            const dates = Object.keys(byDate).sort();
+            const winRates = dates.map(d => (byDate[d].wins / byDate[d].total * 100).toFixed(1));
+            
+            // Gráfico Win Rate
+            if (winRateChart) winRateChart.destroy();
+            winRateChart = new Chart(document.getElementById('winRateChart'), {
+                type: 'line',
+                data: {
+                    labels: dates,
+                    datasets: [{
+                        label: 'Win Rate %',
+                        data: winRates,
+                        borderColor: '#e94560',
+                        backgroundColor: 'rgba(233, 69, 96, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { labels: { color: '#c9d1d9' } }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            max: 100,
+                            grid: { color: '#21262d' },
+                            ticks: { color: '#c9d1d9' }
+                        },
+                        x: { ticks: { color: '#c9d1d9' } }
+                    }
+                }
+            });
+            
+            // Simular bankroll progresivo
+            let bankroll = 1000;
+            const bankrollHistory = [{ date: 'Inicio', bankroll: 1000 }];
+            for (let pick of completed) {
+                const stake = bankroll * 0.02;
+                if (pick.result === 'WIN') {
+                    bankroll += stake * 1.8;
+                } else {
+                    bankroll -= stake;
+                }
+                bankrollHistory.push({ date: pick.date, bankroll: bankroll });
+            }
+            
+            // Gráfico Bankroll
+            if (bankrollChart) bankrollChart.destroy();
+            bankrollChart = new Chart(document.getElementById('bankrollChart'), {
+                type: 'line',
+                data: {
+                    labels: bankrollHistory.map(h => h.date),
+                    datasets: [{
+                        label: 'Bankroll ($)',
+                        data: bankrollHistory.map(h => h.bankroll),
+                        borderColor: '#3fb950',
+                        backgroundColor: 'rgba(63, 185, 80, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { labels: { color: '#c9d1d9' } }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: false,
+                            grid: { color: '#21262d' },
+                            ticks: { color: '#c9d1d9' }
+                        },
+                        x: { ticks: { color: '#c9d1d9' } }
+                    }
+                }
+            });
+            
+            // Top equipos
+            const teams = {};
+            completed.forEach(pick => {
+                const teamName = pick.pick.split(' (')[0];
+                if (!teams[teamName]) {
+                    teams[teamName] = { wins: 0, total: 0, edge: 0 };
+                }
+                teams[teamName].total++;
+                if (pick.result === 'WIN') teams[teamName].wins++;
+                teams[teamName].edge += pick.edge;
+            });
+            
+            const topTeams = Object.entries(teams)
+                .map(([name, data]) => ({ name, winRate: data.total > 0 ? (data.wins / data.total * 100) : 0, total: data.total }))
+                .sort((a, b) => b.winRate - a.winRate)
+                .slice(0, 8);
+            
+            if (teamsChart) teamsChart.destroy();
+            teamsChart = new Chart(document.getElementById('teamsChart'), {
+                type: 'bar',
+                data: {
+                    labels: topTeams.map(t => t.name),
+                    datasets: [{
+                        label: 'Win Rate %',
+                        data: topTeams.map(t => t.winRate),
+                        backgroundColor: '#e94560',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { labels: { color: '#c9d1d9' } }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            max: 100,
+                            grid: { color: '#21262d' },
+                            ticks: { color: '#c9d1d9' }
+                        },
+                        x: { ticks: { color: '#c9d1d9', rotation: 45 } }
+                    }
+                }
+            });
+        }
+
+        // Event listeners para filtros
+        document.getElementById('dateFilter').addEventListener('change', () => {
+            renderTable();
+            updateStats();
+        });
+        document.getElementById('resultFilter').addEventListener('change', () => {
+            renderTable();
+        });
+
+        // Cargar datos al iniciar
+        loadData();
+        // Recargar cada 5 minutos
+        setInterval(loadData, 300000);
+    </script>
+</body>
+</html>

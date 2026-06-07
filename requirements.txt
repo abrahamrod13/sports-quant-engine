@@ -1,2 +1,4 @@
-gspread
-oauth2client
+discord.py
+requests
+pandas
+numpy
